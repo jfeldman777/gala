@@ -1,0 +1,276 @@
+const state = {
+  pages: [],
+  index: 0,
+  autoAdvance: false,
+  audioAvailable: new Set(),
+};
+
+const audio = new Audio();
+
+const els = {
+  toc: document.getElementById("toc"),
+  pageMeta: document.getElementById("page-meta"),
+  pageTitle: document.getElementById("page-title"),
+  content: document.getElementById("content"),
+  playBtn: document.getElementById("play-btn"),
+  prevBtn: document.getElementById("prev-btn"),
+  nextBtn: document.getElementById("next-btn"),
+  progress: document.getElementById("progress"),
+  time: document.getElementById("time"),
+  playerInfo: document.getElementById("player-info"),
+  noAudio: document.getElementById("no-audio"),
+  autoAdvance: document.getElementById("auto-advance"),
+  progressWrap: document.getElementById("progress-wrap"),
+  playerControls: document.getElementById("player-controls"),
+};
+
+function audioPath(page) {
+  return `audio/${page.section}/${page.id}.mp3`;
+}
+
+function titleFromMd(path) {
+  const name = path.split("/").pop().replace(/\.md$/i, "");
+  return name.replace(/^\d+(?:\.\d+)*\.?\s*/, "").trim();
+}
+
+function escapeHtml(text) {
+  return text
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function renderMarkdown(text) {
+  const lines = text.replace(/\r\n/g, "\n").split("\n");
+  const parts = [];
+  let paragraph = [];
+
+  const flushParagraph = () => {
+    if (!paragraph.length) return;
+    const body = paragraph
+      .map((line) => escapeHtml(line))
+      .join("<br>");
+    parts.push(`<p>${body}</p>`);
+    paragraph = [];
+  };
+
+  for (const rawLine of lines) {
+    const line = rawLine.trimEnd();
+
+    if (!line.trim()) {
+      flushParagraph();
+      continue;
+    }
+
+    const heading = line.match(/^##\s+(.+)$/);
+    if (heading) {
+      flushParagraph();
+      parts.push(`<h2>${escapeHtml(heading[1].trim())}</h2>`);
+      continue;
+    }
+
+    const wikiImage = line.match(/^!\[\[([^\]]+)\]\]$/);
+    if (wikiImage) {
+      flushParagraph();
+      const src = encodeURI(wikiImage[1]);
+      parts.push(`<img src="${src}" alt="">`);
+      continue;
+    }
+
+    const mdImage = line.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+    if (mdImage) {
+      flushParagraph();
+      parts.push(
+        `<img src="${encodeURI(mdImage[2])}" alt="${escapeHtml(mdImage[1])}">`,
+      );
+      continue;
+    }
+
+    paragraph.push(line.trim());
+  }
+
+  flushParagraph();
+  return parts.join("\n");
+}
+
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds)) return "0:00";
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+async function checkAudio(page) {
+  const path = audioPath(page);
+  try {
+    const res = await fetch(path, { method: "HEAD" });
+    if (res.ok) state.audioAvailable.add(page.id);
+  } catch {
+    // no audio yet
+  }
+}
+
+function buildToc() {
+  els.toc.innerHTML = "";
+  let currentSection = "";
+
+  state.pages.forEach((page, index) => {
+    if (page.section !== currentSection) {
+      currentSection = page.section;
+      const sectionEl = document.createElement("div");
+      sectionEl.className = "toc-section";
+      sectionEl.textContent = currentSection;
+      els.toc.appendChild(sectionEl);
+    }
+
+    const btn = document.createElement("button");
+    btn.className = "toc-item";
+    btn.dataset.index = String(index);
+    if (state.audioAvailable.has(page.id)) {
+      btn.classList.add("has-audio");
+    }
+    if (index === state.index) {
+      btn.classList.add("active");
+    }
+
+    btn.innerHTML = `
+      <span class="num">${page.id}</span>
+      <span class="title">${escapeHtml(page.title)}</span>
+      <span class="audio-dot" title="${state.audioAvailable.has(page.id) ? "Есть запись" : "Записи пока нет"}"></span>
+    `;
+
+    btn.addEventListener("click", () => goToPage(index, false));
+    els.toc.appendChild(btn);
+  });
+}
+
+function updatePlayerUi() {
+  const page = state.pages[state.index];
+  const hasAudio = state.audioAvailable.has(page.id);
+
+  els.playerInfo.textContent = `${page.id}`;
+  els.noAudio.hidden = hasAudio;
+  els.progressWrap.hidden = !hasAudio;
+  els.playerControls.hidden = !hasAudio;
+  els.playBtn.textContent = audio.paused ? "▶ Слушать" : "⏸ Пауза";
+  els.prevBtn.disabled = state.index === 0;
+  els.nextBtn.disabled = state.index === state.pages.length - 1;
+}
+
+async function loadPage(index, autoplay = false) {
+  state.index = index;
+  const page = state.pages[index];
+  const title = page.title;
+
+  els.pageMeta.textContent = `${page.section} · ${page.id}`;
+  els.pageTitle.textContent = title;
+  document.title = `${page.id} — ${title}`;
+
+  const res = await fetch(encodeURI(page.md));
+  const text = await res.text();
+  els.content.innerHTML = renderMarkdown(text);
+
+  audio.pause();
+  audio.currentTime = 0;
+
+  if (state.audioAvailable.has(page.id)) {
+    audio.src = audioPath(page);
+    if (autoplay) {
+      try {
+        await audio.play();
+      } catch {
+        // autoplay blocked
+      }
+    }
+  } else {
+    audio.removeAttribute("src");
+    audio.load();
+  }
+
+  buildToc();
+  updatePlayerUi();
+  document.getElementById("reader").scrollTop = 0;
+}
+
+function goToPage(index, autoplay) {
+  if (index < 0 || index >= state.pages.length) return;
+  loadPage(index, autoplay);
+}
+
+function goNext(autoplay = false) {
+  goToPage(state.index + 1, autoplay);
+}
+
+function goPrev() {
+  goToPage(state.index - 1, false);
+}
+
+function togglePlay() {
+  const page = state.pages[state.index];
+  if (!state.audioAvailable.has(page.id)) return;
+
+  if (!audio.src) {
+    audio.src = audioPath(page);
+  }
+
+  if (audio.paused) {
+    audio.play();
+  } else {
+    audio.pause();
+  }
+}
+
+audio.addEventListener("play", updatePlayerUi);
+audio.addEventListener("pause", updatePlayerUi);
+audio.addEventListener("timeupdate", () => {
+  if (!audio.duration) return;
+  els.progress.value = String((audio.currentTime / audio.duration) * 100);
+  els.time.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+});
+audio.addEventListener("ended", () => {
+  if (state.autoAdvance && state.index < state.pages.length - 1) {
+    goNext(true);
+  }
+});
+
+els.progress.addEventListener("input", () => {
+  if (!audio.duration) return;
+  audio.currentTime = (Number(els.progress.value) / 100) * audio.duration;
+});
+
+els.playBtn.addEventListener("click", togglePlay);
+els.prevBtn.addEventListener("click", goPrev);
+els.nextBtn.addEventListener("click", () => goNext(false));
+els.autoAdvance.addEventListener("change", (e) => {
+  state.autoAdvance = e.target.checked;
+});
+
+window.addEventListener("keydown", (e) => {
+  if (e.target instanceof HTMLInputElement) return;
+  if (e.code === "ArrowRight") goNext(false);
+  if (e.code === "ArrowLeft") goPrev();
+  if (e.code === "Space") {
+    e.preventDefault();
+    togglePlay();
+  }
+});
+
+async function init() {
+  const manifest = await fetch("pages.json").then((r) => r.json());
+  state.pages = manifest.pages.map((page) => ({
+    ...page,
+    title: titleFromMd(page.md),
+  }));
+
+  await Promise.all(state.pages.map((page) => checkAudio(page)));
+
+  const startId = new URLSearchParams(location.search).get("p");
+  const startIndex = startId
+    ? Math.max(0, state.pages.findIndex((p) => p.id === startId))
+    : 0;
+
+  await loadPage(startIndex === -1 ? 0 : startIndex, false);
+}
+
+init();
