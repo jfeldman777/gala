@@ -255,6 +255,137 @@ button:disabled {
   font-size: 0.9rem;
 }
 
+#feedback-open-player {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+#feedback-block {
+  max-width: 42rem;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+#feedback-block p {
+  margin: 0 0 0.75rem;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(44, 36, 22, 0.45);
+}
+
+.modal-card {
+  position: relative;
+  width: min(100%, 28rem);
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1.25rem 1rem;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.2rem;
+}
+
+.modal-context {
+  margin: 0 0 1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border-radius: 50%;
+  line-height: 1;
+  font-size: 1.25rem;
+}
+
+#feedback-form label {
+  display: block;
+  margin-bottom: 0.85rem;
+  font-size: 0.9rem;
+}
+
+.optional {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+#feedback-form input,
+#feedback-form textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+  background: #fff;
+  color: var(--ink);
+}
+
+#feedback-form textarea {
+  resize: vertical;
+  min-height: 6rem;
+}
+
+.honey {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.feedback-status {
+  margin: 0.5rem 0;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.feedback-status.success {
+  background: #e8f5ec;
+  color: #1f5c34;
+}
+
+.feedback-status.error {
+  background: #fdecea;
+  color: #8b2e2e;
+}
+
 @media (max-width: 800px) {
   :root {
     --sidebar-w: 0px;

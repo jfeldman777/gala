@@ -1,3 +1,5 @@
+const FEEDBACK_EMAIL = "jfeldman777@gmail.com";
+
 const state = {
   pages: [],
   index: 0,
@@ -22,6 +24,12 @@ const els = {
   autoAdvance: document.getElementById("auto-advance"),
   progressWrap: document.getElementById("progress-wrap"),
   playerControls: document.getElementById("player-controls"),
+  feedbackModal: document.getElementById("feedback-modal"),
+  feedbackForm: document.getElementById("feedback-form"),
+  feedbackContext: document.getElementById("feedback-context"),
+  feedbackStatus: document.getElementById("feedback-status"),
+  feedbackOpenPage: document.getElementById("feedback-open-page"),
+  feedbackOpenPlayer: document.getElementById("feedback-open-player"),
 };
 
 function audioPath(page) {
@@ -145,6 +153,73 @@ function buildToc() {
   });
 }
 
+function currentPageLabel() {
+  const page = state.pages[state.index];
+  return `${page.id} — ${page.title} (${page.section})`;
+}
+
+function openFeedbackModal() {
+  els.feedbackContext.textContent = `Страница: ${currentPageLabel()}`;
+  els.feedbackStatus.hidden = true;
+  els.feedbackStatus.className = "feedback-status";
+  els.feedbackModal.hidden = false;
+  els.feedbackForm.message.focus();
+}
+
+function closeFeedbackModal() {
+  els.feedbackModal.hidden = true;
+}
+
+async function submitFeedback(event) {
+  event.preventDefault();
+
+  const form = els.feedbackForm;
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const page = state.pages[state.index];
+  const data = new FormData(form);
+
+  if (data.get("_honey")) return;
+
+  submitBtn.disabled = true;
+  els.feedbackStatus.hidden = true;
+
+  const payload = {
+    _subject: `Дискурс: отзыв — ${page.id} ${page.title}`,
+    _template: "table",
+    _captcha: "false",
+    page: currentPageLabel(),
+    name: data.get("name") || "—",
+    reply_email: data.get("reply_email") || "—",
+    message: data.get("message"),
+  };
+
+  try {
+    const res = await fetch(`https://formsubmit.co/ajax/${FEEDBACK_EMAIL}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) throw new Error("send failed");
+
+    els.feedbackStatus.textContent = "Спасибо! Сообщение отправлено.";
+    els.feedbackStatus.className = "feedback-status success";
+    els.feedbackStatus.hidden = false;
+    form.message.value = "";
+    setTimeout(closeFeedbackModal, 1800);
+  } catch {
+    els.feedbackStatus.textContent =
+      "Не удалось отправить. Попробуйте позже или напишите на jfeldman777@gmail.com";
+    els.feedbackStatus.className = "feedback-status error";
+    els.feedbackStatus.hidden = false;
+  } finally {
+    submitBtn.disabled = false;
+  }
+}
+
 function updatePlayerUi() {
   const page = state.pages[state.index];
   const hasAudio = state.audioAvailable.has(page.id);
@@ -246,8 +321,21 @@ els.autoAdvance.addEventListener("change", (e) => {
   state.autoAdvance = e.target.checked;
 });
 
+els.feedbackOpenPage.addEventListener("click", openFeedbackModal);
+els.feedbackOpenPlayer.addEventListener("click", openFeedbackModal);
+els.feedbackForm.addEventListener("submit", submitFeedback);
+els.feedbackModal.addEventListener("click", (e) => {
+  if (e.target.matches("[data-close]")) closeFeedbackModal();
+});
+
 window.addEventListener("keydown", (e) => {
-  if (e.target instanceof HTMLInputElement) return;
+  if (e.key === "Escape" && !els.feedbackModal.hidden) {
+    closeFeedbackModal();
+    return;
+  }
+  if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+    return;
+  }
   if (e.code === "ArrowRight") goNext(false);
   if (e.code === "ArrowLeft") goPrev();
   if (e.code === "Space") {

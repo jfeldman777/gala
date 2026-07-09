@@ -20,6 +20,10 @@
       <div id="page-meta"></div>
       <h2 id="page-title"></h2>
       <div id="content"></div>
+      <section id="feedback-block" aria-label="Обратная связь">
+        <p>Есть замечание или вопрос по этой странице?</p>
+        <button id="feedback-open-page" type="button">Написать автору</button>
+      </section>
     </article>
   </main>
 
@@ -39,7 +43,37 @@
       Автопереход
     </label>
     <span id="no-audio" hidden>Записи для этой страницы пока нет</span>
+    <button id="feedback-open-player" type="button" title="Обратная связь">✉ Отзыв</button>
   </footer>
+
+  <div id="feedback-modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card" role="dialog" aria-labelledby="feedback-title" aria-modal="true">
+      <button class="modal-close" type="button" data-close aria-label="Закрыть">×</button>
+      <h3 id="feedback-title">Обратная связь</h3>
+      <p id="feedback-context" class="modal-context"></p>
+      <form id="feedback-form">
+        <label>
+          Ваше имя <span class="optional">(необязательно)</span>
+          <input name="name" type="text" autocomplete="name">
+        </label>
+        <label>
+          Email для ответа <span class="optional">(необязательно)</span>
+          <input name="reply_email" type="email" autocomplete="email">
+        </label>
+        <label>
+          Сообщение
+          <textarea name="message" rows="5" required placeholder="Замечание, вопрос, опечатка…"></textarea>
+        </label>
+        <input type="text" name="_honey" class="honey" tabindex="-1" autocomplete="off">
+        <div id="feedback-status" class="feedback-status" hidden></div>
+        <div class="modal-actions">
+          <button type="button" data-close>Отмена</button>
+          <button type="submit" class="primary">Отправить</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
