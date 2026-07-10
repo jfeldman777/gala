@@ -30,6 +30,10 @@ const els = {
   feedbackStatus: document.getElementById("feedback-status"),
   feedbackOpenPage: document.getElementById("feedback-open-page"),
   feedbackOpenPlayer: document.getElementById("feedback-open-player"),
+  tocOpen: document.getElementById("toc-open"),
+  tocClose: document.getElementById("toc-close"),
+  tocBackdrop: document.getElementById("toc-backdrop"),
+  sidebar: document.getElementById("sidebar"),
 };
 
 function audioPath(page) {
@@ -172,9 +176,36 @@ function buildToc() {
       <span class="audio-dot" title="${state.audioAvailable.has(page.id) ? "Есть запись" : "Записи пока нет"}"></span>
     `;
 
-    btn.addEventListener("click", () => goToPage(index, false));
+    btn.addEventListener("click", () => {
+      closeToc();
+      goToPage(index, false);
+    });
     els.toc.appendChild(btn);
   });
+}
+
+function openToc() {
+  document.body.classList.add("toc-open");
+  els.sidebar.classList.add("is-open");
+  els.tocBackdrop.hidden = false;
+  els.tocBackdrop.setAttribute("aria-hidden", "false");
+  els.sidebar.setAttribute("aria-hidden", "false");
+}
+
+function closeToc() {
+  document.body.classList.remove("toc-open");
+  els.sidebar.classList.remove("is-open");
+  els.tocBackdrop.hidden = true;
+  els.tocBackdrop.setAttribute("aria-hidden", "true");
+  els.sidebar.setAttribute("aria-hidden", "true");
+}
+
+function toggleToc() {
+  if (document.body.classList.contains("toc-open")) {
+    closeToc();
+  } else {
+    openToc();
+  }
 }
 
 function currentPageLabel() {
@@ -360,7 +391,23 @@ els.feedbackModal.addEventListener("click", (e) => {
   if (e.target.matches("[data-close]")) closeFeedbackModal();
 });
 
+els.tocOpen.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toggleToc();
+});
+els.tocClose.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  closeToc();
+});
+els.tocBackdrop.addEventListener("click", closeToc);
+
 window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && document.body.classList.contains("toc-open")) {
+    closeToc();
+    return;
+  }
   if (e.key === "Escape" && !els.feedbackModal.hidden) {
     closeFeedbackModal();
     return;
