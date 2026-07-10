@@ -49,6 +49,40 @@ function escapeHtml(text) {
     .replaceAll('"', "&quot;");
 }
 
+function wikiImageHtml(rawTarget) {
+  // Obsidian: ![[file.png]] or ![[file.png|663]]
+  const file = rawTarget.split("|")[0].trim();
+  if (!file) return "";
+  const width = rawTarget.includes("|")
+    ? rawTarget.split("|")[1].trim()
+    : "";
+  const widthAttr =
+    width && /^\d+$/.test(width) ? ` style="max-width:${width}px"` : "";
+  return `<img src="${encodeURI(file)}" alt=""${widthAttr}>`;
+}
+
+function renderInline(text) {
+  // Expand Obsidian wiki images and markdown images anywhere in the line.
+  const pattern =
+    /!\[\[([^\]]+)\]\]|!\[([^\]]*)\]\(([^)]+)\)/g;
+  let result = "";
+  let last = 0;
+  let match;
+
+  while ((match = pattern.exec(text)) !== null) {
+    result += escapeHtml(text.slice(last, match.index));
+    if (match[1] !== undefined) {
+      result += wikiImageHtml(match[1]);
+    } else {
+      result += `<img src="${encodeURI(match[3])}" alt="${escapeHtml(match[2])}">`;
+    }
+    last = match.index + match[0].length;
+  }
+
+  result += escapeHtml(text.slice(last));
+  return result;
+}
+
 function renderMarkdown(text) {
   const lines = text.replace(/\r\n/g, "\n").split("\n");
   const parts = [];
@@ -56,9 +90,7 @@ function renderMarkdown(text) {
 
   const flushParagraph = () => {
     if (!paragraph.length) return;
-    const body = paragraph
-      .map((line) => escapeHtml(line))
-      .join("<br>");
+    const body = paragraph.map((line) => renderInline(line)).join("<br>");
     parts.push(`<p>${body}</p>`);
     paragraph = [];
   };
@@ -78,20 +110,11 @@ function renderMarkdown(text) {
       continue;
     }
 
-    const wikiImage = line.match(/^!\[\[([^\]]+)\]\]$/);
-    if (wikiImage) {
+    // Whole-line image(s) without other text → separate block(s)
+    const onlyImages = line.match(/^(!\[\[[^\]]+\]\]|!\[[^\]]*\]\([^)]+\))+$/);
+    if (onlyImages) {
       flushParagraph();
-      const src = encodeURI(wikiImage[1]);
-      parts.push(`<img src="${src}" alt="">`);
-      continue;
-    }
-
-    const mdImage = line.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
-    if (mdImage) {
-      flushParagraph();
-      parts.push(
-        `<img src="${encodeURI(mdImage[2])}" alt="${escapeHtml(mdImage[1])}">`,
-      );
+      parts.push(`<div class="images">${renderInline(line)}</div>`);
       continue;
     }
 
