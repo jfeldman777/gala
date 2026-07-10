@@ -266,9 +266,17 @@ async function loadPage(index, autoplay = false) {
   els.pageTitle.textContent = title;
   document.title = `${page.id} — ${title}`;
 
-  const res = await fetch(encodeURI(page.md));
-  const text = await res.text();
-  els.content.innerHTML = renderMarkdown(text);
+  try {
+    const res = await fetch(encodeURI(page.md), { cache: "no-store" });
+    if (!res.ok) {
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+    const text = await res.text();
+    els.content.innerHTML = renderMarkdown(text);
+  } catch (err) {
+    els.content.innerHTML = `<p class="load-error">Не удалось загрузить текст страницы <code>${escapeHtml(page.md)}</code>. Обновите страницу (Ctrl+F5).</p>`;
+    console.error("loadPage failed", page.md, err);
+  }
 
   audio.pause();
   audio.currentTime = 0;
@@ -369,7 +377,9 @@ window.addEventListener("keydown", (e) => {
 });
 
 async function init() {
-  const manifest = await fetch("pages.json").then((r) => r.json());
+  const manifest = await fetch(`pages.json?v=${Date.now()}`, {
+    cache: "no-store",
+  }).then((r) => r.json());
   state.pages = manifest.pages.map((page) => ({
     ...page,
     title: titleFromMd(page.md),
