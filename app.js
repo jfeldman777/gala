@@ -38,7 +38,8 @@ function audioPath(page) {
 
 function titleFromMd(path) {
   const name = path.split("/").pop().replace(/\.md$/i, "");
-  return name.replace(/^\d+(?:\.\d+)*\.?\s*/, "").trim();
+  const title = name.replace(/^\d+(?:\.\d+)*\.?\s*/, "").trim();
+  return title || name.replace(/\.+$/, "");
 }
 
 function escapeHtml(text) {
