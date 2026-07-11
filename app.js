@@ -34,6 +34,7 @@ const els = {
   tocClose: document.getElementById("toc-close"),
   tocBackdrop: document.getElementById("toc-backdrop"),
   sidebar: document.getElementById("sidebar"),
+  copyLink: document.getElementById("copy-link"),
   statPages: document.getElementById("stat-pages"),
   statAudio: document.getElementById("stat-audio"),
 };
@@ -147,6 +148,46 @@ async function checkAudio(page) {
   } catch {
     // no audio yet
   }
+}
+
+function pageUrl(page) {
+  const url = new URL(location.href);
+  url.search = "";
+  url.hash = "";
+  // Keep path to index.html or directory root
+  url.searchParams.set("p", page.id);
+  return url.toString();
+}
+
+function syncUrl(page) {
+  const url = pageUrl(page);
+  history.replaceState({ pageId: page.id }, "", url);
+}
+
+async function copyPageLink() {
+  const page = state.pages[state.index];
+  if (!page) return;
+  const link = pageUrl(page);
+  try {
+    await navigator.clipboard.writeText(link);
+  } catch {
+    const input = document.createElement("input");
+    input.value = link;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand("copy");
+    input.remove();
+  }
+  const btn = els.copyLink;
+  const prev = btn.textContent;
+  btn.textContent = "✓";
+  btn.classList.add("copied");
+  btn.title = "Ссылка скопирована";
+  setTimeout(() => {
+    btn.textContent = prev;
+    btn.classList.remove("copied");
+    btn.title = "Скопировать ссылку на страницу";
+  }, 1400);
 }
 
 function updateStats() {
@@ -335,6 +376,7 @@ async function loadPage(index, autoplay = false) {
 
   buildToc();
   updatePlayerUi();
+  syncUrl(page);
   document.getElementById("reader").scrollTop = 0;
 }
 
@@ -409,6 +451,11 @@ els.tocClose.addEventListener("click", (e) => {
   closeToc();
 });
 els.tocBackdrop.addEventListener("click", closeToc);
+els.copyLink.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  copyPageLink();
+});
 
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && document.body.classList.contains("toc-open")) {
