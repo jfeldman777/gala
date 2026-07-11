@@ -1,0 +1,33 @@
+Описание моих репозиториев
+
+
+gala --- рассыпанная книга - для девочки Гали 
+https://jfeldman777.github.io/gala/
+
+man   ----  маневры, четверки, пьесы
+https://jfeldman777.github.io/man/
+
+
+tooo --- мы сдетства так измеряем сложнось
+https://jfeldman777.github.io/tooo/game.html
+
+kolobok --- игры для детей и взрослых для Мартина и его родителей
+https://jfeldman777.github.io/kolobok/
+
+self_test 
+https://jfeldman777.github.io/self_test/ --- познай самого себя
+
+https://jfeldman777.github.io/self_test/baby/index.html - падающие карточки (цифры для малышей) ЧИСЛА
+https://jfeldman777.github.io/self_test/games/flashcards.html флэщш-карточки
+https://jfeldman777.github.io/self_test/games/thinking-series.html  корреляция (мышление-сознание-взаимодействие)
+https://jfeldman777.github.io/self_test/games/index.html - расставь элементы правильно
+https://jfeldman777.github.io/self_test/who.html -- чего я хочу
+
+https://jfeldman777.github.io/self_test/isfi/index.html ---- для профессора
+
+
+books -- Двуязычный (англо-русский) сайт для первого знакомства с моей философией
+https://jfeldman777.github.io/books/
+
+poetry_pearls  -- жемчужины английской поэзии --- библиотека переводов
+https://jfeldman777.github.io/poetry_pearls/

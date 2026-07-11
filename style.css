@@ -87,6 +87,16 @@ button:disabled {
   color: var(--muted);
 }
 
+#more-projects {
+  color: var(--accent);
+  text-decoration: none;
+  margin-left: 0.15rem;
+}
+
+#more-projects:hover {
+  text-decoration: underline;
+}
+
 #toc-close {
   display: none;
   width: 2.4rem;
