@@ -34,6 +34,8 @@ const els = {
   tocClose: document.getElementById("toc-close"),
   tocBackdrop: document.getElementById("toc-backdrop"),
   sidebar: document.getElementById("sidebar"),
+  statPages: document.getElementById("stat-pages"),
+  statAudio: document.getElementById("stat-audio"),
 };
 
 function audioPath(page) {
@@ -145,6 +147,11 @@ async function checkAudio(page) {
   } catch {
     // no audio yet
   }
+}
+
+function updateStats() {
+  els.statPages.textContent = String(state.pages.length);
+  els.statAudio.textContent = String(state.audioAvailable.size);
 }
 
 function buildToc() {
@@ -433,6 +440,7 @@ async function init() {
   }));
 
   await Promise.all(state.pages.map((page) => checkAudio(page)));
+  updateStats();
 
   const startId = new URLSearchParams(location.search).get("p");
   const startIndex = startId
