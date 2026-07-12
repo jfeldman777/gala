@@ -140,11 +140,50 @@ button:disabled {
 }
 
 .toc-section {
-  padding: 0.65rem 1rem 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+  margin: 0.35rem 0 0;
+  padding: 0.55rem 1rem;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  font: inherit;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--muted);
+  text-align: left;
+  cursor: pointer;
+}
+
+.toc-section:hover {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+.toc-chevron {
+  display: inline-block;
+  width: 0.65rem;
+  font-size: 0.7rem;
+  transition: transform 0.15s ease;
+}
+
+.toc-chevron::before {
+  content: "▼";
+}
+
+.toc-group.collapsed .toc-chevron {
+  transform: rotate(-90deg);
+}
+
+.toc-group.collapsed .toc-group-items {
+  display: none;
+}
+
+.toc-section-title {
+  flex: 1;
 }
 
 .toc-item {
