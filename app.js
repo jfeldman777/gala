@@ -41,13 +41,59 @@ const els = {
 };
 
 function audioPath(page) {
-  return `audio/${page.section}/${page.id}.mp3`;
+  const src = page.sourcePage || page;
+  return `audio/${src.section}/${src.id}.mp3`;
+}
+
+/** `5.3-3.1 Title.md` → slot 5.3 includes page 3.1 */
+function parseIncludeFromMd(path) {
+  const name = path.split("/").pop().replace(/\.md$/i, "");
+  const match = name.match(/^(\d+(?:\.\d+)*)-(\d+(?:\.\d+)*)/);
+  if (!match) return null;
+  return { id: match[1], include: match[2] };
 }
 
 function titleFromMd(path) {
   const name = path.split("/").pop().replace(/\.md$/i, "");
-  const title = name.replace(/^\d+(?:\.\d+)*\.?\s*/, "").trim();
-  return title || name.replace(/\.+$/, "");
+  // Strip "1.2." or include alias "5.3-3.1."
+  const title = name
+    .replace(/^\d+(?:\.\d+)*(?:-\d+(?:\.\d+)*)?\.?\s*/, "")
+    .trim();
+  return title;
+}
+
+function resolvePages(rawPages) {
+  const pages = rawPages.map((page) => {
+    const parsed = parseIncludeFromMd(page.md);
+    const include = page.include || parsed?.include || null;
+    // Slot id only: "5.3-3.1.md" → id "5.3" (never show the second index)
+    const id = include && parsed?.id ? parsed.id : page.id;
+    return {
+      ...page,
+      id,
+      include,
+      title: titleFromMd(page.md),
+      sourcePage: null,
+    };
+  });
+
+  const byId = new Map(pages.map((p) => [p.id, p]));
+
+  for (const page of pages) {
+    if (!page.include) continue;
+    const source = byId.get(page.include);
+    if (!source || source.include) {
+      console.warn(
+        `Include ${page.id}→${page.include}: source page not found`,
+      );
+      continue;
+    }
+    page.sourcePage = source;
+    // Always the original page title (for reader + TOC)
+    page.title = source.title;
+  }
+
+  return pages;
 }
 
 function escapeHtml(text) {
@@ -272,9 +318,12 @@ function buildToc() {
         btn.classList.add("active");
       }
 
+      const tocId = page.id;
+      const tocTitle = page.sourcePage ? page.sourcePage.title : page.title;
+
       btn.innerHTML = `
-        <span class="num">${page.id}</span>
-        <span class="title">${escapeHtml(page.title)}</span>
+        <span class="num">${escapeHtml(tocId)}</span>
+        <span class="title">${escapeHtml(tocTitle)}</span>
         <span class="audio-dot" title="${state.audioAvailable.has(page.id) ? "Есть запись" : "Записи пока нет"}"></span>
       `;
 
@@ -404,16 +453,34 @@ async function loadPage(index, autoplay = false) {
   els.pageTitle.textContent = title;
   document.title = `${page.id} — ${title}`;
 
+  // Include pages (5.3-3.1): always use source text; ignore own .md body
+  let mdPath = page.md;
+  if (page.include) {
+    if (!page.sourcePage) {
+      els.content.innerHTML = `<p class="load-error">Вставка <code>${escapeHtml(page.id)}←${escapeHtml(page.include)}</code>: страница-источник не найдена. Собственный текст файла игнорируется.</p>`;
+      audio.pause();
+      audio.currentTime = 0;
+      audio.removeAttribute("src");
+      audio.load();
+      buildToc();
+      updatePlayerUi();
+      syncUrl(page);
+      document.getElementById("reader").scrollTop = 0;
+      return;
+    }
+    mdPath = page.sourcePage.md;
+  }
+
   try {
-    const res = await fetch(encodeURI(page.md), { cache: "no-store" });
+    const res = await fetch(encodeURI(mdPath), { cache: "no-store" });
     if (!res.ok) {
       throw new Error(`${res.status} ${res.statusText}`);
     }
     const text = await res.text();
     els.content.innerHTML = renderMarkdown(text);
   } catch (err) {
-    els.content.innerHTML = `<p class="load-error">Не удалось загрузить текст страницы <code>${escapeHtml(page.md)}</code>. Обновите страницу (Ctrl+F5).</p>`;
-    console.error("loadPage failed", page.md, err);
+    els.content.innerHTML = `<p class="load-error">Не удалось загрузить текст страницы <code>${escapeHtml(mdPath)}</code>. Обновите страницу (Ctrl+F5).</p>`;
+    console.error("loadPage failed", mdPath, err);
   }
 
   audio.pause();
@@ -540,10 +607,7 @@ async function init() {
   const manifest = await fetch(`pages.json?v=${Date.now()}`, {
     cache: "no-store",
   }).then((r) => r.json());
-  state.pages = manifest.pages.map((page) => ({
-    ...page,
-    title: titleFromMd(page.md),
-  }));
+  state.pages = resolvePages(manifest.pages);
 
   await Promise.all(state.pages.map((page) => checkAudio(page)));
   updateStats();
