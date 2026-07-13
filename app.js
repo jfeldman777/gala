@@ -31,6 +31,9 @@ const els = {
   feedbackStatus: document.getElementById("feedback-status"),
   feedbackOpenPage: document.getElementById("feedback-open-page"),
   feedbackOpenPlayer: document.getElementById("feedback-open-player"),
+  voteLike: document.getElementById("vote-like"),
+  voteDislike: document.getElementById("vote-dislike"),
+  voteStatus: document.getElementById("vote-status"),
   tocOpen: document.getElementById("toc-open"),
   tocClose: document.getElementById("toc-close"),
   tocBackdrop: document.getElementById("toc-backdrop"),
@@ -364,6 +367,91 @@ function toggleToc() {
   }
 }
 
+function voteStorageKey(pageId) {
+  return `discourse-vote:${pageId}`;
+}
+
+function getStoredVote(pageId) {
+  try {
+    return localStorage.getItem(voteStorageKey(pageId));
+  } catch {
+    return null;
+  }
+}
+
+function setStoredVote(pageId, vote) {
+  try {
+    localStorage.setItem(voteStorageKey(pageId), vote);
+  } catch {
+    // ignore quota / private mode
+  }
+}
+
+function updateVoteUi() {
+  const page = state.pages[state.index];
+  if (!page || !els.voteLike) return;
+
+  const vote = getStoredVote(page.id);
+  els.voteLike.classList.toggle("selected", vote === "like");
+  els.voteDislike.classList.toggle("selected", vote === "dislike");
+  els.voteLike.disabled = Boolean(vote);
+  els.voteDislike.disabled = Boolean(vote);
+
+  if (vote === "like") {
+    els.voteStatus.textContent = "Спасибо за оценку";
+    els.voteStatus.hidden = false;
+  } else if (vote === "dislike") {
+    els.voteStatus.textContent = "Спасибо, учтём";
+    els.voteStatus.hidden = false;
+  } else {
+    els.voteStatus.hidden = true;
+    els.voteStatus.textContent = "";
+  }
+}
+
+async function submitVote(vote) {
+  const page = state.pages[state.index];
+  if (!page) return;
+  if (getStoredVote(page.id)) {
+    updateVoteUi();
+    return;
+  }
+
+  els.voteLike.disabled = true;
+  els.voteDislike.disabled = true;
+  els.voteStatus.hidden = false;
+  els.voteStatus.textContent = "Отправляем…";
+
+  const label = vote === "like" ? "лайк" : "дизлайк";
+  const payload = {
+    _subject: `Дискурс: ${label} — ${page.id} ${page.title}`,
+    _template: "table",
+    _captcha: "false",
+    vote,
+    page: currentPageLabel(),
+    page_id: page.id,
+    section: page.section,
+  };
+
+  try {
+    const res = await fetch(`https://formsubmit.co/ajax/${FEEDBACK_EMAIL}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("send failed");
+    setStoredVote(page.id, vote);
+    updateVoteUi();
+  } catch {
+    els.voteLike.disabled = false;
+    els.voteDislike.disabled = false;
+    els.voteStatus.textContent = "Не удалось отправить. Попробуйте ещё раз.";
+  }
+}
+
 function currentPageLabel() {
   const page = state.pages[state.index];
   return `${page.id} — ${page.title} (${page.section})`;
@@ -464,6 +552,7 @@ async function loadPage(index, autoplay = false) {
       audio.load();
       buildToc();
       updatePlayerUi();
+      updateVoteUi();
       syncUrl(page);
       document.getElementById("reader").scrollTop = 0;
       return;
@@ -502,6 +591,7 @@ async function loadPage(index, autoplay = false) {
 
   buildToc();
   updatePlayerUi();
+  updateVoteUi();
   syncUrl(page);
   document.getElementById("reader").scrollTop = 0;
 }
@@ -562,6 +652,8 @@ els.autoAdvance.addEventListener("change", (e) => {
 els.feedbackOpenPage.addEventListener("click", openFeedbackModal);
 els.feedbackOpenPlayer.addEventListener("click", openFeedbackModal);
 els.feedbackForm.addEventListener("submit", submitFeedback);
+els.voteLike.addEventListener("click", () => submitVote("like"));
+els.voteDislike.addEventListener("click", () => submitVote("dislike"));
 els.feedbackModal.addEventListener("click", (e) => {
   if (e.target.matches("[data-close]")) closeFeedbackModal();
 });

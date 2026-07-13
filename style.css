@@ -391,6 +391,56 @@ button:disabled {
   margin: 0 0 0.75rem;
 }
 
+#vote-block {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.vote-prompt {
+  margin: 0 0 0.6rem;
+  color: var(--ink);
+}
+
+.vote-actions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+#vote-like,
+#vote-dislike {
+  min-width: 3rem;
+  min-height: 2.5rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  border: 1px solid var(--border);
+  background: var(--paper);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#vote-like:hover:not(:disabled),
+#vote-dislike:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+#vote-like.selected,
+#vote-dislike.selected {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--paper));
+}
+
+#vote-like:disabled,
+#vote-dislike:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.vote-status {
+  margin: 0.6rem 0 0;
+  font-size: 0.9rem;
+}
+
 .modal {
   position: fixed;
   inset: 0;

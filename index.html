@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Дискурс</title>
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
   <aside id="sidebar">
@@ -25,6 +25,14 @@
       <h2 id="page-title"></h2>
       <div id="content"></div>
       <section id="feedback-block" aria-label="Обратная связь">
+        <div id="vote-block">
+          <p class="vote-prompt">Страница полезна?</p>
+          <div class="vote-actions">
+            <button id="vote-like" type="button" title="Нравится">👍</button>
+            <button id="vote-dislike" type="button" title="Не нравится">👎</button>
+          </div>
+          <p id="vote-status" class="vote-status" hidden></p>
+        </div>
         <p>Есть замечание или вопрос по этой странице?</p>
         <button id="feedback-open-page" type="button">Написать автору</button>
       </section>
@@ -86,6 +94,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=12"></script>
+  <script src="app.js?v=13"></script>
 </body>
 </html>
