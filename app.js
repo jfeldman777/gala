@@ -165,6 +165,8 @@ function renderMarkdown(text) {
   const lines = text.replace(/\r\n/g, "\n").split("\n");
   const parts = [];
   let paragraph = [];
+  /** @type {{ tag: "ol" | "ul" }[]} */
+  const listStack = [];
 
   const flushParagraph = () => {
     if (!paragraph.length) return;
@@ -173,20 +175,67 @@ function renderMarkdown(text) {
     paragraph = [];
   };
 
+  const closeListsUntil = (depth) => {
+    while (listStack.length > depth) {
+      parts.push("</li>");
+      parts.push(`</${listStack.pop().tag}>`);
+    }
+  };
+
+  const flushLists = () => closeListsUntil(0);
+
+  const listLevel = (ws) =>
+    Math.floor(ws.replace(/\t/g, "    ").length / 4);
+
   for (const rawLine of lines) {
-    const line = rawLine.trimEnd();
+    const line = rawLine.replace(/\r$/, "").trimEnd();
 
     if (!line.trim()) {
       flushParagraph();
+      flushLists();
       continue;
     }
 
     const heading = line.match(/^##\s+(.+)$/);
     if (heading) {
       flushParagraph();
+      flushLists();
       parts.push(`<h2>${escapeHtml(heading[1].trim())}</h2>`);
       continue;
     }
+
+    const listMatch = line.match(/^([ \t]*)(?:(\d+)\.|[-*•])\s+(.*)$/);
+    if (listMatch) {
+      flushParagraph();
+      const level = listLevel(listMatch[1]);
+      const ordered = listMatch[2] != null;
+      const tag = ordered ? "ol" : "ul";
+      const body = renderInline(listMatch[3].trim());
+
+      closeListsUntil(level + 1);
+
+      if (listStack.length === level + 1) {
+        parts.push("</li>");
+        if (listStack[listStack.length - 1].tag !== tag) {
+          parts.push(`</${listStack.pop().tag}>`);
+          parts.push(`<${tag}>`);
+          listStack.push({ tag });
+        }
+        parts.push(`<li>${body}`);
+      } else {
+        // Open missing intermediate levels if indent jumps
+        while (listStack.length < level) {
+          const fill = tag;
+          parts.push(`<${fill}><li>`);
+          listStack.push({ tag: fill });
+        }
+        parts.push(`<${tag}><li>${body}`);
+        listStack.push({ tag });
+      }
+      continue;
+    }
+
+    flushLists();
 
     // Whole-line image(s) without other text → separate block(s)
     const onlyImages = line.match(/^(!\[\[[^\]]+\]\]|!\[[^\]]*\]\([^)]+\))+$/);
@@ -200,6 +249,7 @@ function renderMarkdown(text) {
   }
 
   flushParagraph();
+  flushLists();
   return parts.join("\n");
 }
 
