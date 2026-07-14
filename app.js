@@ -56,10 +56,26 @@ function parseIncludeFromMd(path) {
   return { id: match[1], include: match[2] };
 }
 
+/** Section title ending with `@` = draft, hide from reader/TOC */
+function isDraftSection(section) {
+  return /@$/.test(String(section || "").trim());
+}
+
+/** Filename ending with `@` before .md = unfinished page, hide */
+function isDraftPage(mdPath) {
+  const name = String(mdPath || "")
+    .split("/")
+    .pop()
+    .replace(/\.md$/i, "")
+    .trim();
+  return /@$/.test(name);
+}
+
 function titleFromMd(path) {
   const name = path.split("/").pop().replace(/\.md$/i, "");
-  // Strip "1.2." or include alias "5.3-3.1."
+  // Strip "1.2." or include alias "5.3-3.1.", and trailing draft marker @
   const title = name
+    .replace(/@$/, "")
     .replace(/^\d+(?:\.\d+)*(?:-\d+(?:\.\d+)*)?\.?\s*/, "")
     .trim();
   return title;
@@ -80,6 +96,7 @@ function resolvePages(rawPages) {
     };
   });
 
+  // Resolve includes against the full catalog (draft sources still count)
   const byId = new Map(pages.map((p) => [p.id, p]));
 
   for (const page of pages) {
@@ -96,7 +113,10 @@ function resolvePages(rawPages) {
     page.title = source.title;
   }
 
-  return pages;
+  // Hide unfinished sections (@ at end of section) and pages (…@.md)
+  return pages.filter(
+    (page) => !isDraftSection(page.section) && !isDraftPage(page.md),
+  );
 }
 
 function escapeHtml(text) {

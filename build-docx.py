@@ -171,6 +171,13 @@ def build():
     set_run_font(run, 14, italic=True)
     run.font.color.rgb = RGBColor(0x6B, 0x5F, 0x4D)
 
+    pages = [
+        p
+        for p in pages
+        if not str(p.get("section", "")).rstrip().endswith("@")
+        and not Path(p.get("md", "")).stem.rstrip().endswith("@")
+    ]
+
     current_section = None
     for i, page in enumerate(pages):
         if page["section"] != current_section:
