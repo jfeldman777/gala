@@ -186,6 +186,44 @@ button:disabled {
   flex: 1;
 }
 
+.toc-subgroup {
+  margin: 0.15rem 0 0.35rem;
+}
+
+.toc-subsection {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.4rem 1rem 0.4rem 1.35rem;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 0.82rem;
+  color: var(--muted);
+  text-align: left;
+  cursor: pointer;
+}
+
+.toc-subsection:hover {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+.toc-subgroup.collapsed .toc-chevron {
+  transform: rotate(-90deg);
+}
+
+.toc-subgroup.collapsed .toc-subgroup-items {
+  display: none;
+}
+
+.toc-subgroup .toc-item {
+  padding-left: 1.75rem;
+}
+
 .toc-item {
   display: flex;
   align-items: center;

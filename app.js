@@ -331,6 +331,68 @@ function updateStats() {
   els.statAudio.textContent = String(state.audioAvailable.size);
 }
 
+/** `10. Система/10.1. Кодировки/file.md` → `10.1. Кодировки` */
+function pageSubsection(page) {
+  const parts = String(page.md || "").split("/");
+  if (parts.length < 3) return null;
+  return parts[parts.length - 2];
+}
+
+function collapseKey(section, subsection) {
+  return subsection ? `${section}::${subsection}` : section;
+}
+
+function makeTocItemButton(page, index) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "toc-item";
+  btn.dataset.index = String(index);
+  if (state.audioAvailable.has(page.id)) {
+    btn.classList.add("has-audio");
+  }
+  if (index === state.index) {
+    btn.classList.add("active");
+  }
+
+  const tocTitle = page.sourcePage ? page.sourcePage.title : page.title;
+  btn.innerHTML = `
+    <span class="num">${escapeHtml(page.id)}</span>
+    <span class="title">${escapeHtml(tocTitle)}</span>
+    <span class="audio-dot" title="${state.audioAvailable.has(page.id) ? "Есть запись" : "Записи пока нет"}"></span>
+  `;
+
+  btn.addEventListener("click", () => {
+    closeToc();
+    goToPage(index, false);
+  });
+  return btn;
+}
+
+function makeCollapsibleHeader(label, key, groupEl, className) {
+  const isCollapsed = state.collapsedSections.has(key);
+  if (isCollapsed) groupEl.classList.add("collapsed");
+
+  const headerBtn = document.createElement("button");
+  headerBtn.type = "button";
+  headerBtn.className = className;
+  headerBtn.setAttribute("aria-expanded", String(!isCollapsed));
+  headerBtn.innerHTML = `
+    <span class="toc-chevron" aria-hidden="true"></span>
+    <span class="toc-section-title">${escapeHtml(label)}</span>
+  `;
+  headerBtn.addEventListener("click", () => {
+    const collapsed = groupEl.classList.toggle("collapsed");
+    headerBtn.setAttribute("aria-expanded", String(!collapsed));
+    if (collapsed) {
+      state.collapsedSections.add(key);
+    } else {
+      state.collapsedSections.delete(key);
+    }
+    saveCollapsedSections();
+  });
+  return headerBtn;
+}
+
 function buildToc() {
   els.toc.innerHTML = "";
 
@@ -345,69 +407,69 @@ function buildToc() {
     current.items.push({ page, index });
   });
 
-  // Keep the section with the current page expanded
-  const activeSection = state.pages[state.index]?.section;
-  if (activeSection) {
-    state.collapsedSections.delete(activeSection);
+  // Keep the section (and subsection) with the current page expanded
+  const activePage = state.pages[state.index];
+  if (activePage) {
+    state.collapsedSections.delete(activePage.section);
+    const activeSub = pageSubsection(activePage);
+    if (activeSub) {
+      state.collapsedSections.delete(collapseKey(activePage.section, activeSub));
+    }
   }
 
   groups.forEach((group) => {
-    const isCollapsed = state.collapsedSections.has(group.section);
+    const sectionKey = collapseKey(group.section, null);
     const groupEl = document.createElement("div");
-    groupEl.className = "toc-group" + (isCollapsed ? " collapsed" : "");
+    groupEl.className = "toc-group";
     groupEl.dataset.section = group.section;
-
-    const headerBtn = document.createElement("button");
-    headerBtn.type = "button";
-    headerBtn.className = "toc-section";
-    headerBtn.setAttribute("aria-expanded", String(!isCollapsed));
-    headerBtn.innerHTML = `
-      <span class="toc-chevron" aria-hidden="true"></span>
-      <span class="toc-section-title">${escapeHtml(group.section)}</span>
-    `;
-    headerBtn.addEventListener("click", () => {
-      const collapsed = groupEl.classList.toggle("collapsed");
-      headerBtn.setAttribute("aria-expanded", String(!collapsed));
-      if (collapsed) {
-        state.collapsedSections.add(group.section);
-      } else {
-        state.collapsedSections.delete(group.section);
-      }
-      saveCollapsedSections();
-    });
+    groupEl.appendChild(
+      makeCollapsibleHeader(group.section, sectionKey, groupEl, "toc-section"),
+    );
 
     const itemsEl = document.createElement("div");
     itemsEl.className = "toc-group-items";
 
+    // Nest by subdirectory for section 10 (and any section with subfolders)
+    const subgroups = [];
+    let flatItems = [];
+    let currentSub = null;
+
     group.items.forEach(({ page, index }) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "toc-item";
-      btn.dataset.index = String(index);
-      if (state.audioAvailable.has(page.id)) {
-        btn.classList.add("has-audio");
+      const sub = pageSubsection(page);
+      if (!sub) {
+        currentSub = null;
+        flatItems.push({ page, index });
+        return;
       }
-      if (index === state.index) {
-        btn.classList.add("active");
+      if (!currentSub || currentSub.name !== sub) {
+        currentSub = { name: sub, items: [] };
+        subgroups.push(currentSub);
       }
-
-      const tocId = page.id;
-      const tocTitle = page.sourcePage ? page.sourcePage.title : page.title;
-
-      btn.innerHTML = `
-        <span class="num">${escapeHtml(tocId)}</span>
-        <span class="title">${escapeHtml(tocTitle)}</span>
-        <span class="audio-dot" title="${state.audioAvailable.has(page.id) ? "Есть запись" : "Записи пока нет"}"></span>
-      `;
-
-      btn.addEventListener("click", () => {
-        closeToc();
-        goToPage(index, false);
-      });
-      itemsEl.appendChild(btn);
+      currentSub.items.push({ page, index });
     });
 
-    groupEl.appendChild(headerBtn);
+    flatItems.forEach(({ page, index }) => {
+      itemsEl.appendChild(makeTocItemButton(page, index));
+    });
+
+    subgroups.forEach((sub) => {
+      const key = collapseKey(group.section, sub.name);
+      const subEl = document.createElement("div");
+      subEl.className = "toc-subgroup";
+      subEl.dataset.subsection = sub.name;
+      subEl.appendChild(
+        makeCollapsibleHeader(sub.name, key, subEl, "toc-subsection"),
+      );
+
+      const subItems = document.createElement("div");
+      subItems.className = "toc-subgroup-items";
+      sub.items.forEach(({ page, index }) => {
+        subItems.appendChild(makeTocItemButton(page, index));
+      });
+      subEl.appendChild(subItems);
+      itemsEl.appendChild(subEl);
+    });
+
     groupEl.appendChild(itemsEl);
     els.toc.appendChild(groupEl);
   });
