@@ -1,4 +1,6 @@
 const FEEDBACK_EMAIL = "jfeldman777@gmail.com";
+/** Optional silent send: free key from https://web3forms.com (FormSubmit is often down). */
+const WEB3FORMS_KEY = "";
 
 const state = {
   pages: [],
@@ -541,6 +543,55 @@ function updateVoteUi() {
   }
 }
 
+function openMailto(subject, fields) {
+  const lines = Object.entries(fields)
+    .filter(([key, value]) => value != null && value !== "" && !String(key).startsWith("_"))
+    .map(([key, value]) => `${key}: ${value}`);
+  let body = lines.join("\n");
+  if (body.length > 1600) body = `${body.slice(0, 1600)}…`;
+  const url = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const link = document.createElement("a");
+  link.href = url;
+  link.rel = "noopener";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
+async function sendToAuthor({ subject, fields }) {
+  const clean = { ...fields };
+  delete clean._subject;
+  delete clean._template;
+  delete clean._captcha;
+
+  // Silent API only when a key is configured (FormSubmit is currently returning 500).
+  if (WEB3FORMS_KEY) {
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject,
+          from_name: "Дискурс",
+          ...clean,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.success) return { ok: true, via: "web3forms" };
+    } catch {
+      /* fallback below */
+    }
+  }
+
+  // mailto in the same user gesture works reliably on phones.
+  openMailto(subject, clean);
+  return { ok: true, via: "mailto" };
+}
+
 async function submitVote(vote) {
   const page = state.pages[state.index];
   if (!page) return;
@@ -555,10 +606,8 @@ async function submitVote(vote) {
   els.voteStatus.textContent = "Отправляем…";
 
   const label = vote === "like" ? "лайк" : "дизлайк";
-  const payload = {
-    _subject: `Дискурс: ${label} — ${page.id} ${page.title}`,
-    _template: "table",
-    _captcha: "false",
+  const subject = `Дискурс: ${label} — ${page.id} ${page.title}`;
+  const fields = {
     vote,
     page: currentPageLabel(),
     page_id: page.id,
@@ -566,17 +615,13 @@ async function submitVote(vote) {
   };
 
   try {
-    const res = await fetch(`https://formsubmit.co/ajax/${FEEDBACK_EMAIL}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error("send failed");
+    const result = await sendToAuthor({ subject, fields });
     setStoredVote(page.id, vote);
     updateVoteUi();
+    if (result.via === "mailto") {
+      els.voteStatus.textContent = "Откройте почту и нажмите «Отправить»";
+      els.voteStatus.hidden = false;
+    }
   } catch {
     els.voteLike.disabled = false;
     els.voteDislike.disabled = false;
@@ -614,10 +659,8 @@ async function submitFeedback(event) {
   submitBtn.disabled = true;
   els.feedbackStatus.hidden = true;
 
-  const payload = {
-    _subject: `Дискурс: отзыв — ${page.id} ${page.title}`,
-    _template: "table",
-    _captcha: "false",
+  const subject = `Дискурс: отзыв — ${page.id} ${page.title}`;
+  const fields = {
     page: currentPageLabel(),
     name: data.get("name") || "—",
     reply_email: data.get("reply_email") || "—",
@@ -625,26 +668,24 @@ async function submitFeedback(event) {
   };
 
   try {
-    const res = await fetch(`https://formsubmit.co/ajax/${FEEDBACK_EMAIL}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!res.ok) throw new Error("send failed");
-
-    els.feedbackStatus.textContent = "Спасибо! Сообщение отправлено.";
-    els.feedbackStatus.className = "feedback-status success";
-    els.feedbackStatus.hidden = false;
-    form.message.value = "";
-    setTimeout(closeFeedbackModal, 1800);
+    const result = await sendToAuthor({ subject, fields });
+    if (result.via === "mailto") {
+      els.feedbackStatus.textContent =
+        "Откройте почту и нажмите «Отправить».";
+      els.feedbackStatus.className = "feedback-status success";
+      els.feedbackStatus.hidden = false;
+    } else {
+      els.feedbackStatus.textContent = "Спасибо! Сообщение отправлено.";
+      els.feedbackStatus.className = "feedback-status success";
+      els.feedbackStatus.hidden = false;
+      form.message.value = "";
+      setTimeout(closeFeedbackModal, 1800);
+    }
   } catch {
+    openMailto(subject, fields);
     els.feedbackStatus.textContent =
-      "Не удалось отправить. Попробуйте позже или напишите на jfeldman777@gmail.com";
-    els.feedbackStatus.className = "feedback-status error";
+      "Откройте почту и нажмите «Отправить».";
+    els.feedbackStatus.className = "feedback-status success";
     els.feedbackStatus.hidden = false;
   } finally {
     submitBtn.disabled = false;
