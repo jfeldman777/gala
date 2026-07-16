@@ -1,5 +1,5 @@
 const FEEDBACK_EMAIL = "jfeldman777@gmail.com";
-/** Optional silent send: free key from https://web3forms.com (FormSubmit is often down). */
+/** Optional extra silent channel: free key from https://web3forms.com */
 const WEB3FORMS_KEY = "";
 
 const state = {
@@ -558,28 +558,68 @@ function openMailto(subject, fields) {
   link.remove();
 }
 
-async function sendToAuthor({ subject, fields }) {
-  const clean = { ...fields };
-  delete clean._subject;
-  delete clean._template;
-  delete clean._captcha;
+function isApiSuccess(res, data) {
+  if (!res.ok) return false;
+  if (data == null || typeof data !== "object") return true;
+  return String(data.success).toLowerCase() !== "false";
+}
 
-  // Silent API only when a key is configured (FormSubmit is currently returning 500).
-  if (WEB3FORMS_KEY) {
-    try {
-      const res = await fetch("https://api.web3forms.com/submit", {
+async function fetchWithTimeout(url, options, ms = 5000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function trySilentSend(subject, clean) {
+  // 1) FormSubmit — старый экономный канал
+  try {
+    const res = await fetchWithTimeout(
+      `https://formsubmit.co/ajax/${FEEDBACK_EMAIL}`,
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
         body: JSON.stringify({
-          access_key: WEB3FORMS_KEY,
-          subject,
-          from_name: "Дискурс",
+          _subject: subject,
+          _template: "table",
+          _captcha: "false",
           ...clean,
         }),
-      });
+      },
+      5000
+    );
+    const data = await res.json().catch(() => ({}));
+    if (isApiSuccess(res, data)) return { ok: true, via: "formsubmit" };
+  } catch {
+    /* try next */
+  }
+
+  // 2) Optional Web3Forms key
+  if (WEB3FORMS_KEY) {
+    try {
+      const res = await fetchWithTimeout(
+        "https://api.web3forms.com/submit",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            access_key: WEB3FORMS_KEY,
+            subject,
+            from_name: "Дискурс",
+            ...clean,
+          }),
+        },
+        5000
+      );
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.success) return { ok: true, via: "web3forms" };
     } catch {
@@ -587,7 +627,19 @@ async function sendToAuthor({ subject, fields }) {
     }
   }
 
-  // mailto in the same user gesture works reliably on phones.
+  return null;
+}
+
+async function sendToAuthor({ subject, fields }) {
+  const clean = { ...fields };
+  delete clean._subject;
+  delete clean._template;
+  delete clean._captcha;
+
+  const silent = await trySilentSend(subject, clean);
+  if (silent) return silent;
+
+  // 3) Fallback: open mail client
   openMailto(subject, clean);
   return { ok: true, via: "mailto" };
 }
