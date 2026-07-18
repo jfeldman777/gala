@@ -141,10 +141,17 @@ function wikiImageHtml(rawTarget) {
   return `<img src="${encodeURI(file)}" alt=""${widthAttr}>`;
 }
 
+function safeHref(raw) {
+  const href = String(raw || "").trim();
+  // Allow http(s) and site-relative paths only (block javascript: etc.)
+  if (/^https?:\/\//i.test(href) || /^\.?\//.test(href)) return href;
+  return "";
+}
+
 function renderInline(text) {
-  // Expand Obsidian wiki images and markdown images anywhere in the line.
+  // Images first (![[…]] / ![alt](src)), then markdown links [text](url).
   const pattern =
-    /!\[\[([^\]]+)\]\]|!\[([^\]]*)\]\(([^)]+)\)/g;
+    /!\[\[([^\]]+)\]\]|!\[([^\]]*)\]\(([^)]+)\)|\[([^\]]+)\]\(([^)]+)\)|(https?:\/\/[^\s<]+)/g;
   let result = "";
   let last = 0;
   let match;
@@ -153,8 +160,20 @@ function renderInline(text) {
     result += escapeHtml(text.slice(last, match.index));
     if (match[1] !== undefined) {
       result += wikiImageHtml(match[1]);
-    } else {
+    } else if (match[3] !== undefined) {
       result += `<img src="${encodeURI(match[3])}" alt="${escapeHtml(match[2])}">`;
+    } else if (match[4] !== undefined) {
+      const href = safeHref(match[5]);
+      const label = escapeHtml(match[4]);
+      result += href
+        ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${label}</a>`
+        : label;
+    } else {
+      const href = safeHref(match[6]);
+      const label = escapeHtml(match[6]);
+      result += href
+        ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${label}</a>`
+        : label;
     }
     last = match.index + match[0].length;
   }
