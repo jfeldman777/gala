@@ -213,7 +213,7 @@ function renderMarkdown(text) {
 
     if (!line.trim()) {
       flushParagraph();
-      flushLists();
+      // Blank lines inside a list must not restart numbering.
       continue;
     }
 
@@ -254,6 +254,17 @@ function renderMarkdown(text) {
         listStack.push({ tag });
       }
       continue;
+    }
+
+    // Indented continuation line inside an open list item
+    if (listStack.length && /^[ \t]/.test(rawLine)) {
+      flushParagraph();
+      const contIndent = listLevel(rawLine.match(/^([ \t]*)/)[1]);
+      closeListsUntil(contIndent + 1);
+      if (listStack.length) {
+        parts.push(`<br>${renderInline(line.trim())}`);
+        continue;
+      }
     }
 
     flushLists();
