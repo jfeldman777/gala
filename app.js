@@ -8,6 +8,13 @@ const state = {
   autoAdvance: false,
   audioAvailable: new Set(),
   collapsedSections: loadCollapsedSections(),
+  pageFind: {
+    open: false,
+    query: "",
+    hits: [],
+    current: -1,
+    rawHtml: "",
+  },
 };
 
 const audio = new Audio();
@@ -43,6 +50,16 @@ const els = {
   copyLink: document.getElementById("copy-link"),
   statPages: document.getElementById("stat-pages"),
   statAudio: document.getElementById("stat-audio"),
+  tocSearch: document.getElementById("toc-search"),
+  tocSearchEmpty: document.getElementById("toc-search-empty"),
+  pageFindOpen: document.getElementById("page-find-open"),
+  pageFindBar: document.getElementById("page-find-bar"),
+  pageFindInput: document.getElementById("page-find-input"),
+  pageFindCount: document.getElementById("page-find-count"),
+  pageFindPrev: document.getElementById("page-find-prev"),
+  pageFindNext: document.getElementById("page-find-next"),
+  pageFindClose: document.getElementById("page-find-close"),
+  reader: document.getElementById("reader"),
 };
 
 function audioPath(page) {
@@ -302,6 +319,66 @@ async function checkAudio(page) {
   }
 }
 
+async function indexPageText(page) {
+  const src = page.sourcePage || page;
+  try {
+    const res = await fetch(encodeURI(src.md), { cache: "no-store" });
+    if (!res.ok) {
+      page.searchText = "";
+      return;
+    }
+    const text = await res.text();
+    page.searchText = `${page.id} ${page.title} ${page.section} ${text}`.toLowerCase();
+  } catch {
+    page.searchText = `${page.id} ${page.title} ${page.section}`.toLowerCase();
+  }
+}
+
+function pageMatchesQuery(page, query) {
+  if (!query) return true;
+  const hay = page.searchText
+    || `${page.id} ${page.title} ${page.section}`.toLowerCase();
+  return hay.includes(query);
+}
+
+function applyTocFilter() {
+  const query = (els.tocSearch?.value || "").trim().toLowerCase();
+  let visibleCount = 0;
+
+  els.toc.querySelectorAll(".toc-item").forEach((btn) => {
+    const index = Number(btn.dataset.index);
+    const page = state.pages[index];
+    const match = page && pageMatchesQuery(page, query);
+    btn.classList.toggle("toc-filter-hide", !match);
+    if (match) visibleCount += 1;
+  });
+
+  els.toc.querySelectorAll(".toc-subgroup").forEach((sub) => {
+    const hasVisible = [...sub.querySelectorAll(".toc-item")].some(
+      (btn) => !btn.classList.contains("toc-filter-hide"),
+    );
+    sub.classList.toggle("toc-filter-hide", !hasVisible);
+    if (query && hasVisible) sub.classList.remove("collapsed");
+  });
+
+  els.toc.querySelectorAll(".toc-group").forEach((group) => {
+    const hasVisible = [...group.querySelectorAll(".toc-item")].some(
+      (btn) => !btn.classList.contains("toc-filter-hide"),
+    );
+    group.classList.toggle("toc-filter-hide", !hasVisible);
+    if (query && hasVisible) {
+      group.classList.remove("collapsed");
+      group.querySelectorAll(".toc-section, .toc-subsection").forEach((header) => {
+        header.setAttribute("aria-expanded", "true");
+      });
+    }
+  });
+
+  if (els.tocSearchEmpty) {
+    els.tocSearchEmpty.hidden = !query || visibleCount > 0;
+  }
+}
+
 function pageUrl(page) {
   const url = new URL(location.href);
   url.search = "";
@@ -505,6 +582,8 @@ function buildToc() {
     groupEl.appendChild(itemsEl);
     els.toc.appendChild(groupEl);
   });
+
+  applyTocFilter();
 }
 
 function openToc() {
@@ -513,6 +592,7 @@ function openToc() {
   els.tocBackdrop.hidden = false;
   els.tocBackdrop.setAttribute("aria-hidden", "false");
   els.sidebar.setAttribute("aria-hidden", "false");
+  queueMicrotask(() => els.tocSearch?.focus());
 }
 
 function closeToc() {
@@ -528,6 +608,132 @@ function toggleToc() {
     closeToc();
   } else {
     openToc();
+  }
+}
+
+function clearPageFindHighlights() {
+  if (state.pageFind.rawHtml) {
+    els.content.innerHTML = state.pageFind.rawHtml;
+  }
+  const page = state.pages[state.index];
+  if (page) els.pageTitle.textContent = page.title;
+  state.pageFind.hits = [];
+  state.pageFind.current = -1;
+  if (els.pageFindCount) els.pageFindCount.textContent = "";
+}
+
+function highlightTextInRoot(root, query) {
+  const q = query.trim();
+  if (!q || !root) return [];
+  const marks = [];
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  const lowerQ = q.toLowerCase();
+
+  for (const node of nodes) {
+    const text = node.nodeValue;
+    if (!text || !text.trim()) continue;
+    const lower = text.toLowerCase();
+    let pos = 0;
+    let idx = lower.indexOf(lowerQ, pos);
+    if (idx === -1) continue;
+
+    const frag = document.createDocumentFragment();
+    while (idx !== -1) {
+      if (idx > pos) {
+        frag.appendChild(document.createTextNode(text.slice(pos, idx)));
+      }
+      const mark = document.createElement("mark");
+      mark.className = "page-find-hit";
+      mark.textContent = text.slice(idx, idx + q.length);
+      frag.appendChild(mark);
+      marks.push(mark);
+      pos = idx + q.length;
+      idx = lower.indexOf(lowerQ, pos);
+    }
+    if (pos < text.length) {
+      frag.appendChild(document.createTextNode(text.slice(pos)));
+    }
+    node.parentNode.replaceChild(frag, node);
+  }
+  return marks;
+}
+
+function updatePageFindCurrent() {
+  state.pageFind.hits.forEach((mark, i) => {
+    mark.classList.toggle("current", i === state.pageFind.current);
+  });
+  const total = state.pageFind.hits.length;
+  if (!els.pageFindCount) return;
+  if (!state.pageFind.query.trim()) {
+    els.pageFindCount.textContent = "";
+  } else if (total === 0) {
+    els.pageFindCount.textContent = "0";
+  } else {
+    els.pageFindCount.textContent = `${state.pageFind.current + 1}/${total}`;
+  }
+  const current = state.pageFind.hits[state.pageFind.current];
+  if (current) {
+    current.scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+}
+
+function runPageFind(query) {
+  clearPageFindHighlights();
+  state.pageFind.query = query;
+  const q = query.trim();
+  if (!q) {
+    updatePageFindCurrent();
+    return;
+  }
+
+  const titleHits = highlightTextInRoot(els.pageTitle, q);
+  const contentHits = highlightTextInRoot(els.content, q);
+  state.pageFind.hits = [...titleHits, ...contentHits];
+  state.pageFind.current = state.pageFind.hits.length ? 0 : -1;
+  updatePageFindCurrent();
+}
+
+function stepPageFind(delta) {
+  const total = state.pageFind.hits.length;
+  if (!total) return;
+  state.pageFind.current = (state.pageFind.current + delta + total) % total;
+  updatePageFindCurrent();
+}
+
+function openPageFind() {
+  state.pageFind.open = true;
+  els.pageFindBar.hidden = false;
+  els.pageFindOpen.classList.add("active");
+  queueMicrotask(() => {
+    els.pageFindInput.focus();
+    els.pageFindInput.select();
+  });
+  if (els.pageFindInput.value.trim()) {
+    runPageFind(els.pageFindInput.value);
+  }
+}
+
+function closePageFind() {
+  state.pageFind.open = false;
+  els.pageFindBar.hidden = true;
+  els.pageFindOpen.classList.remove("active");
+  clearPageFindHighlights();
+  state.pageFind.query = "";
+  if (els.pageFindInput) els.pageFindInput.value = "";
+  if (els.pageFindCount) els.pageFindCount.textContent = "";
+}
+
+function resetPageFindForLoad(html) {
+  state.pageFind.rawHtml = html;
+  state.pageFind.hits = [];
+  state.pageFind.current = -1;
+  state.pageFind.query = "";
+  if (els.pageFindInput) els.pageFindInput.value = "";
+  if (els.pageFindCount) els.pageFindCount.textContent = "";
+  if (state.pageFind.open) {
+    // keep bar open but clear matches until user types again
   }
 }
 
@@ -800,7 +1006,9 @@ async function loadPage(index, autoplay = false) {
   let mdPath = page.md;
   if (page.include) {
     if (!page.sourcePage) {
-      els.content.innerHTML = `<p class="load-error">Вставка <code>${escapeHtml(page.id)}←${escapeHtml(page.include)}</code>: страница-источник не найдена. Собственный текст файла игнорируется.</p>`;
+      const html = `<p class="load-error">Вставка <code>${escapeHtml(page.id)}←${escapeHtml(page.include)}</code>: страница-источник не найдена. Собственный текст файла игнорируется.</p>`;
+      els.content.innerHTML = html;
+      resetPageFindForLoad(html);
       audio.pause();
       audio.currentTime = 0;
       audio.removeAttribute("src");
@@ -821,9 +1029,13 @@ async function loadPage(index, autoplay = false) {
       throw new Error(`${res.status} ${res.statusText}`);
     }
     const text = await res.text();
-    els.content.innerHTML = renderMarkdown(text);
+    const html = renderMarkdown(text);
+    els.content.innerHTML = html;
+    resetPageFindForLoad(html);
   } catch (err) {
-    els.content.innerHTML = `<p class="load-error">Не удалось загрузить текст страницы <code>${escapeHtml(mdPath)}</code>. Обновите страницу (Ctrl+F5).</p>`;
+    const html = `<p class="load-error">Не удалось загрузить текст страницы <code>${escapeHtml(mdPath)}</code>. Обновите страницу (Ctrl+F5).</p>`;
+    els.content.innerHTML = html;
+    resetPageFindForLoad(html);
     console.error("loadPage failed", mdPath, err);
   }
 
@@ -930,7 +1142,40 @@ els.copyLink.addEventListener("click", (e) => {
   copyPageLink();
 });
 
+els.tocSearch?.addEventListener("input", () => {
+  applyTocFilter();
+});
+
+els.pageFindOpen?.addEventListener("click", () => {
+  if (state.pageFind.open) closePageFind();
+  else openPageFind();
+});
+els.pageFindClose?.addEventListener("click", closePageFind);
+els.pageFindPrev?.addEventListener("click", () => stepPageFind(-1));
+els.pageFindNext?.addEventListener("click", () => stepPageFind(1));
+els.pageFindInput?.addEventListener("input", () => {
+  runPageFind(els.pageFindInput.value);
+});
+els.pageFindInput?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    stepPageFind(e.shiftKey ? -1 : 1);
+  } else if (e.key === "Escape") {
+    e.preventDefault();
+    closePageFind();
+  }
+});
+
 window.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "f") {
+    e.preventDefault();
+    openPageFind();
+    return;
+  }
+  if (e.key === "Escape" && state.pageFind.open) {
+    closePageFind();
+    return;
+  }
   if (e.key === "Escape" && document.body.classList.contains("toc-open")) {
     closeToc();
     return;
@@ -956,7 +1201,9 @@ async function init() {
   }).then((r) => r.json());
   state.pages = resolvePages(manifest.pages);
 
-  await Promise.all(state.pages.map((page) => checkAudio(page)));
+  await Promise.all(
+    state.pages.map((page) => Promise.all([checkAudio(page), indexPageText(page)])),
+  );
   updateStats();
 
   const startId = new URLSearchParams(location.search).get("p");

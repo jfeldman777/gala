@@ -108,6 +108,152 @@ button:disabled {
   flex-shrink: 0;
 }
 
+#toc-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.65rem 0.75rem 0.35rem;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+#toc-search-wrap:focus-within {
+  border-color: var(--accent);
+}
+
+#toc-search-wrap .search-loupe {
+  display: flex;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+#toc-search {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+#toc-search::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+#toc-search-empty {
+  margin: 0.25rem 1rem 0.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+#toc-search-empty[hidden] {
+  display: none;
+}
+
+.toc-group.toc-filter-hide,
+.toc-subgroup.toc-filter-hide,
+.toc-item.toc-filter-hide {
+  display: none !important;
+}
+
+#reader-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+#reader-top #page-meta {
+  margin-bottom: 0;
+}
+
+#page-find-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 0;
+  flex-shrink: 0;
+  color: var(--muted);
+  background: transparent;
+  border-color: transparent;
+}
+
+#page-find-open:hover,
+#page-find-open.active {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--border);
+}
+
+#page-find-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: -0.5rem 0 1.25rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--paper);
+  max-width: 42rem;
+}
+
+#page-find-bar[hidden] {
+  display: none !important;
+}
+
+#page-find-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+#page-find-count {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+  min-width: 3.5rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#page-find-prev,
+#page-find-next,
+#page-find-close {
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+#page-find-close {
+  font-size: 1.2rem;
+}
+
+mark.page-find-hit {
+  background: #f3d9a0;
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 0.05em;
+}
+
+mark.page-find-hit.current {
+  background: #e0a040;
+  outline: 1px solid var(--accent);
+}
+
 #toc-open {
   display: none;
   font-size: 1.55rem;

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Дискурс</title>
-  <link rel="stylesheet" href="style.css?v=21">
+  <link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
   <aside id="sidebar">
@@ -15,13 +15,38 @@
       </div>
       <button id="toc-close" type="button" aria-label="Закрыть оглавление">×</button>
     </div>
+    <div id="toc-search-wrap">
+      <span class="search-loupe" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="6.5"></circle>
+          <path d="M20 20l-3.2-3.2"></path>
+        </svg>
+      </span>
+      <input id="toc-search" type="search" placeholder="Поиск по книге…" autocomplete="off" spellcheck="false">
+    </div>
+    <p id="toc-search-empty" hidden>Ничего не найдено</p>
     <nav id="toc" aria-label="Оглавление"></nav>
   </aside>
   <div id="toc-backdrop" hidden></div>
 
   <main id="main">
     <article id="reader">
-      <div id="page-meta"></div>
+      <div id="reader-top">
+        <div id="page-meta"></div>
+        <button id="page-find-open" type="button" title="Поиск на странице (Ctrl+F)" aria-label="Поиск на странице">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5"></circle>
+            <path d="M20 20l-3.2-3.2"></path>
+          </svg>
+        </button>
+      </div>
+      <div id="page-find-bar" hidden>
+        <input id="page-find-input" type="search" placeholder="Найти на странице…" autocomplete="off" spellcheck="false">
+        <span id="page-find-count"></span>
+        <button id="page-find-prev" type="button" title="Предыдущее" aria-label="Предыдущее совпадение">↑</button>
+        <button id="page-find-next" type="button" title="Следующее" aria-label="Следующее совпадение">↓</button>
+        <button id="page-find-close" type="button" title="Закрыть" aria-label="Закрыть поиск">×</button>
+      </div>
       <h2 id="page-title"></h2>
       <div id="content"></div>
       <section id="feedback-block" aria-label="Обратная связь">
@@ -94,6 +119,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=21"></script>
+  <script src="app.js?v=22"></script>
 </body>
 </html>
