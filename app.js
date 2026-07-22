@@ -574,20 +574,42 @@ function applyTocFilter() {
   }
 }
 
-function pageUrl(page) {
+function entryFileForLang(lang) {
+  return lang === "en" ? "en.html" : "index.html";
+}
+
+function isEnEntryPath() {
+  return /(?:^|\/)en\.html$/i.test(location.pathname);
+}
+
+/** Build URL on the RU/EN entry HTML so link previews get the right <title>. */
+function bookUrl(lang = state.lang, query = {}) {
   const url = new URL(location.href);
+  const parts = url.pathname.split("/");
+  const last = parts[parts.length - 1] || "";
+  if (/\.html?$/i.test(last)) {
+    parts[parts.length - 1] = entryFileForLang(lang);
+  } else {
+    // Directory URL: /gala/ → /gala/en.html or /gala/index.html
+    parts[parts.length - 1] = entryFileForLang(lang);
+  }
+  url.pathname = parts.join("/") || "/";
   url.search = "";
   url.hash = "";
-  // Keep path to index.html or directory root
-  url.searchParams.set("p", page.id);
-  if (state.lang && state.lang !== "ru") {
-    url.searchParams.set("lang", state.lang);
+  for (const [key, value] of Object.entries(query)) {
+    if (value != null && value !== "") url.searchParams.set(key, String(value));
   }
-  return url.toString();
+  // lang is encoded in the entry file; drop redundant ?lang=
+  url.searchParams.delete("lang");
+  return url;
+}
+
+function pageUrl(page) {
+  return bookUrl(state.lang, { p: page.id }).toString();
 }
 
 function syncUrl(page) {
-  // Keep bare `/` while the cover is up, so refresh shows the cover again.
+  // Keep bare cover URL while the cover is up, so refresh shows the cover again.
   if (document.body.classList.contains("cover-open")) return;
   const url = pageUrl(page);
   history.replaceState({ pageId: page.id }, "", url);
@@ -1485,6 +1507,7 @@ async function loadCatalog() {
 }
 
 function detectLang() {
+  if (isEnEntryPath()) return "en";
   const fromUrl = new URLSearchParams(location.search).get("lang");
   if (fromUrl === "en" || fromUrl === "ru") return fromUrl;
   try {
@@ -1538,6 +1561,12 @@ async function setLang(lang, { keepPage = true } = {}) {
   } catch {
     /* ignore */
   }
+  // Switch entry file so shared links preview the correct title.
+  const next = wasCover || !pageId
+    ? bookUrl(lang)
+    : bookUrl(lang, { p: pageId });
+  history.replaceState(wasCover || !pageId ? { cover: true } : { pageId }, "", next.toString());
+
   applyUiLang();
   await loadCatalog();
   applyUiLang();
@@ -1562,6 +1591,17 @@ async function init() {
   rememberVisit();
   setReaderName(getReaderName());
   state.lang = detectLang();
+  // Migrate ?lang=en on index.html → en.html (correct link preview title)
+  const pathLast = location.pathname.split("/").pop() || "";
+  const onWrongEntry =
+    (state.lang === "en" && !isEnEntryPath()) ||
+    (state.lang === "ru" && /^en\.html$/i.test(pathLast));
+  if (onWrongEntry) {
+    const params = new URLSearchParams(location.search);
+    const p = params.get("p");
+    const next = p ? bookUrl(state.lang, { p }) : bookUrl(state.lang);
+    history.replaceState(p ? { pageId: p } : { cover: true }, "", next.toString());
+  }
   applyUiLang();
 
   await Promise.all([loadCatalog(), loadChangesIndex()]);
@@ -1602,13 +1642,8 @@ function showCoverScreen() {
   }
   closeToc();
   audio.pause();
-  // Keep language on cover URL; drop page id so refresh shows the cover.
-  const cover = new URL(location.href);
-  cover.search = "";
-  cover.hash = "";
-  if (state.lang && state.lang !== "ru") {
-    cover.searchParams.set("lang", state.lang);
-  }
+  // Keep language entry file; drop page id so refresh shows the cover.
+  const cover = bookUrl(state.lang);
   history.replaceState({ cover: true }, "", cover.toString());
   document.title = t("bookTitle");
   applyUiLang();
@@ -1632,13 +1667,7 @@ function enterFromCover({ openTocAfter = false } = {}) {
 }
 
 function coverUrl() {
-  const url = new URL(location.href);
-  url.search = "";
-  url.hash = "";
-  if (state.lang && state.lang !== "ru") {
-    url.searchParams.set("lang", state.lang);
-  }
-  return url.toString();
+  return bookUrl(state.lang).toString();
 }
 
 async function copyCoverLink() {
