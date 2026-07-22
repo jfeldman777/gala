@@ -64,6 +64,7 @@ const els = {
   coverEnter: document.getElementById("cover-enter"),
   coverToc: document.getElementById("cover-toc"),
   coverHome: document.getElementById("cover-home"),
+  coverLink: document.getElementById("cover-link"),
 };
 
 function audioPath(page) {
@@ -1253,8 +1254,45 @@ function enterFromCover({ openTocAfter = false } = {}) {
   }
 }
 
+function coverUrl() {
+  const url = new URL(location.href);
+  url.search = "";
+  url.hash = "";
+  return url.toString();
+}
+
+async function copyCoverLink() {
+  const link = coverUrl();
+  try {
+    await navigator.clipboard.writeText(link);
+  } catch {
+    const input = document.createElement("input");
+    input.value = link;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand("copy");
+    input.remove();
+  }
+  const btn = els.coverLink;
+  if (!btn) return;
+  const prev = btn.textContent;
+  btn.textContent = "✓";
+  btn.classList.add("copied");
+  btn.title = "Ссылка скопирована";
+  setTimeout(() => {
+    btn.textContent = prev;
+    btn.classList.remove("copied");
+    btn.title = "Скопировать ссылку на обложку";
+  }, 1400);
+}
+
 els.coverEnter?.addEventListener("click", () => enterFromCover());
 els.coverToc?.addEventListener("click", () => enterFromCover({ openTocAfter: true }));
+els.coverLink?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  copyCoverLink();
+});
 els.coverHome?.addEventListener("click", (e) => {
   e.preventDefault();
   showCoverScreen();

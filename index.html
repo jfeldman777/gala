@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Дискурс</title>
-  <link rel="stylesheet" href="style.css?v=26">
+  <link rel="stylesheet" href="style.css?v=29">
 </head>
 <body>
   <div id="cover-screen" class="cover-hidden" aria-hidden="true">
@@ -15,7 +15,10 @@
         <span class="cover-years">1989-2026</span>
       </span>
     </button>
-    <button type="button" id="cover-toc" class="primary">К оглавлению</button>
+    <div class="cover-actions">
+      <button type="button" id="cover-toc" title="К оглавлению" aria-label="К оглавлению">☰</button>
+      <button type="button" id="cover-link" title="Скопировать ссылку на обложку" aria-label="Скопировать ссылку">🔗</button>
+    </div>
   </div>
 
   <aside id="sidebar">
@@ -133,6 +136,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=26"></script>
+  <script src="app.js?v=29"></script>
 </body>
 </html>

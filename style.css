@@ -88,10 +88,35 @@ body {
   letter-spacing: 0.04em;
 }
 
-#cover-toc {
-  min-width: 12rem;
+.cover-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  justify-content: center;
+  align-items: center;
+}
+
+#cover-toc,
+#cover-link {
+  font-size: 1.35rem;
+  line-height: 1;
+  padding: 0.45rem 0.75rem;
+  min-width: 2.6rem;
+  background: var(--paper);
+  border-color: rgba(44, 36, 22, 0.25);
+  font-weight: bold;
+}
+
+#cover-link {
   font-size: 1.05rem;
-  padding: 0.65rem 1.4rem;
+  font-weight: normal;
+  padding: 0.55rem 0.7rem;
+}
+
+#cover-link.copied {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 body.cover-open #sidebar,
