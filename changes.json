@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-22T14:07:05+03:00",
+  "generated": "2026-07-22T14:49:56+03:00",
   "days_scanned": 90,
   "entries": [
     {
@@ -19,6 +19,24 @@
       "date": "2026-07-22",
       "kind": "changed",
       "note": "Add cover splash on first visit; revise conclusion page 12.2."
+    },
+    {
+      "id": "11.5",
+      "title": "Пиаже",
+      "section": "11. Проекции",
+      "md": "11. Проекции/11.5. Пиаже.md",
+      "date": "2026-07-22",
+      "kind": "added",
+      "note": "Add English edition switch (RU/EN), Piaget page 11.5; drop disclaimer image."
+    },
+    {
+      "id": "0",
+      "title": "Дисклеймер",
+      "section": "1. Крошки",
+      "md": "1. Крошки/0. Дисклеймер.md",
+      "date": "2026-07-22",
+      "kind": "changed",
+      "note": "Add English edition switch (RU/EN), Piaget page 11.5; drop disclaimer image."
     },
     {
       "id": "8.2",
@@ -316,15 +334,6 @@
       "date": "2026-07-15",
       "kind": "added",
       "note": "Add strategy page 10.4.6 on the Kovalev paradox."
-    },
-    {
-      "id": "0",
-      "title": "Дисклеймер",
-      "section": "1. Крошки",
-      "md": "1. Крошки/0. Дисклеймер.md",
-      "date": "2026-07-15",
-      "kind": "changed",
-      "note": "Add reader-dialogue example image to the disclaimer page."
     },
     {
       "id": "7.4",
