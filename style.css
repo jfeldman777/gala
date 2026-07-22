@@ -131,10 +131,44 @@ button:disabled {
   gap: 0.5rem;
 }
 
-#sidebar-header h1 {
+#sidebar-header h1,
+#cover-home {
   margin: 0;
   font-size: 1.35rem;
   line-height: 1.2;
+}
+
+#cover-home {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 1.35rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: left;
+}
+
+#cover-home:hover {
+  background: transparent;
+  color: var(--accent);
+}
+
+#cover-home .cover-home-hint {
+  font-size: 0.7rem;
+  font-weight: normal;
+  color: var(--muted);
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+}
+
+#cover-home:hover .cover-home-hint {
+  color: var(--accent);
 }
 
 #sidebar-header p {

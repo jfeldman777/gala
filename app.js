@@ -63,6 +63,7 @@ const els = {
   coverScreen: document.getElementById("cover-screen"),
   coverEnter: document.getElementById("cover-enter"),
   coverToc: document.getElementById("cover-toc"),
+  coverHome: document.getElementById("cover-home"),
 };
 
 function audioPath(page) {
@@ -1228,6 +1229,11 @@ function showCoverScreen() {
     els.coverScreen.classList.remove("cover-hidden");
     els.coverScreen.setAttribute("aria-hidden", "false");
   }
+  closeToc();
+  audio.pause();
+  // Bare `/` so refresh opens the cover again.
+  history.replaceState({ cover: true }, "", location.pathname || "/");
+  document.title = "Дискурс";
 }
 
 function enterFromCover({ openTocAfter = false } = {}) {
@@ -1237,7 +1243,10 @@ function enterFromCover({ openTocAfter = false } = {}) {
     els.coverScreen.setAttribute("aria-hidden", "true");
   }
   const page = state.pages[state.index];
-  if (page) syncUrl(page);
+  if (page) {
+    syncUrl(page);
+    document.title = `${page.id} — ${page.title}`;
+  }
   if (openTocAfter) {
     openToc();
     queueMicrotask(() => els.tocSearch?.focus());
@@ -1246,5 +1255,9 @@ function enterFromCover({ openTocAfter = false } = {}) {
 
 els.coverEnter?.addEventListener("click", () => enterFromCover());
 els.coverToc?.addEventListener("click", () => enterFromCover({ openTocAfter: true }));
+els.coverHome?.addEventListener("click", (e) => {
+  e.preventDefault();
+  showCoverScreen();
+});
 
 init();
