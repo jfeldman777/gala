@@ -223,7 +223,6 @@ const els = {
   feedbackContext: document.getElementById("feedback-context"),
   feedbackStatus: document.getElementById("feedback-status"),
   feedbackOpenPage: document.getElementById("feedback-open-page"),
-  feedbackOpenPlayer: document.getElementById("feedback-open-player"),
   voteLike: document.getElementById("vote-like"),
   voteDislike: document.getElementById("vote-dislike"),
   voteStatus: document.getElementById("vote-status"),
@@ -1249,9 +1248,14 @@ function updatePlayerUi() {
   const hasAudio = state.lang !== "en" && state.audioAvailable.has(page.id);
 
   els.playerInfo.textContent = `${page.id}`;
-  els.noAudio.hidden = hasAudio;
+  // EN: no audio UI at all (no "missing recording", slider, Listen, auto-advance)
+  els.noAudio.hidden = state.lang === "en" || hasAudio;
   els.progressWrap.hidden = !hasAudio;
-  els.playerControls.hidden = !hasAudio;
+  els.playBtn.hidden = !hasAudio;
+  els.playerControls.hidden = false;
+  if (els.autoAdvance?.closest("label")) {
+    els.autoAdvance.closest("label").hidden = !hasAudio;
+  }
   els.playBtn.textContent = audio.paused ? t("listen") : t("pause");
   els.prevBtn.disabled = state.index === 0;
   els.nextBtn.disabled = state.index === state.pages.length - 1;
@@ -1381,7 +1385,6 @@ els.autoAdvance.addEventListener("change", (e) => {
 });
 
 els.feedbackOpenPage.addEventListener("click", openFeedbackModal);
-els.feedbackOpenPlayer.addEventListener("click", openFeedbackModal);
 els.feedbackForm.addEventListener("submit", submitFeedback);
 els.voteLike.addEventListener("click", () => submitVote("like"));
 els.voteDislike.addEventListener("click", () => submitVote("dislike"));
@@ -1462,7 +1465,7 @@ window.addEventListener("keydown", (e) => {
   }
   if (e.code === "ArrowRight") goNext(false);
   if (e.code === "ArrowLeft") goPrev();
-  if (e.code === "Space") {
+  if (e.code === "Space" && state.lang !== "en") {
     e.preventDefault();
     togglePlay();
   }
@@ -1495,6 +1498,7 @@ function detectLang() {
 
 function applyUiLang() {
   document.documentElement.lang = state.lang;
+  document.body.classList.toggle("lang-en", state.lang === "en");
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
     if (key) el.textContent = t(key);

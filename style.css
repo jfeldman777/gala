@@ -864,9 +864,18 @@ mark.page-find-hit.current {
   font-size: 0.9rem;
 }
 
-#feedback-open-player {
-  margin-left: auto;
-  white-space: nowrap;
+/* English edition: no audio player UI */
+body.lang-en #stats-listen-wrap,
+body.lang-en #play-btn,
+body.lang-en #progress-wrap,
+body.lang-en #auto-label,
+body.lang-en #no-audio,
+body.lang-en .audio-dot {
+  display: none !important;
+}
+
+body.lang-en {
+  --player-h: 64px;
 }
 
 #feedback-block {
@@ -1179,7 +1188,7 @@ mark.page-find-hit.current {
   }
 
   .player-row-meta {
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: 1fr auto;
     gap: 0.3rem;
   }
 
@@ -1218,15 +1227,6 @@ mark.page-find-hit.current {
     flex: initial;
     min-width: 0;
     gap: 0.25rem;
-  }
-
-  #feedback-open-player {
-    margin-left: 0;
-    padding: 0;
-    width: 1.9rem;
-    height: 1.9rem;
-    min-width: 1.9rem;
-    font-size: 1rem;
   }
 
   #auto-label {
