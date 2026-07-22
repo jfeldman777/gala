@@ -15,6 +15,8 @@ const state = {
     current: -1,
     rawHtml: "",
   },
+  changes: [],
+  prevVisitAt: null,
 };
 
 const audio = new Audio();
@@ -43,6 +45,7 @@ const els = {
   voteLike: document.getElementById("vote-like"),
   voteDislike: document.getElementById("vote-dislike"),
   voteStatus: document.getElementById("vote-status"),
+  readerName: document.getElementById("reader-name"),
   tocOpen: document.getElementById("toc-open"),
   tocClose: document.getElementById("toc-close"),
   tocBackdrop: document.getElementById("toc-backdrop"),
@@ -65,6 +68,12 @@ const els = {
   coverToc: document.getElementById("cover-toc"),
   coverHome: document.getElementById("cover-home"),
   coverLink: document.getElementById("cover-link"),
+  coverChanges: document.getElementById("cover-changes"),
+  sidebarChanges: document.getElementById("sidebar-changes"),
+  changesModal: document.getElementById("changes-modal"),
+  changesPeriod: document.getElementById("changes-period"),
+  changesSummary: document.getElementById("changes-summary"),
+  changesList: document.getElementById("changes-list"),
 };
 
 function audioPath(page) {
@@ -748,6 +757,51 @@ function voteStorageKey(pageId) {
   return `discourse-vote:${pageId}`;
 }
 
+const READER_NAME_KEY = "discourse-reader-name";
+
+function getReaderName() {
+  try {
+    return String(localStorage.getItem(READER_NAME_KEY) || "").trim();
+  } catch {
+    return "";
+  }
+}
+
+function setReaderName(name) {
+  const clean = String(name || "").trim().slice(0, 80);
+  try {
+    if (clean) localStorage.setItem(READER_NAME_KEY, clean);
+    else localStorage.removeItem(READER_NAME_KEY);
+  } catch {
+    // ignore
+  }
+  if (els.readerName && els.readerName.value.trim() !== clean) {
+    els.readerName.value = clean;
+  }
+  const formName = els.feedbackForm?.elements?.name;
+  if (formName && formName.value.trim() !== clean) {
+    formName.value = clean;
+  }
+  return clean;
+}
+
+function syncReaderNameFromUi(source) {
+  const raw =
+    source === "form"
+      ? els.feedbackForm?.elements?.name?.value
+      : els.readerName?.value;
+  return setReaderName(raw);
+}
+
+function requireReaderName() {
+  const name = syncReaderNameFromUi("page") || getReaderName();
+  if (name) return name;
+  els.voteStatus.hidden = false;
+  els.voteStatus.textContent = "Сначала укажите имя";
+  els.readerName?.focus();
+  return "";
+}
+
 function getStoredVote(pageId) {
   try {
     return localStorage.getItem(voteStorageKey(pageId));
@@ -895,14 +949,18 @@ async function submitVote(vote) {
     return;
   }
 
+  const readerName = requireReaderName();
+  if (!readerName) return;
+
   els.voteLike.disabled = true;
   els.voteDislike.disabled = true;
   els.voteStatus.hidden = false;
   els.voteStatus.textContent = "Отправляем…";
 
   const label = vote === "like" ? "лайк" : "дизлайк";
-  const subject = `Дискурс: ${label} — ${page.id} ${page.title}`;
+  const subject = `Дискурс: ${label} от ${readerName} — ${page.id} ${page.title}`;
   const fields = {
+    name: readerName,
     vote,
     page: currentPageLabel(),
     page_id: page.id,
@@ -933,8 +991,13 @@ function openFeedbackModal() {
   els.feedbackContext.textContent = `Страница: ${currentPageLabel()}`;
   els.feedbackStatus.hidden = true;
   els.feedbackStatus.className = "feedback-status";
+  const saved = getReaderName();
+  if (els.feedbackForm?.name) {
+    els.feedbackForm.name.value = saved;
+  }
   els.feedbackModal.hidden = false;
-  els.feedbackForm.message.focus();
+  if (saved) els.feedbackForm.message.focus();
+  else els.feedbackForm.name.focus();
 }
 
 function closeFeedbackModal() {
@@ -951,13 +1014,22 @@ async function submitFeedback(event) {
 
   if (data.get("_honey")) return;
 
+  const readerName = setReaderName(data.get("name"));
+  if (!readerName) {
+    els.feedbackStatus.hidden = false;
+    els.feedbackStatus.className = "feedback-status error";
+    els.feedbackStatus.textContent = "Укажите имя";
+    form.name.focus();
+    return;
+  }
+
   submitBtn.disabled = true;
   els.feedbackStatus.hidden = true;
 
-  const subject = `Дискурс: отзыв — ${page.id} ${page.title}`;
+  const subject = `Дискурс: отзыв от ${readerName} — ${page.id} ${page.title}`;
   const fields = {
     page: currentPageLabel(),
-    name: data.get("name") || "—",
+    name: readerName,
     reply_email: data.get("reply_email") || "—",
     message: data.get("message"),
   };
@@ -1128,6 +1200,11 @@ els.feedbackOpenPlayer.addEventListener("click", openFeedbackModal);
 els.feedbackForm.addEventListener("submit", submitFeedback);
 els.voteLike.addEventListener("click", () => submitVote("like"));
 els.voteDislike.addEventListener("click", () => submitVote("dislike"));
+els.readerName?.addEventListener("change", () => syncReaderNameFromUi("page"));
+els.readerName?.addEventListener("blur", () => syncReaderNameFromUi("page"));
+const feedbackNameInput = els.feedbackForm?.elements?.name;
+feedbackNameInput?.addEventListener?.("change", () => syncReaderNameFromUi("form"));
+feedbackNameInput?.addEventListener?.("blur", () => syncReaderNameFromUi("form"));
 els.feedbackModal.addEventListener("click", (e) => {
   if (e.target.matches("[data-close]")) closeFeedbackModal();
 });
@@ -1183,6 +1260,10 @@ window.addEventListener("keydown", (e) => {
     closePageFind();
     return;
   }
+  if (e.key === "Escape" && els.changesModal && !els.changesModal.hidden) {
+    closeChangesModal();
+    return;
+  }
   if (e.key === "Escape" && document.body.classList.contains("toc-open")) {
     closeToc();
     return;
@@ -1203,14 +1284,20 @@ window.addEventListener("keydown", (e) => {
 });
 
 async function init() {
+  rememberVisit();
+  setReaderName(getReaderName());
+
   const manifest = await fetch(`pages.json?v=${Date.now()}`, {
     cache: "no-store",
   }).then((r) => r.json());
   state.pages = resolvePages(manifest.pages);
 
-  await Promise.all(
-    state.pages.map((page) => Promise.all([checkAudio(page), indexPageText(page)])),
-  );
+  await Promise.all([
+    Promise.all(
+      state.pages.map((page) => Promise.all([checkAudio(page), indexPageText(page)])),
+    ),
+    loadChangesIndex(),
+  ]);
   updateStats();
 
   const startId = new URLSearchParams(location.search).get("p");
@@ -1297,5 +1384,147 @@ els.coverHome?.addEventListener("click", (e) => {
   e.preventDefault();
   showCoverScreen();
 });
+els.coverChanges?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  openChangesModal();
+});
+els.sidebarChanges?.addEventListener("click", (e) => {
+  e.preventDefault();
+  openChangesModal();
+});
+els.changesPeriod?.addEventListener("change", () => {
+  renderChangesList();
+});
+els.changesModal?.addEventListener("click", (e) => {
+  if (e.target.matches("[data-close-changes]")) closeChangesModal();
+});
+
+const VISIT_KEY = "discourse-last-visit";
+const PREV_VISIT_KEY = "discourse-prev-visit";
+const VISIT_SESSION_KEY = "discourse-visit-touched";
+
+function rememberVisit() {
+  try {
+    const last = Number(localStorage.getItem(VISIT_KEY) || 0);
+    if (!sessionStorage.getItem(VISIT_SESSION_KEY)) {
+      if (last) localStorage.setItem(PREV_VISIT_KEY, String(last));
+      localStorage.setItem(VISIT_KEY, String(Date.now()));
+      sessionStorage.setItem(VISIT_SESSION_KEY, "1");
+    }
+    const prev = Number(localStorage.getItem(PREV_VISIT_KEY) || 0);
+    state.prevVisitAt = prev || null;
+  } catch {
+    state.prevVisitAt = null;
+  }
+}
+
+async function loadChangesIndex() {
+  try {
+    const data = await fetch(`changes.json?v=${Date.now()}`, {
+      cache: "no-store",
+    }).then((r) => {
+      if (!r.ok) throw new Error(String(r.status));
+      return r.json();
+    });
+    state.changes = Array.isArray(data.entries) ? data.entries : [];
+  } catch (err) {
+    console.warn("changes.json unavailable", err);
+    state.changes = [];
+  }
+}
+
+function changesCutoff() {
+  const mode = els.changesPeriod?.value || "7";
+  if (mode === "since") {
+    if (state.prevVisitAt) return state.prevVisitAt;
+    // First visit ever — fall back to a week
+    return Date.now() - 7 * 24 * 60 * 60 * 1000;
+  }
+  const days = Number(mode) || 7;
+  return Date.now() - days * 24 * 60 * 60 * 1000;
+}
+
+function formatChangesDate(isoDay) {
+  const [y, m, d] = String(isoDay).split("-").map(Number);
+  if (!y || !m || !d) return isoDay;
+  return `${String(d).padStart(2, "0")}.${String(m).padStart(2, "0")}.${y}`;
+}
+
+function kindLabel(kind) {
+  if (kind === "added") return "новое";
+  if (kind === "changed") return "изменено";
+  return kind || "";
+}
+
+function filteredChanges() {
+  const cutoff = changesCutoff();
+  const visibleIds = new Set(state.pages.map((p) => p.id));
+  return state.changes.filter((entry) => {
+    if (!visibleIds.has(entry.id)) return false;
+    const t = Date.parse(`${entry.date}T23:59:59`);
+    return Number.isFinite(t) && t >= cutoff;
+  });
+}
+
+function renderChangesList() {
+  if (!els.changesList) return;
+  const items = filteredChanges();
+  const mode = els.changesPeriod?.value || "7";
+  if (els.changesSummary) {
+    if (mode === "since" && !state.prevVisitAt) {
+      els.changesSummary.textContent = "первый визит — показана неделя";
+    } else {
+      els.changesSummary.textContent = items.length
+        ? `${items.length} стр.`
+        : "нет изменений";
+    }
+  }
+
+  if (!items.length) {
+    els.changesList.innerHTML =
+      '<p class="changes-empty">За этот срок страницы не менялись.</p>';
+    return;
+  }
+
+  els.changesList.innerHTML = "";
+  items.forEach((entry) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "changes-item";
+    btn.innerHTML = `
+      <span class="changes-item-meta">
+        <span>${escapeHtml(formatChangesDate(entry.date))}</span>
+        <span class="changes-kind">${escapeHtml(kindLabel(entry.kind))}</span>
+      </span>
+      <span class="changes-item-id">${escapeHtml(entry.id)}</span>
+      <span class="changes-item-title">${escapeHtml(entry.title)}</span>
+    `;
+    btn.addEventListener("click", () => openChangedPage(entry.id));
+    els.changesList.appendChild(btn);
+  });
+}
+
+function openChangesModal() {
+  if (!els.changesModal) return;
+  if (els.changesPeriod) {
+    els.changesPeriod.value = state.prevVisitAt ? "since" : "7";
+  }
+  renderChangesList();
+  els.changesModal.hidden = false;
+}
+
+function closeChangesModal() {
+  if (els.changesModal) els.changesModal.hidden = true;
+}
+
+async function openChangedPage(pageId) {
+  closeChangesModal();
+  if (document.body.classList.contains("cover-open")) {
+    enterFromCover();
+  }
+  const index = state.pages.findIndex((p) => p.id === pageId);
+  if (index >= 0) await loadPage(index, false);
+}
 
 init();

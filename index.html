@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Дискурс</title>
-  <link rel="stylesheet" href="style.css?v=29">
+  <link rel="stylesheet" href="style.css?v=31">
 </head>
 <body>
   <div id="cover-screen" class="cover-hidden" aria-hidden="true">
@@ -18,6 +18,7 @@
     <div class="cover-actions">
       <button type="button" id="cover-toc" title="К оглавлению" aria-label="К оглавлению">☰</button>
       <button type="button" id="cover-link" title="Скопировать ссылку на обложку" aria-label="Скопировать ссылку">🔗</button>
+      <button type="button" id="cover-changes" title="Что нового" aria-label="Что нового">✦</button>
     </div>
   </div>
 
@@ -28,7 +29,9 @@
           <span class="cover-home-title">Дискурс</span>
           <span class="cover-home-hint">обложка</span>
         </button>
-        <p id="sidebar-stats">Читать (<span id="stat-pages">…</span>) и слушать (<span id="stat-audio">…</span>) <a id="more-projects" href="12345.htm">(еще)</a></p>
+        <p id="sidebar-stats">Читать (<span id="stat-pages">…</span>) и слушать (<span id="stat-audio">…</span>) <a id="more-projects" href="12345.htm">(еще)</a>
+          <button type="button" id="sidebar-changes" class="sidebar-changes-btn" title="Что нового">Что нового</button>
+        </p>
       </div>
       <button id="toc-close" type="button" aria-label="Закрыть оглавление">×</button>
     </div>
@@ -67,6 +70,10 @@
       <h2 id="page-title"></h2>
       <div id="content"></div>
       <section id="feedback-block" aria-label="Обратная связь">
+        <label class="reader-name-wrap">
+          Ваше имя
+          <input id="reader-name" type="text" name="reader_name" autocomplete="name" placeholder="для лайков и писем автору" maxlength="80">
+        </label>
         <div id="vote-block">
           <p class="vote-prompt">Страница полезна?</p>
           <div class="vote-actions">
@@ -115,8 +122,8 @@
       <p id="feedback-context" class="modal-context"></p>
       <form id="feedback-form">
         <label>
-          Ваше имя <span class="optional">(необязательно)</span>
-          <input name="name" type="text" autocomplete="name">
+          Ваше имя
+          <input name="name" type="text" autocomplete="name" required maxlength="80">
         </label>
         <label>
           Email для ответа <span class="optional">(необязательно)</span>
@@ -136,6 +143,30 @@
     </div>
   </div>
 
-  <script src="app.js?v=29"></script>
+  <div id="changes-modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close-changes></div>
+    <div class="modal-card changes-card" role="dialog" aria-labelledby="changes-title" aria-modal="true">
+      <button class="modal-close" type="button" data-close-changes aria-label="Закрыть">×</button>
+      <h3 id="changes-title">Что нового</h3>
+      <p class="modal-context">Страницы, которые появились или изменились за выбранный срок.</p>
+      <div class="changes-toolbar">
+        <label class="changes-period-label">
+          Период
+          <select id="changes-period">
+            <option value="since">с прошлого визита</option>
+            <option value="3">3 дня</option>
+            <option value="7" selected>7 дней</option>
+            <option value="14">14 дней</option>
+            <option value="30">30 дней</option>
+            <option value="90">90 дней</option>
+          </select>
+        </label>
+        <span id="changes-summary" class="changes-summary"></span>
+      </div>
+      <div id="changes-list" class="changes-list"></div>
+    </div>
+  </div>
+
+  <script src="app.js?v=31"></script>
 </body>
 </html>
