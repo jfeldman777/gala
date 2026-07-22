@@ -3,6 +3,7 @@ const FEEDBACK_EMAIL = "jfeldman777@gmail.com";
 const WEB3FORMS_KEY = "";
 
 const state = {
+  lang: "ru",
   pages: [],
   index: 0,
   autoAdvance: false,
@@ -18,6 +19,187 @@ const state = {
   changes: [],
   prevVisitAt: null,
 };
+
+const I18N = {
+  ru: {
+    bookTitle: "Дискурс",
+    coverLine1: "Дискурс",
+    coverLine2: "Фельдмана",
+    coverHint: "обложка",
+    coverEnter: "Открыть книгу",
+    toCover: "К обложке",
+    toc: "Оглавление",
+    copyCover: "Скопировать ссылку на обложку",
+    copyPage: "Скопировать ссылку на страницу",
+    copyLink: "Скопировать ссылку",
+    whatsNew: "Что нового",
+    statsRead: "Читать",
+    statsAndListen: "и слушать",
+    more: "(еще)",
+    tocSearch: "Поиск по книге…",
+    tocSearchEmpty: "Ничего не найдено",
+    pageFind: "Поиск на странице (Ctrl+F)",
+    pageFindShort: "Поиск на странице",
+    pageFindInput: "Найти на странице…",
+    prevMatch: "Предыдущее совпадение",
+    nextMatch: "Следующее совпадение",
+    close: "Закрыть",
+    closeFind: "Закрыть поиск",
+    feedback: "Обратная связь",
+    feedbackShort: "Отзыв",
+    yourName: "Ваше имя",
+    namePlaceholder: "для лайков и писем автору",
+    pageUseful: "Страница полезна?",
+    like: "Нравится",
+    dislike: "Не нравится",
+    haveComment: "Есть замечание или вопрос по этой странице?",
+    writeAuthor: "Написать автору",
+    prevPage: "Предыдущая страница",
+    nextPage: "Следующая страница",
+    back: "Назад",
+    forward: "Вперёд",
+    listen: "▶ Слушать",
+    pause: "⏸ Пауза",
+    autoAdvance: "Автопереход",
+    autoShort: "Авто",
+    noAudio: "Записи для этой страницы пока нет",
+    replyEmail: "Email для ответа",
+    optional: "(необязательно)",
+    message: "Сообщение",
+    messagePlaceholder: "Замечание, вопрос, опечатка…",
+    cancel: "Отмена",
+    send: "Отправить",
+    changesIntro: "Страницы, которые появились или изменились за выбранный срок.",
+    period: "Период",
+    periodSince: "с прошлого визита",
+    period3: "3 дня",
+    period7: "7 дней",
+    period14: "14 дней",
+    period30: "30 дней",
+    period90: "90 дней",
+    needName: "Сначала укажите имя",
+    thanksLike: "Спасибо за оценку",
+    thanksDislike: "Спасибо, учтём",
+    sending: "Отправляем…",
+    openMail: "Откройте почту и нажмите «Отправить»",
+    sendFail: "Не удалось отправить. Попробуйте ещё раз.",
+    enterName: "Укажите имя",
+    mailHint: "Откройте почту и нажмите «Отправить».",
+    thanksSent: "Спасибо! Сообщение отправлено.",
+    sendError: "Ошибка отправки. Попробуйте ещё раз или напишите на почту.",
+    pageLabel: "Страница",
+    hasAudio: "Есть запись",
+    noAudioDot: "Записи пока нет",
+    kindNew: "новое",
+    kindChanged: "изменено",
+    changesEmpty: "За этот срок страницы не менялись.",
+    firstVisitWeek: "первый визит — показана неделя",
+    pagesShort: "стр.",
+    noChanges: "нет изменений",
+    linkCopied: "Ссылка скопирована",
+    loadError: "Не удалось загрузить текст страницы",
+    refreshHint: "Обновите страницу (Ctrl+F5).",
+    includeMissing: "страница-источник не найдена. Собственный текст файла игнорируется.",
+    likeLabel: "лайк",
+    dislikeLabel: "дизлайк",
+    mailSubjectVote: "Дискурс",
+    mailSubjectFeedback: "Дискурс",
+    enEmpty: "",
+  },
+  en: {
+    bookTitle: "Feldman's Discourse",
+    coverLine1: "Feldman's",
+    coverLine2: "Discourse",
+    coverHint: "cover",
+    coverEnter: "Open the book",
+    toCover: "To cover",
+    toc: "Contents",
+    copyCover: "Copy cover link",
+    copyPage: "Copy page link",
+    copyLink: "Copy link",
+    whatsNew: "What's new",
+    statsRead: "Read",
+    statsAndListen: "and listen",
+    more: "(more)",
+    tocSearch: "Search the book…",
+    tocSearchEmpty: "Nothing found",
+    pageFind: "Find on page (Ctrl+F)",
+    pageFindShort: "Find on page",
+    pageFindInput: "Find on page…",
+    prevMatch: "Previous match",
+    nextMatch: "Next match",
+    close: "Close",
+    closeFind: "Close search",
+    feedback: "Feedback",
+    feedbackShort: "Feedback",
+    yourName: "Your name",
+    namePlaceholder: "for likes and messages to the author",
+    pageUseful: "Was this page useful?",
+    like: "Like",
+    dislike: "Dislike",
+    haveComment: "A note or question about this page?",
+    writeAuthor: "Write to the author",
+    prevPage: "Previous page",
+    nextPage: "Next page",
+    back: "Back",
+    forward: "Forward",
+    listen: "▶ Listen",
+    pause: "⏸ Pause",
+    autoAdvance: "Auto-advance",
+    autoShort: "Auto",
+    noAudio: "No recording for this page yet",
+    replyEmail: "Email for a reply",
+    optional: "(optional)",
+    message: "Message",
+    messagePlaceholder: "Note, question, typo…",
+    cancel: "Cancel",
+    send: "Send",
+    changesIntro: "Pages added or changed in the selected period.",
+    period: "Period",
+    periodSince: "since last visit",
+    period3: "3 days",
+    period7: "7 days",
+    period14: "14 days",
+    period30: "30 days",
+    period90: "90 days",
+    needName: "Please enter your name first",
+    thanksLike: "Thanks for the rating",
+    thanksDislike: "Thanks — noted",
+    sending: "Sending…",
+    openMail: "Open your mail app and press Send",
+    sendFail: "Could not send. Please try again.",
+    enterName: "Please enter your name",
+    mailHint: "Open your mail app and press Send.",
+    thanksSent: "Thanks! Message sent.",
+    sendError: "Send failed. Try again or email the author.",
+    pageLabel: "Page",
+    hasAudio: "Recording available",
+    noAudioDot: "No recording yet",
+    kindNew: "new",
+    kindChanged: "updated",
+    changesEmpty: "No page changes in this period.",
+    firstVisitWeek: "first visit — showing one week",
+    pagesShort: "pp.",
+    noChanges: "no changes",
+    linkCopied: "Link copied",
+    loadError: "Could not load page text",
+    refreshHint: "Refresh the page (Ctrl+F5).",
+    includeMissing: "source page not found. This file’s own text is ignored.",
+    likeLabel: "like",
+    dislikeLabel: "dislike",
+    mailSubjectVote: "Feldman's Discourse",
+    mailSubjectFeedback: "Feldman's Discourse",
+    enEmpty: "English pages will appear here as they are translated. Switch to RU for the full book.",
+  },
+};
+
+function t(key) {
+  return (I18N[state.lang] && I18N[state.lang][key]) || I18N.ru[key] || key;
+}
+
+function manifestFile() {
+  return state.lang === "en" ? "pages.en.json" : "pages.json";
+}
 
 const audio = new Audio();
 
@@ -399,6 +581,9 @@ function pageUrl(page) {
   url.hash = "";
   // Keep path to index.html or directory root
   url.searchParams.set("p", page.id);
+  if (state.lang && state.lang !== "ru") {
+    url.searchParams.set("lang", state.lang);
+  }
   return url.toString();
 }
 
@@ -427,11 +612,11 @@ async function copyPageLink() {
   const prev = btn.textContent;
   btn.textContent = "✓";
   btn.classList.add("copied");
-  btn.title = "Ссылка скопирована";
+  btn.title = t("linkCopied");
   setTimeout(() => {
     btn.textContent = prev;
     btn.classList.remove("copied");
-    btn.title = "Скопировать ссылку на страницу";
+    btn.title = t("copyPage");
   }, 1400);
 }
 
@@ -483,7 +668,7 @@ function makeTocItemButton(page, index) {
   btn.innerHTML = `
     <span class="num">${escapeHtml(page.id)}</span>
     <span class="title">${escapeHtml(tocTitle)}</span>
-    <span class="audio-dot" title="${state.audioAvailable.has(page.id) ? "Есть запись" : "Записи пока нет"}"></span>
+    <span class="audio-dot" title="${state.audioAvailable.has(page.id) ? t("hasAudio") : t("noAudioDot")}"></span>
   `;
 
   btn.addEventListener("click", () => {
@@ -797,7 +982,7 @@ function requireReaderName() {
   const name = syncReaderNameFromUi("page") || getReaderName();
   if (name) return name;
   els.voteStatus.hidden = false;
-  els.voteStatus.textContent = "Сначала укажите имя";
+  els.voteStatus.textContent = t("needName");
   els.readerName?.focus();
   return "";
 }
@@ -829,10 +1014,10 @@ function updateVoteUi() {
   els.voteDislike.disabled = Boolean(vote);
 
   if (vote === "like") {
-    els.voteStatus.textContent = "Спасибо за оценку";
+    els.voteStatus.textContent = t("thanksLike");
     els.voteStatus.hidden = false;
   } else if (vote === "dislike") {
-    els.voteStatus.textContent = "Спасибо, учтём";
+    els.voteStatus.textContent = t("thanksDislike");
     els.voteStatus.hidden = false;
   } else {
     els.voteStatus.hidden = true;
@@ -911,7 +1096,7 @@ async function trySilentSend(subject, clean) {
           body: JSON.stringify({
             access_key: WEB3FORMS_KEY,
             subject,
-            from_name: "Дискурс",
+            from_name: t("bookTitle"),
             ...clean,
           }),
         },
@@ -955,16 +1140,17 @@ async function submitVote(vote) {
   els.voteLike.disabled = true;
   els.voteDislike.disabled = true;
   els.voteStatus.hidden = false;
-  els.voteStatus.textContent = "Отправляем…";
+  els.voteStatus.textContent = t("sending");
 
-  const label = vote === "like" ? "лайк" : "дизлайк";
-  const subject = `Дискурс: ${label} от ${readerName} — ${page.id} ${page.title}`;
+  const label = vote === "like" ? t("likeLabel") : t("dislikeLabel");
+  const subject = `${t("mailSubjectVote")}: ${label} — ${readerName} — ${page.id} ${page.title}`;
   const fields = {
     name: readerName,
     vote,
     page: currentPageLabel(),
     page_id: page.id,
     section: page.section,
+    lang: state.lang,
   };
 
   try {
@@ -972,13 +1158,13 @@ async function submitVote(vote) {
     setStoredVote(page.id, vote);
     updateVoteUi();
     if (result.via === "mailto") {
-      els.voteStatus.textContent = "Откройте почту и нажмите «Отправить»";
+      els.voteStatus.textContent = t("openMail");
       els.voteStatus.hidden = false;
     }
   } catch {
     els.voteLike.disabled = false;
     els.voteDislike.disabled = false;
-    els.voteStatus.textContent = "Не удалось отправить. Попробуйте ещё раз.";
+    els.voteStatus.textContent = t("sendFail");
   }
 }
 
@@ -988,7 +1174,7 @@ function currentPageLabel() {
 }
 
 function openFeedbackModal() {
-  els.feedbackContext.textContent = `Страница: ${currentPageLabel()}`;
+  els.feedbackContext.textContent = `${t("pageLabel")}: ${currentPageLabel()}`;
   els.feedbackStatus.hidden = true;
   els.feedbackStatus.className = "feedback-status";
   const saved = getReaderName();
@@ -1018,7 +1204,7 @@ async function submitFeedback(event) {
   if (!readerName) {
     els.feedbackStatus.hidden = false;
     els.feedbackStatus.className = "feedback-status error";
-    els.feedbackStatus.textContent = "Укажите имя";
+    els.feedbackStatus.textContent = t("enterName");
     form.name.focus();
     return;
   }
@@ -1026,23 +1212,23 @@ async function submitFeedback(event) {
   submitBtn.disabled = true;
   els.feedbackStatus.hidden = true;
 
-  const subject = `Дискурс: отзыв от ${readerName} — ${page.id} ${page.title}`;
+  const subject = `${t("mailSubjectFeedback")}: ${readerName} — ${page.id} ${page.title}`;
   const fields = {
     page: currentPageLabel(),
     name: readerName,
     reply_email: data.get("reply_email") || "—",
     message: data.get("message"),
+    lang: state.lang,
   };
 
   try {
     const result = await sendToAuthor({ subject, fields });
     if (result.via === "mailto") {
-      els.feedbackStatus.textContent =
-        "Откройте почту и нажмите «Отправить».";
+      els.feedbackStatus.textContent = t("mailHint");
       els.feedbackStatus.className = "feedback-status success";
       els.feedbackStatus.hidden = false;
     } else {
-      els.feedbackStatus.textContent = "Спасибо! Сообщение отправлено.";
+      els.feedbackStatus.textContent = t("thanksSent");
       els.feedbackStatus.className = "feedback-status success";
       els.feedbackStatus.hidden = false;
       form.message.value = "";
@@ -1050,8 +1236,7 @@ async function submitFeedback(event) {
     }
   } catch {
     openMailto(subject, fields);
-    els.feedbackStatus.textContent =
-      "Откройте почту и нажмите «Отправить».";
+    els.feedbackStatus.textContent = t("mailHint");
     els.feedbackStatus.className = "feedback-status success";
     els.feedbackStatus.hidden = false;
   } finally {
@@ -1061,13 +1246,13 @@ async function submitFeedback(event) {
 
 function updatePlayerUi() {
   const page = state.pages[state.index];
-  const hasAudio = state.audioAvailable.has(page.id);
+  const hasAudio = state.lang !== "en" && state.audioAvailable.has(page.id);
 
   els.playerInfo.textContent = `${page.id}`;
   els.noAudio.hidden = hasAudio;
   els.progressWrap.hidden = !hasAudio;
   els.playerControls.hidden = !hasAudio;
-  els.playBtn.textContent = audio.paused ? "▶ Слушать" : "⏸ Пауза";
+  els.playBtn.textContent = audio.paused ? t("listen") : t("pause");
   els.prevBtn.disabled = state.index === 0;
   els.nextBtn.disabled = state.index === state.pages.length - 1;
 }
@@ -1085,7 +1270,7 @@ async function loadPage(index, autoplay = false) {
   let mdPath = page.md;
   if (page.include) {
     if (!page.sourcePage) {
-      const html = `<p class="load-error">Вставка <code>${escapeHtml(page.id)}←${escapeHtml(page.include)}</code>: страница-источник не найдена. Собственный текст файла игнорируется.</p>`;
+      const html = `<p class="load-error">${t("bookTitle")}: <code>${escapeHtml(page.id)}←${escapeHtml(page.include)}</code>: ${t("includeMissing")}</p>`;
       els.content.innerHTML = html;
       resetPageFindForLoad(html);
       audio.pause();
@@ -1112,7 +1297,7 @@ async function loadPage(index, autoplay = false) {
     els.content.innerHTML = html;
     resetPageFindForLoad(html);
   } catch (err) {
-    const html = `<p class="load-error">Не удалось загрузить текст страницы <code>${escapeHtml(mdPath)}</code>. Обновите страницу (Ctrl+F5).</p>`;
+    const html = `<p class="load-error">${t("loadError")} <code>${escapeHtml(mdPath)}</code>. ${t("refreshHint")}</p>`;
     els.content.innerHTML = html;
     resetPageFindForLoad(html);
     console.error("loadPage failed", mdPath, err);
@@ -1121,7 +1306,7 @@ async function loadPage(index, autoplay = false) {
   audio.pause();
   audio.currentTime = 0;
 
-  if (state.audioAvailable.has(page.id)) {
+  if (state.lang !== "en" && state.audioAvailable.has(page.id)) {
     audio.src = audioPath(page);
     if (autoplay) {
       try {
@@ -1283,24 +1468,103 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
-async function init() {
-  rememberVisit();
-  setReaderName(getReaderName());
-
-  const manifest = await fetch(`pages.json?v=${Date.now()}`, {
+async function loadCatalog() {
+  const manifest = await fetch(`${manifestFile()}?v=${Date.now()}`, {
     cache: "no-store",
   }).then((r) => r.json());
   state.pages = resolvePages(manifest.pages);
-
-  await Promise.all([
-    Promise.all(
-      state.pages.map((page) => Promise.all([checkAudio(page), indexPageText(page)])),
-    ),
-    loadChangesIndex(),
-  ]);
+  state.audioAvailable = new Set();
+  if (state.lang !== "en") {
+    await Promise.all(state.pages.map((page) => checkAudio(page)));
+  }
+  await Promise.all(state.pages.map((page) => indexPageText(page)));
   updateStats();
+}
 
-  const startId = new URLSearchParams(location.search).get("p");
+function detectLang() {
+  const fromUrl = new URLSearchParams(location.search).get("lang");
+  if (fromUrl === "en" || fromUrl === "ru") return fromUrl;
+  try {
+    const saved = localStorage.getItem("discourse-lang");
+    if (saved === "en" || saved === "ru") return saved;
+  } catch {
+    /* ignore */
+  }
+  return "ru";
+}
+
+function applyUiLang() {
+  document.documentElement.lang = state.lang;
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    if (key) el.textContent = t(key);
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-placeholder");
+    if (key) el.setAttribute("placeholder", t(key));
+  });
+  document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-title");
+    if (key) el.setAttribute("title", t(key));
+  });
+  document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-aria");
+    if (key) el.setAttribute("aria-label", t(key));
+  });
+  document.querySelectorAll(".lang-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.lang === state.lang);
+  });
+  if (els.playBtn) {
+    els.playBtn.textContent = audio.paused ? t("listen") : t("pause");
+  }
+  if (!document.body.classList.contains("cover-open") && state.pages[state.index]) {
+    document.title = `${state.pages[state.index].id} — ${state.pages[state.index].title}`;
+  } else {
+    document.title = t("bookTitle");
+  }
+}
+
+async function setLang(lang, { keepPage = true } = {}) {
+  if (lang !== "ru" && lang !== "en") return;
+  const pageId = keepPage ? state.pages[state.index]?.id : null;
+  const wasCover = document.body.classList.contains("cover-open");
+  state.lang = lang;
+  try {
+    localStorage.setItem("discourse-lang", lang);
+  } catch {
+    /* ignore */
+  }
+  applyUiLang();
+  await loadCatalog();
+  applyUiLang();
+
+  if (wasCover || !pageId) {
+    showCoverScreen();
+    if (state.pages.length) await loadPage(0, false);
+    return;
+  }
+
+  const idx = state.pages.findIndex((p) => p.id === pageId);
+  if (idx >= 0) {
+    enterFromCover();
+    await loadPage(idx, false);
+  } else {
+    showCoverScreen();
+    if (state.pages.length) await loadPage(0, false);
+  }
+}
+
+async function init() {
+  rememberVisit();
+  setReaderName(getReaderName());
+  state.lang = detectLang();
+  applyUiLang();
+
+  await Promise.all([loadCatalog(), loadChangesIndex()]);
+  applyUiLang();
+
+  const params = new URLSearchParams(location.search);
+  const startId = params.get("p");
   const startIndex = startId
     ? Math.max(0, state.pages.findIndex((p) => p.id === startId))
     : 0;
@@ -1308,8 +1572,23 @@ async function init() {
 
   if (showCover) showCoverScreen();
 
-  await loadPage(startIndex === -1 ? 0 : startIndex, false);
+  if (state.pages.length) {
+    await loadPage(startIndex === -1 ? 0 : startIndex, false);
+  } else if (state.lang === "en") {
+    // Empty EN catalog: stay on cover
+    showCoverScreen();
+  }
 }
+
+document.querySelectorAll(".lang-btn").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setLang(btn.dataset.lang);
+  });
+});
+
+init();
 
 function showCoverScreen() {
   document.body.classList.add("cover-open");
@@ -1319,9 +1598,16 @@ function showCoverScreen() {
   }
   closeToc();
   audio.pause();
-  // Bare `/` so refresh opens the cover again.
-  history.replaceState({ cover: true }, "", location.pathname || "/");
-  document.title = "Дискурс";
+  // Keep language on cover URL; drop page id so refresh shows the cover.
+  const cover = new URL(location.href);
+  cover.search = "";
+  cover.hash = "";
+  if (state.lang && state.lang !== "ru") {
+    cover.searchParams.set("lang", state.lang);
+  }
+  history.replaceState({ cover: true }, "", cover.toString());
+  document.title = t("bookTitle");
+  applyUiLang();
 }
 
 function enterFromCover({ openTocAfter = false } = {}) {
@@ -1345,6 +1631,9 @@ function coverUrl() {
   const url = new URL(location.href);
   url.search = "";
   url.hash = "";
+  if (state.lang && state.lang !== "ru") {
+    url.searchParams.set("lang", state.lang);
+  }
   return url.toString();
 }
 
@@ -1365,11 +1654,11 @@ async function copyCoverLink() {
   const prev = btn.textContent;
   btn.textContent = "✓";
   btn.classList.add("copied");
-  btn.title = "Ссылка скопирована";
+  btn.title = t("linkCopied");
   setTimeout(() => {
     btn.textContent = prev;
     btn.classList.remove("copied");
-    btn.title = "Скопировать ссылку на обложку";
+    btn.title = t("copyCover");
   }, 1400);
 }
 
@@ -1452,8 +1741,8 @@ function formatChangesDate(isoDay) {
 }
 
 function kindLabel(kind) {
-  if (kind === "added") return "новое";
-  if (kind === "changed") return "изменено";
+  if (kind === "added") return t("kindNew");
+  if (kind === "changed") return t("kindChanged");
   return kind || "";
 }
 
@@ -1473,17 +1762,16 @@ function renderChangesList() {
   const mode = els.changesPeriod?.value || "7";
   if (els.changesSummary) {
     if (mode === "since" && !state.prevVisitAt) {
-      els.changesSummary.textContent = "первый визит — показана неделя";
+      els.changesSummary.textContent = t("firstVisitWeek");
     } else {
       els.changesSummary.textContent = items.length
-        ? `${items.length} стр.`
-        : "нет изменений";
+        ? `${items.length} ${t("pagesShort")}`
+        : t("noChanges");
     }
   }
 
   if (!items.length) {
-    els.changesList.innerHTML =
-      '<p class="changes-empty">За этот срок страницы не менялись.</p>';
+    els.changesList.innerHTML = `<p class="changes-empty">${t("changesEmpty")}</p>`;
     return;
   }
 
@@ -1526,5 +1814,3 @@ async function openChangedPage(pageId) {
   const index = state.pages.findIndex((p) => p.id === pageId);
   if (index >= 0) await loadPage(index, false);
 }
-
-init();

@@ -125,6 +125,33 @@ body {
   border-color: var(--accent);
 }
 
+.lang-switch {
+  display: inline-flex;
+  gap: 0.2rem;
+  margin-right: 0.25rem;
+}
+
+.lang-btn {
+  min-width: 2.4rem;
+  padding: 0.4rem 0.55rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: var(--paper);
+  border-color: rgba(44, 36, 22, 0.25);
+  color: var(--muted);
+}
+
+.lang-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.sidebar-lang {
+  margin: 0.45rem 0 0.15rem;
+}
+
 body.cover-open #sidebar,
 body.cover-open #main,
 body.cover-open #player,

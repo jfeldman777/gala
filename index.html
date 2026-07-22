@@ -4,34 +4,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Дискурс</title>
-  <link rel="stylesheet" href="style.css?v=31">
+  <link rel="stylesheet" href="style.css?v=33">
 </head>
 <body>
   <div id="cover-screen" class="cover-hidden" aria-hidden="true">
-    <button type="button" id="cover-enter" class="cover-image-btn" title="Открыть книгу" aria-label="Открыть книгу">
+    <button type="button" id="cover-enter" class="cover-image-btn" title="Открыть книгу" aria-label="Открыть книгу" data-i18n-title="coverEnter" data-i18n-aria="coverEnter">
       <span class="cover-text">
-        <span class="cover-line">Дискурс</span>
-        <span class="cover-line">Фельдмана</span>
+        <span class="cover-line" data-i18n="coverLine1">Дискурс</span>
+        <span class="cover-line" data-i18n="coverLine2">Фельдмана</span>
         <span class="cover-years">1989-2026</span>
       </span>
     </button>
     <div class="cover-actions">
-      <button type="button" id="cover-toc" title="К оглавлению" aria-label="К оглавлению">☰</button>
-      <button type="button" id="cover-link" title="Скопировать ссылку на обложку" aria-label="Скопировать ссылку">🔗</button>
-      <button type="button" id="cover-changes" title="Что нового" aria-label="Что нового">✦</button>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" class="lang-btn" data-lang="ru" title="Русский">RU</button>
+        <button type="button" class="lang-btn" data-lang="en" title="English">EN</button>
+      </div>
+      <button type="button" id="cover-toc" title="К оглавлению" aria-label="К оглавлению" data-i18n-title="toc" data-i18n-aria="toc">☰</button>
+      <button type="button" id="cover-link" title="Скопировать ссылку на обложку" aria-label="Скопировать ссылку" data-i18n-title="copyCover" data-i18n-aria="copyLink">🔗</button>
+      <button type="button" id="cover-changes" title="Что нового" aria-label="Что нового" data-i18n-title="whatsNew" data-i18n-aria="whatsNew">✦</button>
     </div>
   </div>
 
   <aside id="sidebar">
     <div id="sidebar-header">
       <div>
-        <button type="button" id="cover-home" class="cover-home-btn" title="К обложке" aria-label="К обложке">
-          <span class="cover-home-title">Дискурс</span>
-          <span class="cover-home-hint">обложка</span>
+        <button type="button" id="cover-home" class="cover-home-btn" title="К обложке" aria-label="К обложке" data-i18n-title="toCover" data-i18n-aria="toCover">
+          <span class="cover-home-title" data-i18n="bookTitle">Дискурс</span>
+          <span class="cover-home-hint" data-i18n="coverHint">обложка</span>
         </button>
-        <p id="sidebar-stats">Читать (<span id="stat-pages">…</span>) и слушать (<span id="stat-audio">…</span>) <a id="more-projects" href="12345.htm">(еще)</a>
-          <button type="button" id="sidebar-changes" class="sidebar-changes-btn" title="Что нового">Что нового</button>
+        <p id="sidebar-stats"><span data-i18n="statsRead">Читать</span> (<span id="stat-pages">…</span>) <span data-i18n="statsAndListen">и слушать</span> (<span id="stat-audio">…</span>) <a id="more-projects" href="12345.htm" data-i18n="more">(еще)</a>
+          <button type="button" id="sidebar-changes" class="sidebar-changes-btn" title="Что нового" data-i18n="whatsNew" data-i18n-title="whatsNew">Что нового</button>
         </p>
+        <div class="lang-switch sidebar-lang" role="group" aria-label="Language">
+          <button type="button" class="lang-btn" data-lang="ru" title="Русский">RU</button>
+          <button type="button" class="lang-btn" data-lang="en" title="English">EN</button>
+        </div>
       </div>
       <button id="toc-close" type="button" aria-label="Закрыть оглавление">×</button>
     </div>
@@ -42,10 +50,10 @@
           <path d="M20 20l-3.2-3.2"></path>
         </svg>
       </span>
-      <input id="toc-search" type="search" placeholder="Поиск по книге…" autocomplete="off" spellcheck="false">
+      <input id="toc-search" type="search" placeholder="Поиск по книге…" autocomplete="off" spellcheck="false" data-i18n-placeholder="tocSearch">
     </div>
-    <p id="toc-search-empty" hidden>Ничего не найдено</p>
-    <nav id="toc" aria-label="Оглавление"></nav>
+    <p id="toc-search-empty" hidden data-i18n="tocSearchEmpty">Ничего не найдено</p>
+    <nav id="toc" aria-label="Оглавление" data-i18n-aria="toc"></nav>
   </aside>
   <div id="toc-backdrop" hidden></div>
 
@@ -53,7 +61,7 @@
     <article id="reader">
       <div id="reader-top">
         <div id="page-meta"></div>
-        <button id="page-find-open" type="button" title="Поиск на странице (Ctrl+F)" aria-label="Поиск на странице">
+        <button id="page-find-open" type="button" title="Поиск на странице (Ctrl+F)" aria-label="Поиск на странице" data-i18n-title="pageFind" data-i18n-aria="pageFindShort">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
             <circle cx="11" cy="11" r="6.5"></circle>
             <path d="M20 20l-3.2-3.2"></path>
@@ -61,29 +69,29 @@
         </button>
       </div>
       <div id="page-find-bar" hidden>
-        <input id="page-find-input" type="search" placeholder="Найти на странице…" autocomplete="off" spellcheck="false">
+        <input id="page-find-input" type="search" placeholder="Найти на странице…" autocomplete="off" spellcheck="false" data-i18n-placeholder="pageFindInput">
         <span id="page-find-count"></span>
-        <button id="page-find-prev" type="button" title="Предыдущее" aria-label="Предыдущее совпадение">↑</button>
-        <button id="page-find-next" type="button" title="Следующее" aria-label="Следующее совпадение">↓</button>
-        <button id="page-find-close" type="button" title="Закрыть" aria-label="Закрыть поиск">×</button>
+        <button id="page-find-prev" type="button" title="Предыдущее" aria-label="Предыдущее совпадение" data-i18n-title="prevMatch" data-i18n-aria="prevMatch">↑</button>
+        <button id="page-find-next" type="button" title="Следующее" aria-label="Следующее совпадение" data-i18n-title="nextMatch" data-i18n-aria="nextMatch">↓</button>
+        <button id="page-find-close" type="button" title="Закрыть" aria-label="Закрыть поиск" data-i18n-title="close" data-i18n-aria="closeFind">×</button>
       </div>
       <h2 id="page-title"></h2>
       <div id="content"></div>
-      <section id="feedback-block" aria-label="Обратная связь">
+      <section id="feedback-block" aria-label="Обратная связь" data-i18n-aria="feedback">
         <label class="reader-name-wrap">
-          Ваше имя
-          <input id="reader-name" type="text" name="reader_name" autocomplete="name" placeholder="для лайков и писем автору" maxlength="80">
+          <span data-i18n="yourName">Ваше имя</span>
+          <input id="reader-name" type="text" name="reader_name" autocomplete="name" placeholder="для лайков и писем автору" maxlength="80" data-i18n-placeholder="namePlaceholder">
         </label>
         <div id="vote-block">
-          <p class="vote-prompt">Страница полезна?</p>
+          <p class="vote-prompt" data-i18n="pageUseful">Страница полезна?</p>
           <div class="vote-actions">
-            <button id="vote-like" type="button" title="Нравится">👍</button>
-            <button id="vote-dislike" type="button" title="Не нравится">👎</button>
+            <button id="vote-like" type="button" title="Нравится" data-i18n-title="like">👍</button>
+            <button id="vote-dislike" type="button" title="Не нравится" data-i18n-title="dislike">👎</button>
           </div>
           <p id="vote-status" class="vote-status" hidden></p>
         </div>
-        <p>Есть замечание или вопрос по этой странице?</p>
-        <button id="feedback-open-page" type="button">Написать автору</button>
+        <p data-i18n="haveComment">Есть замечание или вопрос по этой странице?</p>
+        <button id="feedback-open-page" type="button" data-i18n="writeAuthor">Написать автору</button>
       </section>
     </article>
   </main>
@@ -91,12 +99,12 @@
   <footer id="player">
     <div class="player-row player-row-main">
       <div id="player-info"></div>
-      <button id="toc-open" type="button" title="Оглавление" aria-label="Оглавление">☰</button>
-      <button id="copy-link" type="button" title="Скопировать ссылку на страницу" aria-label="Скопировать ссылку">🔗</button>
+      <button id="toc-open" type="button" title="Оглавление" aria-label="Оглавление" data-i18n-title="toc" data-i18n-aria="toc">☰</button>
+      <button id="copy-link" type="button" title="Скопировать ссылку на страницу" aria-label="Скопировать ссылку" data-i18n-title="copyPage" data-i18n-aria="copyLink">🔗</button>
       <div id="player-controls">
-        <button id="prev-btn" type="button" title="Предыдущая страница" aria-label="Назад">◀</button>
+        <button id="prev-btn" type="button" title="Предыдущая страница" aria-label="Назад" data-i18n-title="prevPage" data-i18n-aria="back">◀</button>
         <button id="play-btn" class="primary" type="button">▶ Слушать</button>
-        <button id="next-btn" type="button" title="Следующая страница" aria-label="Вперёд">▶</button>
+        <button id="next-btn" type="button" title="Следующая страница" aria-label="Вперёд" data-i18n-title="nextPage" data-i18n-aria="forward">▶</button>
       </div>
     </div>
     <div class="player-row player-row-meta">
@@ -106,38 +114,38 @@
       </div>
       <label id="auto-label">
         <input id="auto-advance" type="checkbox">
-        <span class="auto-text-full">Автопереход</span>
-        <span class="auto-text-short" hidden>Авто</span>
+        <span class="auto-text-full" data-i18n="autoAdvance">Автопереход</span>
+        <span class="auto-text-short" hidden data-i18n="autoShort">Авто</span>
       </label>
-      <span id="no-audio" hidden>Записи для этой страницы пока нет</span>
-      <button id="feedback-open-player" type="button" title="Обратная связь" aria-label="Отзыв">✉</button>
+      <span id="no-audio" hidden data-i18n="noAudio">Записи для этой страницы пока нет</span>
+      <button id="feedback-open-player" type="button" title="Обратная связь" aria-label="Отзыв" data-i18n-title="feedback" data-i18n-aria="feedbackShort">✉</button>
     </div>
   </footer>
 
   <div id="feedback-modal" class="modal" hidden>
     <div class="modal-backdrop" data-close></div>
     <div class="modal-card" role="dialog" aria-labelledby="feedback-title" aria-modal="true">
-      <button class="modal-close" type="button" data-close aria-label="Закрыть">×</button>
-      <h3 id="feedback-title">Обратная связь</h3>
+      <button class="modal-close" type="button" data-close aria-label="Закрыть" data-i18n-aria="close">×</button>
+      <h3 id="feedback-title" data-i18n="feedback">Обратная связь</h3>
       <p id="feedback-context" class="modal-context"></p>
       <form id="feedback-form">
         <label>
-          Ваше имя
+          <span data-i18n="yourName">Ваше имя</span>
           <input name="name" type="text" autocomplete="name" required maxlength="80">
         </label>
         <label>
-          Email для ответа <span class="optional">(необязательно)</span>
+          <span data-i18n="replyEmail">Email для ответа</span> <span class="optional" data-i18n="optional">(необязательно)</span>
           <input name="reply_email" type="email" autocomplete="email">
         </label>
         <label>
-          Сообщение
-          <textarea name="message" rows="5" required placeholder="Замечание, вопрос, опечатка…"></textarea>
+          <span data-i18n="message">Сообщение</span>
+          <textarea name="message" rows="5" required placeholder="Замечание, вопрос, опечатка…" data-i18n-placeholder="messagePlaceholder"></textarea>
         </label>
         <input type="text" name="_honey" class="honey" tabindex="-1" autocomplete="off">
         <div id="feedback-status" class="feedback-status" hidden></div>
         <div class="modal-actions">
-          <button type="button" data-close>Отмена</button>
-          <button type="submit" class="primary">Отправить</button>
+          <button type="button" data-close data-i18n="cancel">Отмена</button>
+          <button type="submit" class="primary" data-i18n="send">Отправить</button>
         </div>
       </form>
     </div>
@@ -146,19 +154,19 @@
   <div id="changes-modal" class="modal" hidden>
     <div class="modal-backdrop" data-close-changes></div>
     <div class="modal-card changes-card" role="dialog" aria-labelledby="changes-title" aria-modal="true">
-      <button class="modal-close" type="button" data-close-changes aria-label="Закрыть">×</button>
-      <h3 id="changes-title">Что нового</h3>
-      <p class="modal-context">Страницы, которые появились или изменились за выбранный срок.</p>
+      <button class="modal-close" type="button" data-close-changes aria-label="Закрыть" data-i18n-aria="close">×</button>
+      <h3 id="changes-title" data-i18n="whatsNew">Что нового</h3>
+      <p class="modal-context" data-i18n="changesIntro">Страницы, которые появились или изменились за выбранный срок.</p>
       <div class="changes-toolbar">
         <label class="changes-period-label">
-          Период
+          <span data-i18n="period">Период</span>
           <select id="changes-period">
-            <option value="since">с прошлого визита</option>
-            <option value="3">3 дня</option>
-            <option value="7" selected>7 дней</option>
-            <option value="14">14 дней</option>
-            <option value="30">30 дней</option>
-            <option value="90">90 дней</option>
+            <option value="since" data-i18n="periodSince">с прошлого визита</option>
+            <option value="3" data-i18n="period3">3 дня</option>
+            <option value="7" selected data-i18n="period7">7 дней</option>
+            <option value="14" data-i18n="period14">14 дней</option>
+            <option value="30" data-i18n="period30">30 дней</option>
+            <option value="90" data-i18n="period90">90 дней</option>
           </select>
         </label>
         <span id="changes-summary" class="changes-summary"></span>
@@ -167,6 +175,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=31"></script>
+  <script src="app.js?v=33"></script>
 </body>
 </html>
