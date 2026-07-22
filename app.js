@@ -60,6 +60,9 @@ const els = {
   pageFindNext: document.getElementById("page-find-next"),
   pageFindClose: document.getElementById("page-find-close"),
   reader: document.getElementById("reader"),
+  coverScreen: document.getElementById("cover-screen"),
+  coverEnter: document.getElementById("cover-enter"),
+  coverToc: document.getElementById("cover-toc"),
 };
 
 function audioPath(page) {
@@ -389,6 +392,8 @@ function pageUrl(page) {
 }
 
 function syncUrl(page) {
+  // Keep bare `/` while the cover is up, so refresh shows the cover again.
+  if (document.body.classList.contains("cover-open")) return;
   const url = pageUrl(page);
   history.replaceState({ pageId: page.id }, "", url);
 }
@@ -1210,8 +1215,36 @@ async function init() {
   const startIndex = startId
     ? Math.max(0, state.pages.findIndex((p) => p.id === startId))
     : 0;
+  const showCover = !startId;
+
+  if (showCover) showCoverScreen();
 
   await loadPage(startIndex === -1 ? 0 : startIndex, false);
 }
+
+function showCoverScreen() {
+  document.body.classList.add("cover-open");
+  if (els.coverScreen) {
+    els.coverScreen.classList.remove("cover-hidden");
+    els.coverScreen.setAttribute("aria-hidden", "false");
+  }
+}
+
+function enterFromCover({ openTocAfter = false } = {}) {
+  document.body.classList.remove("cover-open");
+  if (els.coverScreen) {
+    els.coverScreen.classList.add("cover-hidden");
+    els.coverScreen.setAttribute("aria-hidden", "true");
+  }
+  const page = state.pages[state.index];
+  if (page) syncUrl(page);
+  if (openTocAfter) {
+    openToc();
+    queueMicrotask(() => els.tocSearch?.focus());
+  }
+}
+
+els.coverEnter?.addEventListener("click", () => enterFromCover());
+els.coverToc?.addEventListener("click", () => enterFromCover({ openTocAfter: true }));
 
 init();

@@ -4,9 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Дискурс</title>
-  <link rel="stylesheet" href="style.css?v=22">
+  <link rel="stylesheet" href="style.css?v=24">
 </head>
 <body>
+  <div id="cover-screen" class="cover-hidden" aria-hidden="true">
+    <button type="button" id="cover-enter" class="cover-image-btn" title="Открыть книгу" aria-label="Открыть книгу">
+      <img src="обложка.png" alt="Дискурс Фельдмана 1989–2026" width="1200" height="800">
+    </button>
+    <button type="button" id="cover-toc" class="primary">К оглавлению</button>
+  </div>
+
   <aside id="sidebar">
     <div id="sidebar-header">
       <div>
@@ -119,6 +126,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=22"></script>
+  <script src="app.js?v=24"></script>
 </body>
 </html>

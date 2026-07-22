@@ -27,6 +27,62 @@ body {
   overflow: hidden;
 }
 
+#cover-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background: #c9a63f;
+}
+
+#cover-screen.cover-hidden {
+  display: none !important;
+}
+
+.cover-image-btn {
+  display: block;
+  max-width: min(920px, 100%);
+  max-height: calc(100vh - 7rem);
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.cover-image-btn:hover {
+  background: transparent;
+  filter: brightness(1.03);
+}
+
+.cover-image-btn img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: calc(100vh - 7rem);
+  object-fit: contain;
+}
+
+#cover-toc {
+  min-width: 12rem;
+  font-size: 1.05rem;
+  padding: 0.65rem 1.4rem;
+}
+
+body.cover-open #sidebar,
+body.cover-open #main,
+body.cover-open #player,
+body.cover-open #toc-backdrop {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 button {
   font: inherit;
   cursor: pointer;
