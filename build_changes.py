@@ -61,8 +61,7 @@ def main() -> None:
         f"--since={DAYS} days ago",
         "--name-status",
         "--diff-filter=AMR",
-        "--pretty=format:COMMIT\t%H\t%ad\t%s",
-        "--date=short",
+        "--pretty=format:COMMIT\t%H\t%cI\t%s",
         "--",
         "*.md",
     )
@@ -134,6 +133,7 @@ def main() -> None:
             }
         )
 
+    # Newest first by full commit timestamp (not day-only).
     entries.sort(key=lambda e: (e["date"], e["id"]), reverse=True)
 
     out = {

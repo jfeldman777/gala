@@ -1,13 +1,22 @@
 {
-  "generated": "2026-07-23T17:38:06+03:00",
+  "generated": "2026-07-23T17:42:14+03:00",
   "days_scanned": 90,
   "entries": [
+    {
+      "id": "11.6",
+      "title": "Внуки Щедровицкого",
+      "section": "11. Проекции",
+      "md": "11. Проекции/11.6. Внуки Щедровицкого.md",
+      "date": "2026-07-23T17:38:06+03:00",
+      "kind": "added",
+      "note": "Add projections page 11.6 on Shchedrovitsky followers, with EN translation."
+    },
     {
       "id": "5.8.1",
       "title": "Коммуникация и конфликт",
       "section": "5. Философия",
       "md": "5. Философия/5.8.1. Коммуникация и конфликт.md",
-      "date": "2026-07-23",
+      "date": "2026-07-23T15:36:17+03:00",
       "kind": "added",
       "note": "Add philosophy pages 5.6–5.6.4 and 5.8.1 with English translations."
     },
@@ -16,7 +25,7 @@
       "title": "Категории Пирса",
       "section": "5. Философия",
       "md": "5. Философия/5.6.4. Категории Пирса.md",
-      "date": "2026-07-23",
+      "date": "2026-07-23T15:36:17+03:00",
       "kind": "added",
       "note": "Add philosophy pages 5.6–5.6.4 and 5.8.1 with English translations."
     },
@@ -25,7 +34,7 @@
       "title": "Категории Гегеля",
       "section": "5. Философия",
       "md": "5. Философия/5.6.3. Категории Гегеля.md",
-      "date": "2026-07-23",
+      "date": "2026-07-23T15:36:17+03:00",
       "kind": "added",
       "note": "Add philosophy pages 5.6–5.6.4 and 5.8.1 with English translations."
     },
@@ -34,7 +43,7 @@
       "title": "Категории Канта",
       "section": "5. Философия",
       "md": "5. Философия/5.6.2. Категории Канта.md",
-      "date": "2026-07-23",
+      "date": "2026-07-23T15:36:17+03:00",
       "kind": "added",
       "note": "Add philosophy pages 5.6–5.6.4 and 5.8.1 with English translations."
     },
@@ -43,7 +52,7 @@
       "title": "Категории Аристотеля",
       "section": "5. Философия",
       "md": "5. Философия/5.6.1. Категории Аристотеля.md",
-      "date": "2026-07-23",
+      "date": "2026-07-23T15:36:17+03:00",
       "kind": "added",
       "note": "Add philosophy pages 5.6–5.6.4 and 5.8.1 with English translations."
     },
@@ -52,43 +61,16 @@
       "title": "Системы категорий",
       "section": "5. Философия",
       "md": "5. Философия/5.6. Системы категорий.md",
-      "date": "2026-07-23",
+      "date": "2026-07-23T15:36:17+03:00",
       "kind": "added",
       "note": "Add philosophy pages 5.6–5.6.4 and 5.8.1 with English translations."
-    },
-    {
-      "id": "11.6",
-      "title": "Внуки Щедровицкого",
-      "section": "11. Проекции",
-      "md": "11. Проекции/11.6. Внуки Щедровицкого.md",
-      "date": "2026-07-23",
-      "kind": "added",
-      "note": "Add projections page 11.6 on Shchedrovitsky followers, with EN translation."
-    },
-    {
-      "id": "5.8",
-      "title": "Пространство проблем трехмерно",
-      "section": "5. Философия",
-      "md": "5. Философия/5.8. Пространство проблем трехмерно.md",
-      "date": "2026-07-22",
-      "kind": "added",
-      "note": "Add philosophy page 5.8 on 3D problem space with interval diagram."
-    },
-    {
-      "id": "12.2",
-      "title": "Успешный неуспех",
-      "section": "12. Заключение",
-      "md": "12. Заключение/12.2. Успешный неуспех.md",
-      "date": "2026-07-22",
-      "kind": "changed",
-      "note": "Add cover splash on first visit; revise conclusion page 12.2."
     },
     {
       "id": "11.5",
       "title": "Пиаже",
       "section": "11. Проекции",
       "md": "11. Проекции/11.5. Пиаже.md",
-      "date": "2026-07-22",
+      "date": "2026-07-22T15:28:45+03:00",
       "kind": "changed",
       "note": "Add full English edition (125 pages) and expand Piaget 11.5."
     },
@@ -97,7 +79,7 @@
       "title": "10. Система/10.3. Уровни/10.3.1-3.7.md",
       "section": "10. Система",
       "md": "10. Система/10.3. Уровни/10.3.1-3.7.md",
-      "date": "2026-07-22",
+      "date": "2026-07-22T15:28:45+03:00",
       "kind": "added",
       "note": "Add full English edition (125 pages) and expand Piaget 11.5."
     },
@@ -106,7 +88,7 @@
       "title": "10. Система/10.1. Кодировки/10.1.1-4.1.1.md",
       "section": "10. Система",
       "md": "10. Система/10.1. Кодировки/10.1.1-4.1.1.md",
-      "date": "2026-07-22",
+      "date": "2026-07-22T15:28:45+03:00",
       "kind": "added",
       "note": "Add full English edition (125 pages) and expand Piaget 11.5."
     },
@@ -115,34 +97,43 @@
       "title": "Дисклеймер",
       "section": "1. Крошки",
       "md": "1. Крошки/0. Дисклеймер.md",
-      "date": "2026-07-22",
+      "date": "2026-07-22T14:49:56+03:00",
       "kind": "changed",
       "note": "Add English edition switch (RU/EN), Piaget page 11.5; drop disclaimer image."
+    },
+    {
+      "id": "5.8",
+      "title": "Пространство проблем трехмерно",
+      "section": "5. Философия",
+      "md": "5. Философия/5.8. Пространство проблем трехмерно.md",
+      "date": "2026-07-22T07:48:52+03:00",
+      "kind": "added",
+      "note": "Add philosophy page 5.8 on 3D problem space with interval diagram."
+    },
+    {
+      "id": "12.2",
+      "title": "Успешный неуспех",
+      "section": "12. Заключение",
+      "md": "12. Заключение/12.2. Успешный неуспех.md",
+      "date": "2026-07-22T07:24:50+03:00",
+      "kind": "changed",
+      "note": "Add cover splash on first visit; revise conclusion page 12.2."
     },
     {
       "id": "8.2",
       "title": "Чернобыль и техногенные катастрофы",
       "section": "8. Примеры и Кейсы",
       "md": "8. Примеры и Кейсы/8.2. Чернобыль и техногенные катастрофы.md",
-      "date": "2026-07-20",
+      "date": "2026-07-20T20:52:16+03:00",
       "kind": "changed",
       "note": "Add TOC and in-page search with loupe UI; revise Chernobyl case levels."
-    },
-    {
-      "id": "12.1",
-      "title": "Исследовательская программа",
-      "section": "12. Заключение",
-      "md": "12. Заключение/12.1. Исследовательская программа.md",
-      "date": "2026-07-20",
-      "kind": "changed",
-      "note": "Add projections section 11.1–11.3 with Dilts diagram; fix typo in 12.1."
     },
     {
       "id": "11.4",
       "title": "Луллий",
       "section": "11. Проекции",
       "md": "11. Проекции/11.4. Луллий.md",
-      "date": "2026-07-20",
+      "date": "2026-07-20T18:03:27+03:00",
       "kind": "added",
       "note": "Rename Dilts page to 11.3 and add Lull page 11.4 with illustration."
     },
@@ -151,16 +142,25 @@
       "title": "Уровни Дилтса",
       "section": "11. Проекции",
       "md": "11. Проекции/11.3. Уровни Дилтса.md",
-      "date": "2026-07-20",
+      "date": "2026-07-20T18:03:27+03:00",
       "kind": "added",
       "note": "Rename Dilts page to 11.3 and add Lull page 11.4 with illustration."
+    },
+    {
+      "id": "12.1",
+      "title": "Исследовательская программа",
+      "section": "12. Заключение",
+      "md": "12. Заключение/12.1. Исследовательская программа.md",
+      "date": "2026-07-20T16:41:43+03:00",
+      "kind": "changed",
+      "note": "Add projections section 11.1–11.3 with Dilts diagram; fix typo in 12.1."
     },
     {
       "id": "11.2",
       "title": "Юнг",
       "section": "11. Проекции",
       "md": "11. Проекции/11.2. Юнг.md",
-      "date": "2026-07-20",
+      "date": "2026-07-20T16:41:43+03:00",
       "kind": "added",
       "note": "Add projections section 11.1–11.3 with Dilts diagram; fix typo in 12.1."
     },
@@ -169,7 +169,7 @@
       "title": "Фрейд",
       "section": "11. Проекции",
       "md": "11. Проекции/11.1. Фрейд.md",
-      "date": "2026-07-20",
+      "date": "2026-07-20T16:41:43+03:00",
       "kind": "added",
       "note": "Add projections section 11.1–11.3 with Dilts diagram; fix typo in 12.1."
     },
@@ -178,7 +178,7 @@
       "title": "За пределами виртуального мира",
       "section": "10. Система",
       "md": "10. Система/10.5. Виртуальный мир/10.5.7. За пределами виртуального мира.md",
-      "date": "2026-07-18",
+      "date": "2026-07-18T08:24:54+03:00",
       "kind": "added",
       "note": "Add Patreon note 0.1 and virtual-world page 10.5.7; ignore Untitled.base."
     },
@@ -187,34 +187,43 @@
       "title": "Патреон",
       "section": "1. Крошки",
       "md": "1. Крошки/0.1. Патреон.md",
-      "date": "2026-07-18",
+      "date": "2026-07-18T08:24:54+03:00",
       "kind": "added",
       "note": "Add Patreon note 0.1 and virtual-world page 10.5.7; ignore Untitled.base."
     },
     {
-      "id": "8.5",
-      "title": "Дедушка Крылов",
-      "section": "8. Примеры и Кейсы",
-      "md": "8. Примеры и Кейсы/8.5. Дедушка Крылов.md",
-      "date": "2026-07-16",
+      "id": "10.5.6",
+      "title": "Маркеры и интерпретации",
+      "section": "10. Система",
+      "md": "10. Система/10.5. Виртуальный мир/10.5.6. Маркеры и интерпретации.md",
+      "date": "2026-07-16T12:08:30+03:00",
       "kind": "added",
-      "note": "Add pages 8.5, 10.3.4–10.3.5, 10.7.2, 12.1 and update 10.6.1/10.8.1."
+      "note": "Add virtual-world page 10.5.6 and draft section 13 stub; update pages index."
     },
     {
       "id": "10.8.1",
       "title": "Сколько их - посчитаем",
       "section": "10. Система",
       "md": "10. Система/10.8. Проценты/10.8.1. Сколько их - посчитаем.md",
-      "date": "2026-07-16",
+      "date": "2026-07-16T09:02:23+03:00",
       "kind": "changed",
       "note": "Prefer FormSubmit for feedback with mailto fallback; expand percentages 10.8.1."
+    },
+    {
+      "id": "8.5",
+      "title": "Дедушка Крылов",
+      "section": "8. Примеры и Кейсы",
+      "md": "8. Примеры и Кейсы/8.5. Дедушка Крылов.md",
+      "date": "2026-07-16T04:51:35+03:00",
+      "kind": "added",
+      "note": "Add pages 8.5, 10.3.4–10.3.5, 10.7.2, 12.1 and update 10.6.1/10.8.1."
     },
     {
       "id": "10.7.2",
       "title": "Как построить картину мира",
       "section": "10. Система",
       "md": "10. Система/10.7. Гуманитарное знание/10.7.2.  Как построить картину мира.md",
-      "date": "2026-07-16",
+      "date": "2026-07-16T04:51:35+03:00",
       "kind": "added",
       "note": "Add pages 8.5, 10.3.4–10.3.5, 10.7.2, 12.1 and update 10.6.1/10.8.1."
     },
@@ -223,25 +232,16 @@
       "title": "Оптимизация изложения",
       "section": "10. Система",
       "md": "10. Система/10.6. Оптимизация/10.6.1. Оптимизация изложения.md",
-      "date": "2026-07-16",
+      "date": "2026-07-16T04:51:35+03:00",
       "kind": "changed",
       "note": "Add pages 8.5, 10.3.4–10.3.5, 10.7.2, 12.1 and update 10.6.1/10.8.1."
-    },
-    {
-      "id": "10.5.6",
-      "title": "Маркеры и интерпретации",
-      "section": "10. Система",
-      "md": "10. Система/10.5. Виртуальный мир/10.5.6. Маркеры и интерпретации.md",
-      "date": "2026-07-16",
-      "kind": "added",
-      "note": "Add virtual-world page 10.5.6 and draft section 13 stub; update pages index."
     },
     {
       "id": "10.3.5",
       "title": "Стилистические четверки",
       "section": "10. Система",
       "md": "10. Система/10.3. Уровни/10.3.5. Стилистические четверки.md",
-      "date": "2026-07-16",
+      "date": "2026-07-16T04:51:35+03:00",
       "kind": "added",
       "note": "Add pages 8.5, 10.3.4–10.3.5, 10.7.2, 12.1 and update 10.6.1/10.8.1."
     },
@@ -250,70 +250,16 @@
       "title": "Течения в искусстве",
       "section": "10. Система",
       "md": "10. Система/10.3. Уровни/10.3.4. Течения в искусстве.md",
-      "date": "2026-07-16",
+      "date": "2026-07-16T04:51:35+03:00",
       "kind": "added",
       "note": "Add pages 8.5, 10.3.4–10.3.5, 10.7.2, 12.1 and update 10.6.1/10.8.1."
-    },
-    {
-      "id": "9.6",
-      "title": "Моральный кодекс 1961",
-      "section": "9. Социология и политика",
-      "md": "9. Социология и политика/9.6. Моральный кодекс 1961.md",
-      "date": "2026-07-15",
-      "kind": "added",
-      "note": "Add sociology pages 9.3–9.6 (estates, Robespierre/Uvarov, state, moral code)."
-    },
-    {
-      "id": "9.5",
-      "title": "Государство в России",
-      "section": "9. Социология и политика",
-      "md": "9. Социология и политика/9.5. Государство в России.md",
-      "date": "2026-07-15",
-      "kind": "added",
-      "note": "Add sociology pages 9.3–9.6 (estates, Robespierre/Uvarov, state, moral code)."
-    },
-    {
-      "id": "9.4",
-      "title": "Робеспьер и Уваров",
-      "section": "9. Социология и политика",
-      "md": "9. Социология и политика/9.4. Робеспьер и Уваров.md",
-      "date": "2026-07-15",
-      "kind": "changed",
-      "note": "Fix punctuation and wording typos in sociology pages 9.1, 9.3, 9.4."
-    },
-    {
-      "id": "9.3",
-      "title": "Сословия и уклады в Европе",
-      "section": "9. Социология и политика",
-      "md": "9. Социология и политика/9.3. Сословия и уклады в Европе.md",
-      "date": "2026-07-15",
-      "kind": "added",
-      "note": "Restructure pages: rename 3.7.2/8.2–8.4/9.3 and add psychology 6.4."
-    },
-    {
-      "id": "9.2",
-      "title": "Долгоживущие игры",
-      "section": "9. Социология и политика",
-      "md": "9. Социология и политика/9.2. Долгоживущие игры.md",
-      "date": "2026-07-15",
-      "kind": "changed",
-      "note": "Publish humanities page 10.7.1 and expand long-lived games 9.2."
-    },
-    {
-      "id": "9.1",
-      "title": "Микро и макро, группы и псевдо",
-      "section": "9. Социология и политика",
-      "md": "9. Социология и политика/9.1. Микро и макро, группы и псевдо.md",
-      "date": "2026-07-15",
-      "kind": "changed",
-      "note": "Fix punctuation and wording typos in sociology pages 9.1, 9.3, 9.4."
     },
     {
       "id": "8.4",
       "title": "Курочка ряба",
       "section": "8. Примеры и Кейсы",
       "md": "8. Примеры и Кейсы/8.4. Курочка ряба.md",
-      "date": "2026-07-15",
+      "date": "2026-07-15T19:29:24+03:00",
       "kind": "changed",
       "note": "Fix typos in cases 8.2–8.4 and add virtual-world pages 10.5.4–10.5.5."
     },
@@ -322,70 +268,16 @@
       "title": "Вписанность",
       "section": "8. Примеры и Кейсы",
       "md": "8. Примеры и Кейсы/8.3. Вписанность.md",
-      "date": "2026-07-15",
+      "date": "2026-07-15T19:29:24+03:00",
       "kind": "changed",
       "note": "Fix typos in cases 8.2–8.4 and add virtual-world pages 10.5.4–10.5.5."
-    },
-    {
-      "id": "8.1",
-      "title": "Сократ",
-      "section": "8. Примеры и Кейсы",
-      "md": "8. Примеры и Кейсы/8.1. Сократ.md",
-      "date": "2026-07-15",
-      "kind": "added",
-      "note": "Add examples section with page 8.1 Socrates."
-    },
-    {
-      "id": "6.4",
-      "title": "Задача о молодоженах",
-      "section": "6. Психология",
-      "md": "6. Психология/6.4. Задача о молодоженах.md",
-      "date": "2026-07-15",
-      "kind": "added",
-      "note": "Restructure pages: rename 3.7.2/8.2–8.4/9.3 and add psychology 6.4."
-    },
-    {
-      "id": "6.2",
-      "title": "Типологии, стадии, состояния",
-      "section": "6. Психология",
-      "md": "6. Психология/6.2. Типологии, стадии, состояния.md",
-      "date": "2026-07-15",
-      "kind": "added",
-      "note": "Publish psychology page 6.2 by clearing its draft @ marker."
-    },
-    {
-      "id": "5.2",
-      "title": "Определения философии",
-      "section": "5. Философия",
-      "md": "5. Философия/5.2. Определения философии.md",
-      "date": "2026-07-15",
-      "kind": "added",
-      "note": "Add philosophy 5.2, example cases 8.2–8.4, and sociology pages 9.1–9.2."
-    },
-    {
-      "id": "3.7.2",
-      "title": "Маневры и задача о выборе партнера",
-      "section": "3. Сэндвичи",
-      "md": "3. Сэндвичи/3.7.2. Маневры и задача о выборе партнера.md",
-      "date": "2026-07-15",
-      "kind": "added",
-      "note": "Restructure pages: rename 3.7.2/8.2–8.4/9.3 and add psychology 6.4."
-    },
-    {
-      "id": "10.7.1",
-      "title": "Отставание гуманитарного знания",
-      "section": "10. Система",
-      "md": "10. Система/10.7. Гуманитарное знание/10.7.1.  Отставание гуманитарного знания.md",
-      "date": "2026-07-15",
-      "kind": "added",
-      "note": "Publish humanities page 10.7.1 and expand long-lived games 9.2."
     },
     {
       "id": "10.5.5",
       "title": "Комплектование команды",
       "section": "10. Система",
       "md": "10. Система/10.5. Виртуальный мир/10.5.5. Комплектование команды.md",
-      "date": "2026-07-15",
+      "date": "2026-07-15T19:29:24+03:00",
       "kind": "added",
       "note": "Fix typos in cases 8.2–8.4 and add virtual-world pages 10.5.4–10.5.5."
     },
@@ -394,7 +286,7 @@
       "title": "Проблема диалога",
       "section": "10. Система",
       "md": "10. Система/10.5. Виртуальный мир/10.5.4. Проблема диалога.md",
-      "date": "2026-07-15",
+      "date": "2026-07-15T19:29:24+03:00",
       "kind": "added",
       "note": "Fix typos in cases 8.2–8.4 and add virtual-world pages 10.5.4–10.5.5."
     },
@@ -403,70 +295,142 @@
       "title": "Контексты",
       "section": "10. Система",
       "md": "10. Система/10.5. Виртуальный мир/10.5.3. Контексты.md",
-      "date": "2026-07-15",
+      "date": "2026-07-15T19:29:24+03:00",
       "kind": "changed",
       "note": "Fix typos in cases 8.2–8.4 and add virtual-world pages 10.5.4–10.5.5."
+    },
+    {
+      "id": "9.3",
+      "title": "Сословия и уклады в Европе",
+      "section": "9. Социология и политика",
+      "md": "9. Социология и политика/9.3. Сословия и уклады в Европе.md",
+      "date": "2026-07-15T17:39:49+03:00",
+      "kind": "added",
+      "note": "Restructure pages: rename 3.7.2/8.2–8.4/9.3 and add psychology 6.4."
+    },
+    {
+      "id": "6.4",
+      "title": "Задача о молодоженах",
+      "section": "6. Психология",
+      "md": "6. Психология/6.4. Задача о молодоженах.md",
+      "date": "2026-07-15T17:39:49+03:00",
+      "kind": "added",
+      "note": "Restructure pages: rename 3.7.2/8.2–8.4/9.3 and add psychology 6.4."
+    },
+    {
+      "id": "3.7.2",
+      "title": "Маневры и задача о выборе партнера",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.7.2. Маневры и задача о выборе партнера.md",
+      "date": "2026-07-15T17:39:49+03:00",
+      "kind": "added",
+      "note": "Restructure pages: rename 3.7.2/8.2–8.4/9.3 and add psychology 6.4."
+    },
+    {
+      "id": "9.4",
+      "title": "Робеспьер и Уваров",
+      "section": "9. Социология и политика",
+      "md": "9. Социология и политика/9.4. Робеспьер и Уваров.md",
+      "date": "2026-07-15T15:07:10+03:00",
+      "kind": "changed",
+      "note": "Fix punctuation and wording typos in sociology pages 9.1, 9.3, 9.4."
+    },
+    {
+      "id": "9.1",
+      "title": "Микро и макро, группы и псевдо",
+      "section": "9. Социология и политика",
+      "md": "9. Социология и политика/9.1. Микро и макро, группы и псевдо.md",
+      "date": "2026-07-15T15:07:10+03:00",
+      "kind": "changed",
+      "note": "Fix punctuation and wording typos in sociology pages 9.1, 9.3, 9.4."
+    },
+    {
+      "id": "9.6",
+      "title": "Моральный кодекс 1961",
+      "section": "9. Социология и политика",
+      "md": "9. Социология и политика/9.6. Моральный кодекс 1961.md",
+      "date": "2026-07-15T15:02:25+03:00",
+      "kind": "added",
+      "note": "Add sociology pages 9.3–9.6 (estates, Robespierre/Uvarov, state, moral code)."
+    },
+    {
+      "id": "9.5",
+      "title": "Государство в России",
+      "section": "9. Социология и политика",
+      "md": "9. Социология и политика/9.5. Государство в России.md",
+      "date": "2026-07-15T15:02:25+03:00",
+      "kind": "added",
+      "note": "Add sociology pages 9.3–9.6 (estates, Robespierre/Uvarov, state, moral code)."
+    },
+    {
+      "id": "9.2",
+      "title": "Долгоживущие игры",
+      "section": "9. Социология и политика",
+      "md": "9. Социология и политика/9.2. Долгоживущие игры.md",
+      "date": "2026-07-15T06:25:44+03:00",
+      "kind": "changed",
+      "note": "Publish humanities page 10.7.1 and expand long-lived games 9.2."
+    },
+    {
+      "id": "10.7.1",
+      "title": "Отставание гуманитарного знания",
+      "section": "10. Система",
+      "md": "10. Система/10.7. Гуманитарное знание/10.7.1.  Отставание гуманитарного знания.md",
+      "date": "2026-07-15T06:25:44+03:00",
+      "kind": "added",
+      "note": "Publish humanities page 10.7.1 and expand long-lived games 9.2."
+    },
+    {
+      "id": "5.2",
+      "title": "Определения философии",
+      "section": "5. Философия",
+      "md": "5. Философия/5.2. Определения философии.md",
+      "date": "2026-07-15T04:49:24+03:00",
+      "kind": "added",
+      "note": "Add philosophy 5.2, example cases 8.2–8.4, and sociology pages 9.1–9.2."
+    },
+    {
+      "id": "8.1",
+      "title": "Сократ",
+      "section": "8. Примеры и Кейсы",
+      "md": "8. Примеры и Кейсы/8.1. Сократ.md",
+      "date": "2026-07-15T04:13:46+03:00",
+      "kind": "added",
+      "note": "Add examples section with page 8.1 Socrates."
+    },
+    {
+      "id": "6.2",
+      "title": "Типологии, стадии, состояния",
+      "section": "6. Психология",
+      "md": "6. Психология/6.2. Типологии, стадии, состояния.md",
+      "date": "2026-07-15T03:52:54+03:00",
+      "kind": "added",
+      "note": "Publish psychology page 6.2 by clearing its draft @ marker."
     },
     {
       "id": "10.4.6",
       "title": "Парадокс Коваля",
       "section": "10. Система",
       "md": "10. Система/10.4. Стратегии/10.4.6. Парадокс Коваля.md",
-      "date": "2026-07-15",
+      "date": "2026-07-15T03:39:55+03:00",
       "kind": "added",
       "note": "Add strategy page 10.4.6 on the Kovalev paradox."
     },
     {
-      "id": "7.4",
-      "title": "История философии истории",
-      "section": "7. История",
-      "md": "7. История/7.4. История философии истории.md",
-      "date": "2026-07-14",
-      "kind": "added",
-      "note": "Add history page 7.4 on the philosophy of history."
-    },
-    {
-      "id": "7.3",
-      "title": "Движитель и двигатель",
-      "section": "7. История",
-      "md": "7. История/7.3. Движитель и двигатель.md",
-      "date": "2026-07-14",
-      "kind": "added",
-      "note": "Add history page 7.3 and normalize 7.2 filename; tweak 7.1."
-    },
-    {
-      "id": "7.2",
-      "title": "Стрела истории (СИ)",
-      "section": "7. История",
-      "md": "7. История/7.2.  Стрела истории (СИ).md",
-      "date": "2026-07-14",
-      "kind": "added",
-      "note": "Add history page 7.3 and normalize 7.2 filename; tweak 7.1."
-    },
-    {
-      "id": "7.1",
-      "title": "История как смена эпох",
-      "section": "7. История",
-      "md": "7. История/7.1.  История как смена эпох.md",
-      "date": "2026-07-14",
+      "id": "10.5.2",
+      "title": "Правила расчета",
+      "section": "10. Система",
+      "md": "10. Система/10.5. Виртуальный мир/10.5.2. Правила расчета.md",
+      "date": "2026-07-14T22:22:13+03:00",
       "kind": "changed",
-      "note": "Add history page 7.3 and normalize 7.2 filename; tweak 7.1."
-    },
-    {
-      "id": "6.3",
-      "title": "Барьеры",
-      "section": "6. Психология",
-      "md": "6. Психология/6.3. Барьеры.md",
-      "date": "2026-07-14",
-      "kind": "added",
-      "note": "Add levels and strategy pages plus psychology 6.3 and diagrams."
+      "note": "Fill in calculation rules for the virtual world page 10.5.2."
     },
     {
       "id": "5.5.3",
       "title": "Личные индикаторы (6 разных)",
       "section": "5. Философия",
       "md": "5. Философия/5.5.3. Личные индикаторы (6 разных).md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T22:01:44+03:00",
       "kind": "added",
       "note": "Add philosophy pages on good and evil (5.5–5.5.3) with diagrams."
     },
@@ -475,7 +439,7 @@
       "title": "Социальные механизмы (8 разных)",
       "section": "5. Философия",
       "md": "5. Философия/5.5.2. Социальные механизмы (8 разных).md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T22:01:44+03:00",
       "kind": "added",
       "note": "Add philosophy pages on good and evil (5.5–5.5.3) with diagrams."
     },
@@ -484,7 +448,7 @@
       "title": "Технические подходы (3 разных)",
       "section": "5. Философия",
       "md": "5. Философия/5.5.1. Технические подходы (3 разных).md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T22:01:44+03:00",
       "kind": "added",
       "note": "Add philosophy pages on good and evil (5.5–5.5.3) with diagrams."
     },
@@ -493,88 +457,79 @@
       "title": "Добро и зло",
       "section": "5. Философия",
       "md": "5. Философия/5.5. Добро и зло.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T22:01:44+03:00",
       "kind": "added",
       "note": "Add philosophy pages on good and evil (5.5–5.5.3) with diagrams."
+    },
+    {
+      "id": "7.4",
+      "title": "История философии истории",
+      "section": "7. История",
+      "md": "7. История/7.4. История философии истории.md",
+      "date": "2026-07-14T21:18:36+03:00",
+      "kind": "added",
+      "note": "Add history page 7.4 on the philosophy of history."
+    },
+    {
+      "id": "7.3",
+      "title": "Движитель и двигатель",
+      "section": "7. История",
+      "md": "7. История/7.3. Движитель и двигатель.md",
+      "date": "2026-07-14T21:15:41+03:00",
+      "kind": "added",
+      "note": "Add history page 7.3 and normalize 7.2 filename; tweak 7.1."
+    },
+    {
+      "id": "7.2",
+      "title": "Стрела истории (СИ)",
+      "section": "7. История",
+      "md": "7. История/7.2.  Стрела истории (СИ).md",
+      "date": "2026-07-14T21:15:41+03:00",
+      "kind": "added",
+      "note": "Add history page 7.3 and normalize 7.2 filename; tweak 7.1."
+    },
+    {
+      "id": "7.1",
+      "title": "История как смена эпох",
+      "section": "7. История",
+      "md": "7. История/7.1.  История как смена эпох.md",
+      "date": "2026-07-14T21:15:41+03:00",
+      "kind": "changed",
+      "note": "Add history page 7.3 and normalize 7.2 filename; tweak 7.1."
     },
     {
       "id": "4.8",
       "title": "Проблемы, задачи, вопросы",
       "section": "4. Кухня",
       "md": "4. Кухня/4.8. Проблемы, задачи, вопросы.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T18:48:14+03:00",
       "kind": "changed",
       "note": "Add sandwich pages 3.7.1–3.7.2 and history 7.2 on the arrow of history."
-    },
-    {
-      "id": "4.1.3",
-      "title": "Уровни кратко",
-      "section": "4. Кухня",
-      "md": "4. Кухня/4.1.3 Уровни кратко.md",
-      "date": "2026-07-14",
-      "kind": "added",
-      "note": "Publish разогрев pages 4.1.2–4.1.3 and expand section 10.2 on temperature."
-    },
-    {
-      "id": "4.1.2",
-      "title": "Разогрев",
-      "section": "4. Кухня",
-      "md": "4. Кухня/4.1.2 Разогрев.md",
-      "date": "2026-07-14",
-      "kind": "added",
-      "note": "Publish разогрев pages 4.1.2–4.1.3 and expand section 10.2 on temperature."
     },
     {
       "id": "3.7.1",
       "title": "Элементарный конфликт",
       "section": "3. Сэндвичи",
       "md": "3. Сэндвичи/3.7.1. Элементарный конфликт.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T18:48:14+03:00",
       "kind": "added",
       "note": "Add sandwich pages 3.7.1–3.7.2 and history 7.2 on the arrow of history."
     },
     {
-      "id": "3.6",
-      "title": "Структурная сложность мышления",
-      "section": "3. Сэндвичи",
-      "md": "3. Сэндвичи/3.6. Структурная сложность мышления.md",
-      "date": "2026-07-14",
-      "kind": "changed",
-      "note": "Expand levels 10.3 with pages 10.3.2–10.3.3.1 and related images."
-    },
-    {
-      "id": "3.12",
-      "title": "Радуга Дона Бека",
-      "section": "3. Сэндвичи",
-      "md": "3. Сэндвичи/3.12. Радуга Дона Бека.md",
-      "date": "2026-07-14",
-      "kind": "changed",
-      "note": "Hide unfinished pages and sections marked with @ from the reader."
-    },
-    {
-      "id": "2.2",
-      "title": "Музыка",
-      "section": "2. Ломтики",
-      "md": "2. Ломтики/2.2. Музыка.md",
-      "date": "2026-07-14",
-      "kind": "changed",
-      "note": "Expand levels 10.3 with pages 10.3.2–10.3.3.1 and related images."
-    },
-    {
-      "id": "10.5.2",
-      "title": "Правила расчета",
-      "section": "10. Система",
-      "md": "10. Система/10.5. Виртуальный мир/10.5.2. Правила расчета.md",
-      "date": "2026-07-14",
-      "kind": "changed",
-      "note": "Fill in calculation rules for the virtual world page 10.5.2."
+      "id": "6.3",
+      "title": "Барьеры",
+      "section": "6. Психология",
+      "md": "6. Психология/6.3. Барьеры.md",
+      "date": "2026-07-14T17:25:15+03:00",
+      "kind": "added",
+      "note": "Add levels and strategy pages plus psychology 6.3 and diagrams."
     },
     {
       "id": "10.5.1",
       "title": "Виртуальный мир",
       "section": "10. Система",
       "md": "10. Система/10.5. Виртуальный мир/10.5.1. Виртуальный мир.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T17:25:15+03:00",
       "kind": "changed",
       "note": "Add levels and strategy pages plus psychology 6.3 and diagrams."
     },
@@ -583,7 +538,7 @@
       "title": "Основная теорема",
       "section": "10. Система",
       "md": "10. Система/10.4. Стратегии/10.4.5. Основная теорема.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T17:25:15+03:00",
       "kind": "added",
       "note": "Add levels and strategy pages plus psychology 6.3 and diagrams."
     },
@@ -592,7 +547,7 @@
       "title": "Миф,  религия, наука",
       "section": "10. Система",
       "md": "10. Система/10.4. Стратегии/10.4.3. Миф,  религия, наука.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T17:25:15+03:00",
       "kind": "added",
       "note": "Add levels and strategy pages plus psychology 6.3 and diagrams."
     },
@@ -601,7 +556,7 @@
       "title": "Взаимодействие",
       "section": "10. Система",
       "md": "10. Система/10.3. Уровни/10.3.3.3. Взаимодействие.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T17:25:15+03:00",
       "kind": "added",
       "note": "Add levels and strategy pages plus psychology 6.3 and diagrams."
     },
@@ -610,16 +565,34 @@
       "title": "Сознание",
       "section": "10. Система",
       "md": "10. Система/10.3. Уровни/10.3.3.2. Сознание.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T17:25:15+03:00",
       "kind": "added",
       "note": "Add levels and strategy pages plus psychology 6.3 and diagrams."
+    },
+    {
+      "id": "3.6",
+      "title": "Структурная сложность мышления",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.6. Структурная сложность мышления.md",
+      "date": "2026-07-14T14:36:46+03:00",
+      "kind": "changed",
+      "note": "Expand levels 10.3 with pages 10.3.2–10.3.3.1 and related images."
+    },
+    {
+      "id": "2.2",
+      "title": "Музыка",
+      "section": "2. Ломтики",
+      "md": "2. Ломтики/2.2. Музыка.md",
+      "date": "2026-07-14T14:36:46+03:00",
+      "kind": "changed",
+      "note": "Expand levels 10.3 with pages 10.3.2–10.3.3.1 and related images."
     },
     {
       "id": "10.3.3.1",
       "title": "Мышление",
       "section": "10. Система",
       "md": "10. Система/10.3. Уровни/10.3.3.1. Мышление.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T14:36:46+03:00",
       "kind": "added",
       "note": "Expand levels 10.3 with pages 10.3.2–10.3.3.1 and related images."
     },
@@ -628,7 +601,7 @@
       "title": "ЧЧД",
       "section": "10. Система",
       "md": "10. Система/10.3. Уровни/10.3.3. ЧЧД.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T14:36:46+03:00",
       "kind": "added",
       "note": "Expand levels 10.3 with pages 10.3.2–10.3.3.1 and related images."
     },
@@ -637,7 +610,7 @@
       "title": "Шкалы базовые",
       "section": "10. Система",
       "md": "10. Система/10.3. Уровни/10.3.2. Шкалы базовые.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T14:36:46+03:00",
       "kind": "added",
       "note": "Expand levels 10.3 with pages 10.3.2–10.3.3.1 and related images."
     },
@@ -646,16 +619,34 @@
       "title": "10. Система/10.3. Уровни/10.3.1-3.7.md",
       "section": "10. Система",
       "md": "10. Система/10.3. Уровни/10.3.1-3.7.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T14:36:46+03:00",
       "kind": "changed",
       "note": "Expand levels 10.3 with pages 10.3.2–10.3.3.1 and related images."
+    },
+    {
+      "id": "4.1.3",
+      "title": "Уровни кратко",
+      "section": "4. Кухня",
+      "md": "4. Кухня/4.1.3 Уровни кратко.md",
+      "date": "2026-07-14T09:56:56+03:00",
+      "kind": "added",
+      "note": "Publish разогрев pages 4.1.2–4.1.3 and expand section 10.2 on temperature."
+    },
+    {
+      "id": "4.1.2",
+      "title": "Разогрев",
+      "section": "4. Кухня",
+      "md": "4. Кухня/4.1.2 Разогрев.md",
+      "date": "2026-07-14T09:56:56+03:00",
+      "kind": "added",
+      "note": "Publish разогрев pages 4.1.2–4.1.3 and expand section 10.2 on temperature."
     },
     {
       "id": "10.2.8",
       "title": "В классе",
       "section": "10. Система",
       "md": "10. Система/10.2. Разогрев/10.2.8. В классе.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T09:56:56+03:00",
       "kind": "added",
       "note": "Publish разогрев pages 4.1.2–4.1.3 and expand section 10.2 on temperature."
     },
@@ -664,7 +655,7 @@
       "title": "Индивидуалисты и коллективисты",
       "section": "10. Система",
       "md": "10. Система/10.2. Разогрев/10.2.7. Индивидуалисты и коллективисты.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T09:56:56+03:00",
       "kind": "added",
       "note": "Publish разогрев pages 4.1.2–4.1.3 and expand section 10.2 on temperature."
     },
@@ -673,7 +664,7 @@
       "title": "Два темперамента или даже три",
       "section": "10. Система",
       "md": "10. Система/10.2. Разогрев/10.2.6.  Два темперамента или даже три.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T09:56:56+03:00",
       "kind": "added",
       "note": "Publish разогрев pages 4.1.2–4.1.3 and expand section 10.2 on temperature."
     },
@@ -682,7 +673,7 @@
       "title": "Кривые разогрева",
       "section": "10. Система",
       "md": "10. Система/10.2. Разогрев/10.2.5. Кривые разогрева.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T09:56:56+03:00",
       "kind": "added",
       "note": "Publish разогрев pages 4.1.2–4.1.3 and expand section 10.2 on temperature."
     },
@@ -691,7 +682,7 @@
       "title": "Смех и слезы",
       "section": "10. Система",
       "md": "10. Система/10.2. Разогрев/10.2.4. Смех и слезы.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T09:56:56+03:00",
       "kind": "added",
       "note": "Publish разогрев pages 4.1.2–4.1.3 and expand section 10.2 on temperature."
     },
@@ -700,7 +691,7 @@
       "title": "Макро-шкалы",
       "section": "10. Система",
       "md": "10. Система/10.2. Разогрев/10.2.3. Макро-шкалы.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T09:56:56+03:00",
       "kind": "added",
       "note": "Publish разогрев pages 4.1.2–4.1.3 and expand section 10.2 on temperature."
     },
@@ -709,7 +700,7 @@
       "title": "Темпераменты",
       "section": "10. Система",
       "md": "10. Система/10.2. Разогрев/10.2.2. Темпераменты.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T09:56:56+03:00",
       "kind": "added",
       "note": "Publish разогрев pages 4.1.2–4.1.3 and expand section 10.2 on temperature."
     },
@@ -718,7 +709,7 @@
       "title": "Темперамент и разогрев",
       "section": "10. Система",
       "md": "10. Система/10.2. Разогрев/10.2.1. Темперамент и разогрев.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T09:56:56+03:00",
       "kind": "added",
       "note": "Publish разогрев pages 4.1.2–4.1.3 and expand section 10.2 on temperature."
     },
@@ -727,7 +718,7 @@
       "title": "Рибо о кодировках",
       "section": "10. Система",
       "md": "10. Система/10.1. Кодировки/10.1.5. Рибо о кодировках.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T08:30:38+03:00",
       "kind": "added",
       "note": "Publish coding page 10.1.4 and add 10.1.5 on encodings."
     },
@@ -736,7 +727,7 @@
       "title": "Кто еще об этом",
       "section": "10. Система",
       "md": "10. Система/10.1. Кодировки/10.1.4. Кто еще об этом.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T08:30:38+03:00",
       "kind": "added",
       "note": "Publish coding page 10.1.4 and add 10.1.5 on encodings."
     },
@@ -745,7 +736,7 @@
       "title": "Рекомендации",
       "section": "10. Система",
       "md": "10. Система/10.1. Кодировки/10.1.3. Рекомендации.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T07:45:31+03:00",
       "kind": "added",
       "note": "Publish coding pages 10.1.2 and 10.1.3 by clearing draft @ markers."
     },
@@ -754,34 +745,34 @@
       "title": "Примеры кодировок",
       "section": "10. Система",
       "md": "10. Система/10.1. Кодировки/10.1.2. Примеры кодировок.md",
-      "date": "2026-07-14",
+      "date": "2026-07-14T07:45:31+03:00",
       "kind": "added",
       "note": "Publish coding pages 10.1.2 and 10.1.3 by clearing draft @ markers."
     },
     {
-      "id": "6.1",
-      "title": "Психология",
-      "section": "6. Психология",
-      "md": "6. Психология/6.1. Психология.md",
-      "date": "2026-07-13",
+      "id": "3.12",
+      "title": "Радуга Дона Бека",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.12. Радуга Дона Бека.md",
+      "date": "2026-07-14T05:39:02+03:00",
       "kind": "changed",
-      "note": "Add system pages 10.4–10.7 and refresh kitchen, psychology, history."
+      "note": "Hide unfinished pages and sections marked with @ from the reader."
     },
     {
-      "id": "5.1",
-      "title": "Философия",
-      "section": "5. Философия",
-      "md": "5. Философия/5.1. Философия.md",
-      "date": "2026-07-13",
-      "kind": "added",
-      "note": "Add page-include aliases and expand book structure."
+      "id": "3.4",
+      "title": "Ребенок и Культура",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.4. Ребенок и Культура.md",
+      "date": "2026-07-13T21:17:48+03:00",
+      "kind": "changed",
+      "note": "Add like/dislike votes emailed to the author via FormSubmit."
     },
     {
       "id": "4.1.1",
       "title": "Кодировки",
       "section": "4. Кухня",
       "md": "4. Кухня/4.1.1 Кодировки.md",
-      "date": "2026-07-13",
+      "date": "2026-07-13T17:12:58+03:00",
       "kind": "changed",
       "note": "Fix typos across crumbs, slices, sandwiches, kitchen, history, and system pages."
     },
@@ -790,61 +781,25 @@
       "title": "Метод Резерфорда",
       "section": "3. Сэндвичи",
       "md": "3. Сэндвичи/3.8. Метод Резерфорда.md",
-      "date": "2026-07-13",
+      "date": "2026-07-13T17:12:58+03:00",
       "kind": "changed",
       "note": "Fix typos across crumbs, slices, sandwiches, kitchen, history, and system pages."
-    },
-    {
-      "id": "3.5",
-      "title": "Рисунки",
-      "section": "3. Сэндвичи",
-      "md": "3. Сэндвичи/3.5. Рисунки.md",
-      "date": "2026-07-13",
-      "kind": "changed",
-      "note": "Add pages 6.2 and 10.8.1 with sandwich audio for 3.3.1–3.4.1."
-    },
-    {
-      "id": "3.4.1",
-      "title": "Проблема соответствия",
-      "section": "3. Сэндвичи",
-      "md": "3. Сэндвичи/3.4.1 Проблема соответствия.md",
-      "date": "2026-07-13",
-      "kind": "changed",
-      "note": "Add pages 6.2 and 10.8.1 with sandwich audio for 3.3.1–3.4.1."
-    },
-    {
-      "id": "3.4",
-      "title": "Ребенок и Культура",
-      "section": "3. Сэндвичи",
-      "md": "3. Сэндвичи/3.4. Ребенок и Культура.md",
-      "date": "2026-07-13",
-      "kind": "changed",
-      "note": "Add like/dislike votes emailed to the author via FormSubmit."
     },
     {
       "id": "3.3.1",
       "title": "Начало",
       "section": "3. Сэндвичи",
       "md": "3. Сэндвичи/3.3.1 Начало.md",
-      "date": "2026-07-13",
+      "date": "2026-07-13T17:12:58+03:00",
       "kind": "changed",
       "note": "Fix typos across crumbs, slices, sandwiches, kitchen, history, and system pages."
-    },
-    {
-      "id": "3.1.1",
-      "title": "Мой первый сэндвич",
-      "section": "3. Сэндвичи",
-      "md": "3. Сэндвичи/3.1.1 Мой первый сэндвич.md",
-      "date": "2026-07-13",
-      "kind": "changed",
-      "note": "Add audio for sandwiches 3.1–3.2 and tweak page 3.1.1."
     },
     {
       "id": "3.1",
       "title": "Кеплер и Ньютон",
       "section": "3. Сэндвичи",
       "md": "3. Сэндвичи/3.1. Кеплер и Ньютон.md",
-      "date": "2026-07-13",
+      "date": "2026-07-13T17:12:58+03:00",
       "kind": "changed",
       "note": "Fix typos across crumbs, slices, sandwiches, kitchen, history, and system pages."
     },
@@ -853,7 +808,7 @@
       "title": "Задача о воспитателе",
       "section": "2. Ломтики",
       "md": "2. Ломтики/2.5. Задача о воспитателе.md",
-      "date": "2026-07-13",
+      "date": "2026-07-13T17:12:58+03:00",
       "kind": "changed",
       "note": "Fix typos across crumbs, slices, sandwiches, kitchen, history, and system pages."
     },
@@ -862,7 +817,7 @@
       "title": "Метод проектов",
       "section": "2. Ломтики",
       "md": "2. Ломтики/2.3.3. Метод проектов.md",
-      "date": "2026-07-13",
+      "date": "2026-07-13T17:12:58+03:00",
       "kind": "changed",
       "note": "Fix typos across crumbs, slices, sandwiches, kitchen, history, and system pages."
     },
@@ -871,7 +826,7 @@
       "title": "Задача о выборе школы",
       "section": "2. Ломтики",
       "md": "2. Ломтики/2.3.2. Задача о выборе школы.md",
-      "date": "2026-07-13",
+      "date": "2026-07-13T17:12:58+03:00",
       "kind": "changed",
       "note": "Fix typos across crumbs, slices, sandwiches, kitchen, history, and system pages."
     },
@@ -880,7 +835,7 @@
       "title": "Волны Тоффлера",
       "section": "2. Ломтики",
       "md": "2. Ломтики/2.11. Волны Тоффлера.md",
-      "date": "2026-07-13",
+      "date": "2026-07-13T17:12:58+03:00",
       "kind": "changed",
       "note": "Fix typos across crumbs, slices, sandwiches, kitchen, history, and system pages."
     },
@@ -889,43 +844,25 @@
       "title": "Структура научных революций",
       "section": "2. Ломтики",
       "md": "2. Ломтики/2.10.1 Структура научных революций.md",
-      "date": "2026-07-13",
+      "date": "2026-07-13T17:12:58+03:00",
       "kind": "changed",
       "note": "Fix typos across crumbs, slices, sandwiches, kitchen, history, and system pages."
-    },
-    {
-      "id": "10.4.2",
-      "title": "Переключение",
-      "section": "10. Система",
-      "md": "10. Система/10.4. Стратегии/10.4.2. Переключение.md",
-      "date": "2026-07-13",
-      "kind": "added",
-      "note": "Add system pages 10.4–10.7 and refresh kitchen, psychology, history."
     },
     {
       "id": "10.4.1",
       "title": "Инфологическая ткань общества",
       "section": "10. Система",
       "md": "10. Система/10.4. Стратегии/10.4.1. Инфологическая ткань общества.md",
-      "date": "2026-07-13",
+      "date": "2026-07-13T17:12:58+03:00",
       "kind": "changed",
       "note": "Fix typos across crumbs, slices, sandwiches, kitchen, history, and system pages."
-    },
-    {
-      "id": "10.1.1",
-      "title": "10. Система/10.1. Кодировки/10.1.1-4.1.1.md",
-      "section": "10. Система",
-      "md": "10. Система/10.1. Кодировки/10.1.1-4.1.1.md",
-      "date": "2026-07-13",
-      "kind": "added",
-      "note": "Add page-include aliases and expand book structure."
     },
     {
       "id": "1.7",
       "title": "Спиральная динамика",
       "section": "1. Крошки",
       "md": "1. Крошки/1.7. Спиральная динамика.md",
-      "date": "2026-07-13",
+      "date": "2026-07-13T17:12:58+03:00",
       "kind": "changed",
       "note": "Fix typos across crumbs, slices, sandwiches, kitchen, history, and system pages."
     },
@@ -934,7 +871,7 @@
       "title": "Пирамида Маслоу",
       "section": "1. Крошки",
       "md": "1. Крошки/1.6. Пирамида Маслоу.md",
-      "date": "2026-07-13",
+      "date": "2026-07-13T17:12:58+03:00",
       "kind": "changed",
       "note": "Fix typos across crumbs, slices, sandwiches, kitchen, history, and system pages."
     },
@@ -943,7 +880,7 @@
       "title": "П-Процедура",
       "section": "1. Крошки",
       "md": "1. Крошки/1.3.3. П-Процедура.md",
-      "date": "2026-07-13",
+      "date": "2026-07-13T17:12:58+03:00",
       "kind": "changed",
       "note": "Fix typos across crumbs, slices, sandwiches, kitchen, history, and system pages."
     },
@@ -952,7 +889,7 @@
       "title": "Правила дискуссии - примеры",
       "section": "1. Крошки",
       "md": "1. Крошки/1.2.1. Правила дискуссии - примеры.md",
-      "date": "2026-07-13",
+      "date": "2026-07-13T17:12:58+03:00",
       "kind": "changed",
       "note": "Fix typos across crumbs, slices, sandwiches, kitchen, history, and system pages."
     },
@@ -961,25 +898,79 @@
       "title": "Правила плодотворной дискуссии",
       "section": "1. Крошки",
       "md": "1. Крошки/1.2. Правила плодотворной дискуссии.md",
-      "date": "2026-07-13",
+      "date": "2026-07-13T17:12:58+03:00",
       "kind": "changed",
       "note": "Fix typos across crumbs, slices, sandwiches, kitchen, history, and system pages."
     },
     {
-      "id": "3.3",
-      "title": "А дальше сами",
+      "id": "3.5",
+      "title": "Рисунки",
       "section": "3. Сэндвичи",
-      "md": "3. Сэндвичи/3.3. А дальше сами.md",
-      "date": "2026-07-12",
+      "md": "3. Сэндвичи/3.5. Рисунки.md",
+      "date": "2026-07-13T17:05:45+03:00",
       "kind": "changed",
-      "note": "Add pages 3.3.1 and 3.4.1, Beck rainbow image, and text updates."
+      "note": "Add pages 6.2 and 10.8.1 with sandwich audio for 3.3.1–3.4.1."
+    },
+    {
+      "id": "3.4.1",
+      "title": "Проблема соответствия",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.4.1 Проблема соответствия.md",
+      "date": "2026-07-13T17:05:45+03:00",
+      "kind": "changed",
+      "note": "Add pages 6.2 and 10.8.1 with sandwich audio for 3.3.1–3.4.1."
+    },
+    {
+      "id": "3.1.1",
+      "title": "Мой первый сэндвич",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.1.1 Мой первый сэндвич.md",
+      "date": "2026-07-13T13:54:35+03:00",
+      "kind": "changed",
+      "note": "Add audio for sandwiches 3.1–3.2 and tweak page 3.1.1."
+    },
+    {
+      "id": "6.1",
+      "title": "Психология",
+      "section": "6. Психология",
+      "md": "6. Психология/6.1. Психология.md",
+      "date": "2026-07-13T12:42:51+03:00",
+      "kind": "changed",
+      "note": "Add system pages 10.4–10.7 and refresh kitchen, psychology, history."
+    },
+    {
+      "id": "10.4.2",
+      "title": "Переключение",
+      "section": "10. Система",
+      "md": "10. Система/10.4. Стратегии/10.4.2. Переключение.md",
+      "date": "2026-07-13T12:42:51+03:00",
+      "kind": "added",
+      "note": "Add system pages 10.4–10.7 and refresh kitchen, psychology, history."
+    },
+    {
+      "id": "5.1",
+      "title": "Философия",
+      "section": "5. Философия",
+      "md": "5. Философия/5.1. Философия.md",
+      "date": "2026-07-13T04:16:12+03:00",
+      "kind": "added",
+      "note": "Add page-include aliases and expand book structure."
+    },
+    {
+      "id": "10.1.1",
+      "title": "10. Система/10.1. Кодировки/10.1.1-4.1.1.md",
+      "section": "10. Система",
+      "md": "10. Система/10.1. Кодировки/10.1.1-4.1.1.md",
+      "date": "2026-07-13T04:16:12+03:00",
+      "kind": "added",
+      "note": "Add page-include aliases and expand book structure."
     },
     {
       "id": "2.9",
       "title": "Метамодерн",
       "section": "2. Ломтики",
       "md": "2. Ломтики/2.9.  Метамодерн.md",
-      "date": "2026-07-12",
+      "date": "2026-07-12T14:09:10+03:00",
       "kind": "changed",
       "note": "Add audio for pages 2.8–2.10 and update 2.9 text."
     },
@@ -988,43 +979,34 @@
       "title": "Дискурс - экскурс - космос",
       "section": "2. Ломтики",
       "md": "2. Ломтики/2.7. Дискурс - экскурс - космос.md",
-      "date": "2026-07-12",
+      "date": "2026-07-12T12:38:15+03:00",
       "kind": "changed",
       "note": "Add audio and update text for page 2.7."
+    },
+    {
+      "id": "3.3",
+      "title": "А дальше сами",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.3. А дальше сами.md",
+      "date": "2026-07-12T12:04:12+03:00",
+      "kind": "changed",
+      "note": "Add pages 3.3.1 and 3.4.1, Beck rainbow image, and text updates."
     },
     {
       "id": "2.6",
       "title": "Евклид и Гильберт",
       "section": "2. Ломтики",
       "md": "2. Ломтики/2.6. Евклид и Гильберт.md",
-      "date": "2026-07-12",
+      "date": "2026-07-12T06:43:01+03:00",
       "kind": "changed",
       "note": "Add audio and update text for page 2.6."
-    },
-    {
-      "id": "3.7",
-      "title": "Уровни поля внимания",
-      "section": "3. Сэндвичи",
-      "md": "3. Сэндвичи/3.7. Уровни поля внимания.md",
-      "date": "2026-07-11",
-      "kind": "added",
-      "note": "Sync renamed pages, rebuild TOC, and add Delivery section."
-    },
-    {
-      "id": "2.4",
-      "title": "Задача о чужой игрушке",
-      "section": "2. Ломтики",
-      "md": "2. Ломтики/2.4. Задача о чужой игрушке.md",
-      "date": "2026-07-11",
-      "kind": "added",
-      "note": "Sync renamed pages, rebuild TOC, and add Delivery section."
     },
     {
       "id": "2.3.1",
       "title": "Классно-урочная система",
       "section": "2. Ломтики",
       "md": "2. Ломтики/2.3.1. Классно-урочная система.md",
-      "date": "2026-07-11",
+      "date": "2026-07-11T18:25:14+03:00",
       "kind": "changed",
       "note": "Update 2.3 pages and add audio for 2.3 and 2.3.1."
     },
@@ -1033,97 +1015,61 @@
       "title": "Турпоход на природу",
       "section": "2. Ломтики",
       "md": "2. Ломтики/2.3. Турпоход на природу.md",
-      "date": "2026-07-11",
+      "date": "2026-07-11T18:25:14+03:00",
       "kind": "changed",
       "note": "Update 2.3 pages and add audio for 2.3 and 2.3.1."
     },
     {
-      "id": "3.9",
-      "title": "Два конвейера",
+      "id": "3.7",
+      "title": "Уровни поля внимания",
       "section": "3. Сэндвичи",
-      "md": "3. Сэндвичи/3.9. Два конвейера.md",
-      "date": "2026-07-10",
-      "kind": "changed",
-      "note": "Add page 3.10 and update page 3.9."
+      "md": "3. Сэндвичи/3.7. Уровни поля внимания.md",
+      "date": "2026-07-11T18:13:05+03:00",
+      "kind": "added",
+      "note": "Sync renamed pages, rebuild TOC, and add Delivery section."
     },
     {
-      "id": "3.2",
-      "title": "Рекапитуляция по-американски",
-      "section": "3. Сэндвичи",
-      "md": "3. Сэндвичи/3.2. Рекапитуляция по-американски.md",
-      "date": "2026-07-10",
+      "id": "2.4",
+      "title": "Задача о чужой игрушке",
+      "section": "2. Ломтики",
+      "md": "2. Ломтики/2.4. Задача о чужой игрушке.md",
+      "date": "2026-07-11T18:13:05+03:00",
       "kind": "added",
-      "note": "Add sandwich chapters 3.4–3.9 and update related texts."
-    },
-    {
-      "id": "3.11",
-      "title": "Внешний конвейер",
-      "section": "3. Сэндвичи",
-      "md": "3. Сэндвичи/3.11. Внешний конвейер.md",
-      "date": "2026-07-10",
-      "kind": "added",
-      "note": "Add pages 1.3.1–1.3.3, 3.11, and new Kitchen section."
-    },
-    {
-      "id": "3.10",
-      "title": "Внутренний конвейер",
-      "section": "3. Сэндвичи",
-      "md": "3. Сэндвичи/3.10. Внутренний конвейер.md",
-      "date": "2026-07-10",
-      "kind": "added",
-      "note": "Add page 3.10 and update page 3.9."
-    },
-    {
-      "id": "1.9",
-      "title": "Может ли машина заменить человека",
-      "section": "1. Крошки",
-      "md": "1. Крошки/1.9. Может ли машина заменить человека.md",
-      "date": "2026-07-10",
-      "kind": "added",
-      "note": "Add audio 1.4–1.6, rename pages, and expand Kitchen section."
+      "note": "Sync renamed pages, rebuild TOC, and add Delivery section."
     },
     {
       "id": "1.8",
       "title": "Два афоризма",
       "section": "1. Крошки",
       "md": "1. Крошки/1.8. Два афоризма.md",
-      "date": "2026-07-10",
+      "date": "2026-07-10T22:35:20+03:00",
       "kind": "changed",
       "note": "Add page 1.7 and update page 1.8."
     },
     {
-      "id": "1.4",
-      "title": "История одного открытия",
+      "id": "1.9",
+      "title": "Может ли машина заменить человека",
       "section": "1. Крошки",
-      "md": "1. Крошки/1.4. История одного открытия.md",
-      "date": "2026-07-10",
-      "kind": "changed",
-      "note": "Add sandwich chapters 3.4–3.9 and update related texts."
+      "md": "1. Крошки/1.9. Может ли машина заменить человека.md",
+      "date": "2026-07-10T22:14:41+03:00",
+      "kind": "added",
+      "note": "Add audio 1.4–1.6, rename pages, and expand Kitchen section."
     },
     {
       "id": "1.3.2",
       "title": "Критерии качества",
       "section": "1. Крошки",
       "md": "1. Крошки/1.3.2. Критерии качества.md",
-      "date": "2026-07-10",
+      "date": "2026-07-10T17:51:51+03:00",
       "kind": "changed",
       "note": "Reorder 1.2.x pages, rename 1.3.3, and add audio 1.2.3."
-    },
-    {
-      "id": "1.3.1",
-      "title": "Список Баумейстера",
-      "section": "1. Крошки",
-      "md": "1. Крошки/1.3.1. Список Баумейстера.md",
-      "date": "2026-07-10",
-      "kind": "added",
-      "note": "Add pages 1.3.1–1.3.3, 3.11, and new Kitchen section."
     },
     {
       "id": "1.3",
       "title": "Шкала идеальных форм",
       "section": "1. Крошки",
       "md": "1. Крошки/1.3. Шкала идеальных форм.md",
-      "date": "2026-07-10",
+      "date": "2026-07-10T17:51:51+03:00",
       "kind": "changed",
       "note": "Reorder 1.2.x pages, rename 1.3.3, and add audio 1.2.3."
     },
@@ -1132,7 +1078,7 @@
       "title": "Оправдание четвертого правила",
       "section": "1. Крошки",
       "md": "1. Крошки/1.2.3.  Оправдание четвертого правила.md",
-      "date": "2026-07-10",
+      "date": "2026-07-10T17:51:51+03:00",
       "kind": "added",
       "note": "Reorder 1.2.x pages, rename 1.3.3, and add audio 1.2.3."
     },
@@ -1141,16 +1087,70 @@
       "title": "Все это ясно как простая гамма",
       "section": "1. Крошки",
       "md": "1. Крошки/1.2.2.  Все это ясно как простая гамма.md",
-      "date": "2026-07-10",
+      "date": "2026-07-10T17:51:51+03:00",
       "kind": "added",
       "note": "Reorder 1.2.x pages, rename 1.3.3, and add audio 1.2.3."
+    },
+    {
+      "id": "3.11",
+      "title": "Внешний конвейер",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.11. Внешний конвейер.md",
+      "date": "2026-07-10T14:56:44+03:00",
+      "kind": "added",
+      "note": "Add pages 1.3.1–1.3.3, 3.11, and new Kitchen section."
+    },
+    {
+      "id": "1.3.1",
+      "title": "Список Баумейстера",
+      "section": "1. Крошки",
+      "md": "1. Крошки/1.3.1. Список Баумейстера.md",
+      "date": "2026-07-10T14:56:44+03:00",
+      "kind": "added",
+      "note": "Add pages 1.3.1–1.3.3, 3.11, and new Kitchen section."
+    },
+    {
+      "id": "3.9",
+      "title": "Два конвейера",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.9. Два конвейера.md",
+      "date": "2026-07-10T09:27:50+03:00",
+      "kind": "changed",
+      "note": "Add page 3.10 and update page 3.9."
+    },
+    {
+      "id": "3.10",
+      "title": "Внутренний конвейер",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.10. Внутренний конвейер.md",
+      "date": "2026-07-10T09:27:50+03:00",
+      "kind": "added",
+      "note": "Add page 3.10 and update page 3.9."
+    },
+    {
+      "id": "3.2",
+      "title": "Рекапитуляция по-американски",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.2. Рекапитуляция по-американски.md",
+      "date": "2026-07-10T06:16:01+03:00",
+      "kind": "added",
+      "note": "Add sandwich chapters 3.4–3.9 and update related texts."
+    },
+    {
+      "id": "1.4",
+      "title": "История одного открытия",
+      "section": "1. Крошки",
+      "md": "1. Крошки/1.4. История одного открытия.md",
+      "date": "2026-07-10T06:16:01+03:00",
+      "kind": "changed",
+      "note": "Add sandwich chapters 3.4–3.9 and update related texts."
     },
     {
       "id": "1.10",
       "title": "Уроки информатики",
       "section": "1. Крошки",
       "md": "1. Крошки/1.10. Уроки информатики.md",
-      "date": "2026-07-09",
+      "date": "2026-07-09T14:46:47+03:00",
       "kind": "changed",
       "note": "Add page 3.3, audio 1.2.1, and update 1.2.x content."
     },
@@ -1159,7 +1159,7 @@
       "title": "Дискурс как нейрон",
       "section": "2. Ломтики",
       "md": "2. Ломтики/2.8. Дискурс как нейрон.md",
-      "date": "2026-07-08",
+      "date": "2026-07-08T21:13:00+03:00",
       "kind": "added",
       "note": "Initial commit: Obsidian vault with discourse materials."
     },
@@ -1168,7 +1168,7 @@
       "title": "Открытые задачи",
       "section": "2. Ломтики",
       "md": "2. Ломтики/2.10. Открытые задачи.md",
-      "date": "2026-07-08",
+      "date": "2026-07-08T21:13:00+03:00",
       "kind": "added",
       "note": "Initial commit: Obsidian vault with discourse materials."
     },
@@ -1177,7 +1177,7 @@
       "title": "Как я учился водить автомобиль",
       "section": "2. Ломтики",
       "md": "2. Ломтики/2.1. Как я учился водить автомобиль.md",
-      "date": "2026-07-08",
+      "date": "2026-07-08T21:13:00+03:00",
       "kind": "added",
       "note": "Initial commit: Obsidian vault with discourse materials."
     },
@@ -1186,7 +1186,7 @@
       "title": "Две плоскости",
       "section": "1. Крошки",
       "md": "1. Крошки/1.5. Две плоскости.md",
-      "date": "2026-07-08",
+      "date": "2026-07-08T21:13:00+03:00",
       "kind": "added",
       "note": "Initial commit: Obsidian vault with discourse materials."
     },
@@ -1195,7 +1195,7 @@
       "title": "Педагогические правила",
       "section": "1. Крошки",
       "md": "1. Крошки/1.1. Педагогические правила.md",
-      "date": "2026-07-08",
+      "date": "2026-07-08T21:13:00+03:00",
       "kind": "added",
       "note": "Initial commit: Obsidian vault with discourse materials."
     },
@@ -1204,7 +1204,7 @@
       "title": "Зачем здесь крошки",
       "section": "1. Крошки",
       "md": "1. Крошки/1. Зачем здесь крошки.md",
-      "date": "2026-07-08",
+      "date": "2026-07-08T21:13:00+03:00",
       "kind": "added",
       "note": "Initial commit: Obsidian vault with discourse materials."
     }

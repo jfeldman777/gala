@@ -1767,10 +1767,18 @@ function changesCutoff() {
   return Date.now() - days * 24 * 60 * 60 * 1000;
 }
 
-function formatChangesDate(isoDay) {
-  const [y, m, d] = String(isoDay).split("-").map(Number);
-  if (!y || !m || !d) return isoDay;
-  return `${String(d).padStart(2, "0")}.${String(m).padStart(2, "0")}.${y}`;
+function formatChangesDate(iso) {
+  const raw = String(iso || "");
+  // Full ISO from git %cI, or legacy day-only YYYY-MM-DD
+  const ms = Date.parse(raw.includes("T") ? raw : `${raw}T12:00:00`);
+  if (!Number.isFinite(ms)) return raw;
+  const d = new Date(ms);
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mi = String(d.getMinutes()).padStart(2, "0");
+  return raw.includes("T") ? `${dd}.${mm}.${yyyy} ${hh}:${mi}` : `${dd}.${mm}.${yyyy}`;
 }
 
 function kindLabel(kind) {
@@ -1779,14 +1787,21 @@ function kindLabel(kind) {
   return kind || "";
 }
 
+function entryTimestamp(entry) {
+  const raw = String(entry?.date || "");
+  const ms = Date.parse(raw.includes("T") ? raw : `${raw}T23:59:59`);
+  return Number.isFinite(ms) ? ms : 0;
+}
+
 function filteredChanges() {
   const cutoff = changesCutoff();
   const visibleIds = new Set(state.pages.map((p) => p.id));
-  return state.changes.filter((entry) => {
-    if (!visibleIds.has(entry.id)) return false;
-    const t = Date.parse(`${entry.date}T23:59:59`);
-    return Number.isFinite(t) && t >= cutoff;
-  });
+  return state.changes
+    .filter((entry) => {
+      if (!visibleIds.has(entry.id)) return false;
+      return entryTimestamp(entry) >= cutoff;
+    })
+    .sort((a, b) => entryTimestamp(b) - entryTimestamp(a) || String(b.id).localeCompare(String(a.id), "ru"));
 }
 
 function renderChangesList() {
