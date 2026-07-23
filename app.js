@@ -394,6 +394,55 @@ function renderInline(text) {
   return result;
 }
 
+function isMarkdownTableRow(line) {
+  const t = String(line || "").trim();
+  return t.startsWith("|") && t.indexOf("|", 1) !== -1;
+}
+
+function isMarkdownTableSep(line) {
+  const t = String(line || "").trim();
+  if (!t.includes("-")) return false;
+  // | --- | :---: | ---: |
+  return /^\|?[\s|:-]+$/.test(t) && /-+/.test(t);
+}
+
+function splitMarkdownTableCells(line) {
+  let t = String(line || "").trim();
+  if (t.startsWith("|")) t = t.slice(1);
+  if (t.endsWith("|")) t = t.slice(0, -1);
+  return t.split("|").map((cell) => cell.trim());
+}
+
+function renderMarkdownTable(rows) {
+  if (!rows.length) return "";
+  let header = null;
+  let bodyStart = 0;
+  if (rows.length >= 2 && isMarkdownTableSep(rows[1])) {
+    header = splitMarkdownTableCells(rows[0]);
+    bodyStart = 2;
+  }
+  const body = rows.slice(bodyStart).filter((r) => !isMarkdownTableSep(r));
+  const parts = ['<div class="md-table-wrap"><table class="md-table">'];
+  if (header) {
+    parts.push("<thead><tr>");
+    header.forEach((cell) => {
+      parts.push(`<th>${renderInline(cell)}</th>`);
+    });
+    parts.push("</tr></thead>");
+  }
+  parts.push("<tbody>");
+  body.forEach((row) => {
+    const cells = splitMarkdownTableCells(row);
+    parts.push("<tr>");
+    cells.forEach((cell) => {
+      parts.push(`<td>${renderInline(cell)}</td>`);
+    });
+    parts.push("</tr>");
+  });
+  parts.push("</tbody></table></div>");
+  return parts.join("");
+}
+
 function renderMarkdown(text) {
   const lines = text.replace(/\r\n/g, "\n").split("\n");
   const parts = [];
@@ -420,12 +469,29 @@ function renderMarkdown(text) {
   const listLevel = (ws) =>
     Math.floor(ws.replace(/\t/g, "    ").length / 4);
 
-  for (const rawLine of lines) {
+  for (let i = 0; i < lines.length; i++) {
+    const rawLine = lines[i];
     const line = rawLine.replace(/\r$/, "").trimEnd();
 
     if (!line.trim()) {
       flushParagraph();
       // Blank lines inside a list must not restart numbering.
+      continue;
+    }
+
+    // GFM pipe tables
+    if (isMarkdownTableRow(line)) {
+      flushParagraph();
+      flushLists();
+      const tableRows = [line];
+      while (i + 1 < lines.length) {
+        const next = lines[i + 1].replace(/\r$/, "").trimEnd();
+        if (!next.trim()) break;
+        if (!isMarkdownTableRow(next) && !isMarkdownTableSep(next)) break;
+        tableRows.push(next);
+        i += 1;
+      }
+      parts.push(renderMarkdownTable(tableRows));
       continue;
     }
 
