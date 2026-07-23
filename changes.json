@@ -1,7 +1,16 @@
 {
-  "generated": "2026-07-23T17:57:09+03:00",
+  "generated": "2026-07-23T21:57:38+03:00",
   "days_scanned": 90,
   "entries": [
+    {
+      "id": "5.6",
+      "title": "Системы категорий",
+      "section": "5. Философия",
+      "md": "5. Философия/5.6. Системы категорий.md",
+      "date": "2026-07-23T21:57:38+03:00",
+      "kind": "changed",
+      "note": "Trim 5.6 category authors to Aristotle–Kant–Hegel–Peirce."
+    },
     {
       "id": "12.3",
       "title": "Анекдот от Фейнмана",
@@ -61,15 +70,6 @@
       "title": "Категории Аристотеля",
       "section": "5. Философия",
       "md": "5. Философия/5.6.1. Категории Аристотеля.md",
-      "date": "2026-07-23T15:36:17+03:00",
-      "kind": "added",
-      "note": "Add philosophy pages 5.6–5.6.4 and 5.8.1 with English translations."
-    },
-    {
-      "id": "5.6",
-      "title": "Системы категорий",
-      "section": "5. Философия",
-      "md": "5. Философия/5.6. Системы категорий.md",
       "date": "2026-07-23T15:36:17+03:00",
       "kind": "added",
       "note": "Add philosophy pages 5.6–5.6.4 and 5.8.1 with English translations."
