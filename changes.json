@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-23T17:42:14+03:00",
+  "generated": "2026-07-23T17:49:43+03:00",
   "days_scanned": 90,
   "entries": [
     {
@@ -7,9 +7,9 @@
       "title": "Внуки Щедровицкого",
       "section": "11. Проекции",
       "md": "11. Проекции/11.6. Внуки Щедровицкого.md",
-      "date": "2026-07-23T17:38:06+03:00",
-      "kind": "added",
-      "note": "Add projections page 11.6 on Shchedrovitsky followers, with EN translation."
+      "date": "2026-07-23T17:49:43+03:00",
+      "kind": "changed",
+      "note": "Update 11.6 table headers for constructive/destructive columns."
     },
     {
       "id": "5.8.1",
