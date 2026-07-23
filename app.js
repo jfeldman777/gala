@@ -509,7 +509,17 @@ function renderMarkdown(text) {
       const level = listLevel(listMatch[1]);
       const ordered = listMatch[2] != null;
       const tag = ordered ? "ol" : "ul";
+      const itemNum = ordered ? Number(listMatch[2]) : NaN;
       const body = renderInline(listMatch[3].trim());
+      // Keep author numbers (1=object … 8=many systems) even after a mid-list break.
+      const liOpen =
+        ordered && Number.isFinite(itemNum) ? `<li value="${itemNum}">` : "<li>";
+      const listOpen = () => {
+        if (ordered && Number.isFinite(itemNum) && itemNum > 1) {
+          return `<ol start="${itemNum}">`;
+        }
+        return `<${tag}>`;
+      };
 
       closeListsUntil(level + 1);
 
@@ -517,10 +527,10 @@ function renderMarkdown(text) {
         parts.push("</li>");
         if (listStack[listStack.length - 1].tag !== tag) {
           parts.push(`</${listStack.pop().tag}>`);
-          parts.push(`<${tag}>`);
+          parts.push(`${listOpen()}`);
           listStack.push({ tag });
         }
-        parts.push(`<li>${body}`);
+        parts.push(`${liOpen}${body}`);
       } else {
         // Open missing intermediate levels if indent jumps
         while (listStack.length < level) {
@@ -528,7 +538,7 @@ function renderMarkdown(text) {
           parts.push(`<${fill}><li>`);
           listStack.push({ tag: fill });
         }
-        parts.push(`<${tag}><li>${body}`);
+        parts.push(`${listOpen()}${liOpen}${body}`);
         listStack.push({ tag });
       }
       continue;
