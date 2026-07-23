@@ -1,7 +1,61 @@
 {
-  "generated": "2026-07-22T16:48:36+03:00",
+  "generated": "2026-07-23T15:36:17+03:00",
   "days_scanned": 90,
   "entries": [
+    {
+      "id": "5.8.1",
+      "title": "Коммуникация и конфликт",
+      "section": "5. Философия",
+      "md": "5. Философия/5.8.1. Коммуникация и конфликт.md",
+      "date": "2026-07-23",
+      "kind": "added",
+      "note": "Add philosophy pages 5.6–5.6.4 and 5.8.1 with English translations."
+    },
+    {
+      "id": "5.6.4",
+      "title": "Категории Пирса",
+      "section": "5. Философия",
+      "md": "5. Философия/5.6.4. Категории Пирса.md",
+      "date": "2026-07-23",
+      "kind": "added",
+      "note": "Add philosophy pages 5.6–5.6.4 and 5.8.1 with English translations."
+    },
+    {
+      "id": "5.6.3",
+      "title": "Категории Гегеля",
+      "section": "5. Философия",
+      "md": "5. Философия/5.6.3. Категории Гегеля.md",
+      "date": "2026-07-23",
+      "kind": "added",
+      "note": "Add philosophy pages 5.6–5.6.4 and 5.8.1 with English translations."
+    },
+    {
+      "id": "5.6.2",
+      "title": "Категории Канта",
+      "section": "5. Философия",
+      "md": "5. Философия/5.6.2. Категории Канта.md",
+      "date": "2026-07-23",
+      "kind": "added",
+      "note": "Add philosophy pages 5.6–5.6.4 and 5.8.1 with English translations."
+    },
+    {
+      "id": "5.6.1",
+      "title": "Категории Аристотеля",
+      "section": "5. Философия",
+      "md": "5. Философия/5.6.1. Категории Аристотеля.md",
+      "date": "2026-07-23",
+      "kind": "added",
+      "note": "Add philosophy pages 5.6–5.6.4 and 5.8.1 with English translations."
+    },
+    {
+      "id": "5.6",
+      "title": "Системы категорий",
+      "section": "5. Философия",
+      "md": "5. Философия/5.6. Системы категорий.md",
+      "date": "2026-07-23",
+      "kind": "added",
+      "note": "Add philosophy pages 5.6–5.6.4 and 5.8.1 with English translations."
+    },
     {
       "id": "5.8",
       "title": "Пространство проблем трехмерно",
