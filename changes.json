@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-23T15:36:17+03:00",
+  "generated": "2026-07-23T17:38:06+03:00",
   "days_scanned": 90,
   "entries": [
     {
@@ -55,6 +55,15 @@
       "date": "2026-07-23",
       "kind": "added",
       "note": "Add philosophy pages 5.6–5.6.4 and 5.8.1 with English translations."
+    },
+    {
+      "id": "11.6",
+      "title": "Внуки Щедровицкого",
+      "section": "11. Проекции",
+      "md": "11. Проекции/11.6. Внуки Щедровицкого.md",
+      "date": "2026-07-23",
+      "kind": "added",
+      "note": "Add projections page 11.6 on Shchedrovitsky followers, with EN translation."
     },
     {
       "id": "5.8",
