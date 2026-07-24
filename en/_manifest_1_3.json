@@ -1,0 +1,259 @@
+{
+  "pages": [
+    {
+      "id": "0",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/0. Disclaimer.md"
+    },
+    {
+      "id": "0.1",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/0.1. Patreon.md"
+    },
+    {
+      "id": "1",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1. Why crumbs are here.md"
+    },
+    {
+      "id": "1.1",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.1. Pedagogical rules.md"
+    },
+    {
+      "id": "1.2",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.2. Rules of fruitful discussion.md"
+    },
+    {
+      "id": "1.2.1",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.2.1. Discussion rules - examples.md"
+    },
+    {
+      "id": "1.2.2",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.2.2. All this is clear as a simple scale.md"
+    },
+    {
+      "id": "1.2.3",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.2.3. Justification of the fourth rule.md"
+    },
+    {
+      "id": "1.3",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.3. Scale of ideal forms.md"
+    },
+    {
+      "id": "1.3.1",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.3.1. Baumeister list.md"
+    },
+    {
+      "id": "1.3.2",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.3.2. Quality criteria.md"
+    },
+    {
+      "id": "1.3.3",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.3.3. P-Procedure.md"
+    },
+    {
+      "id": "1.4",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.4. History of one discovery.md"
+    },
+    {
+      "id": "1.5",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.5. Two planes.md"
+    },
+    {
+      "id": "1.6",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.6. Maslow pyramid.md"
+    },
+    {
+      "id": "1.7",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.7. Spiral dynamics.md"
+    },
+    {
+      "id": "1.8",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.8. Two aphorisms.md"
+    },
+    {
+      "id": "1.9",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.9. Can a machine replace a human.md"
+    },
+    {
+      "id": "1.10",
+      "section": "1. Crumbs",
+      "md": "en/1. Crumbs/1.10. Computer science lessons.md"
+    },
+    {
+      "id": "2.1",
+      "section": "2. Slices",
+      "md": "en/2. Slices/2.1. How I learned to drive a car.md"
+    },
+    {
+      "id": "2.2",
+      "section": "2. Slices",
+      "md": "en/2. Slices/2.2. Music.md"
+    },
+    {
+      "id": "2.3",
+      "section": "2. Slices",
+      "md": "en/2. Slices/2.3. A hiking trip in nature.md"
+    },
+    {
+      "id": "2.3.1",
+      "section": "2. Slices",
+      "md": "en/2. Slices/2.3.1. The classroom-lesson system.md"
+    },
+    {
+      "id": "2.3.2",
+      "section": "2. Slices",
+      "md": "en/2. Slices/2.3.2. The problem of choosing a school.md"
+    },
+    {
+      "id": "2.3.3",
+      "section": "2. Slices",
+      "md": "en/2. Slices/2.3.3. The project method.md"
+    },
+    {
+      "id": "2.4",
+      "section": "2. Slices",
+      "md": "en/2. Slices/2.4. The problem of someone else's toy.md"
+    },
+    {
+      "id": "2.5",
+      "section": "2. Slices",
+      "md": "en/2. Slices/2.5. The problem of the caregiver.md"
+    },
+    {
+      "id": "2.6",
+      "section": "2. Slices",
+      "md": "en/2. Slices/2.6. Euclid and Hilbert.md"
+    },
+    {
+      "id": "2.7",
+      "section": "2. Slices",
+      "md": "en/2. Slices/2.7. Discourse - excursion - cosmos.md"
+    },
+    {
+      "id": "2.8",
+      "section": "2. Slices",
+      "md": "en/2. Slices/2.8. Discourse as a neuron.md"
+    },
+    {
+      "id": "2.9",
+      "section": "2. Slices",
+      "md": "en/2. Slices/2.9. Metamodernism.md"
+    },
+    {
+      "id": "2.10",
+      "section": "2. Slices",
+      "md": "en/2. Slices/2.10. Open problems.md"
+    },
+    {
+      "id": "2.10.1",
+      "section": "2. Slices",
+      "md": "en/2. Slices/2.10.1. The structure of scientific revolutions.md"
+    },
+    {
+      "id": "2.11",
+      "section": "2. Slices",
+      "md": "en/2. Slices/2.11. Toffler's waves.md"
+    },
+    {
+      "id": "3.1",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.1. Kepler and Newton.md"
+    },
+    {
+      "id": "3.1.1",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.1.1. My first sandwich.md"
+    },
+    {
+      "id": "3.2",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.2. Recapitulation, American style.md"
+    },
+    {
+      "id": "3.3",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.3. And then on their own.md"
+    },
+    {
+      "id": "3.3.1",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.3.1. The beginning.md"
+    },
+    {
+      "id": "3.4",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.4. The child and Culture.md"
+    },
+    {
+      "id": "3.4.1",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.4.1. The problem of correspondence.md"
+    },
+    {
+      "id": "3.5",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.5. Drawings.md"
+    },
+    {
+      "id": "3.6",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.6. The structural complexity of thinking.md"
+    },
+    {
+      "id": "3.7",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.7. Levels of the field of attention.md"
+    },
+    {
+      "id": "3.7.1",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.7.1. Elementary conflict.md"
+    },
+    {
+      "id": "3.7.2",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.7.2. Maneuvers and the problem of choosing a partner.md"
+    },
+    {
+      "id": "3.8",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.8. Rutherford's method.md"
+    },
+    {
+      "id": "3.9",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.9. Two conveyor belts.md"
+    },
+    {
+      "id": "3.10",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.10. The internal conveyor belt.md"
+    },
+    {
+      "id": "3.11",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.11. The external conveyor belt.md"
+    },
+    {
+      "id": "3.12",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.12. Don Beck's rainbow.md"
+    }
+  ]
+}
