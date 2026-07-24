@@ -1,7 +1,16 @@
 {
-  "generated": "2026-07-23T21:57:38+03:00",
+  "generated": "2026-07-24T04:38:03+03:00",
   "days_scanned": 90,
   "entries": [
+    {
+      "id": "10.4.2",
+      "title": "Переключение ума",
+      "section": "10. Система",
+      "md": "10. Система/10.4. Стратегии/10.4.2. Переключение ума.md",
+      "date": "2026-07-24T04:38:03+03:00",
+      "kind": "added",
+      "note": "Add specialist routes and fix page 10.4.2."
+    },
     {
       "id": "5.6",
       "title": "Системы категорий",
@@ -945,15 +954,6 @@
       "md": "6. Психология/6.1. Психология.md",
       "date": "2026-07-13T12:42:51+03:00",
       "kind": "changed",
-      "note": "Add system pages 10.4–10.7 and refresh kitchen, psychology, history."
-    },
-    {
-      "id": "10.4.2",
-      "title": "Переключение",
-      "section": "10. Система",
-      "md": "10. Система/10.4. Стратегии/10.4.2. Переключение.md",
-      "date": "2026-07-13T12:42:51+03:00",
-      "kind": "added",
       "note": "Add system pages 10.4–10.7 and refresh kitchen, psychology, history."
     },
     {
