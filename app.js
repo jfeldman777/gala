@@ -1801,6 +1801,10 @@ function applyUiLang() {
   document.querySelectorAll(".lang-btn").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.lang === state.lang);
   });
+  const moreProjects = document.getElementById("more-projects");
+  if (moreProjects) {
+    moreProjects.href = state.lang === "en" ? "12345.en.htm" : "12345.htm";
+  }
   if (els.playBtn) {
     els.playBtn.textContent = audio.paused ? t("listen") : t("pause");
   }
