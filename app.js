@@ -5,6 +5,9 @@ const WEB3FORMS_KEY = "";
 const state = {
   lang: "ru",
   pages: [],
+  allPages: [],
+  routes: [],
+  routeId: null,
   index: 0,
   autoAdvance: false,
   audioAvailable: new Set(),
@@ -78,6 +81,9 @@ const I18N = {
     period30: "30 дней",
     period90: "90 дней",
     needName: "Сначала укажите имя",
+    routeAll: "Вся книга",
+    routeActive: "маршрут",
+    routeSelect: "Маршрут",
     thanksLike: "Спасибо за оценку",
     thanksDislike: "Спасибо, учтём",
     sending: "Отправляем…",
@@ -163,6 +169,9 @@ const I18N = {
     period30: "30 days",
     period90: "90 days",
     needName: "Please enter your name first",
+    routeAll: "Whole book",
+    routeActive: "route",
+    routeSelect: "Route",
     thanksLike: "Thanks for the rating",
     thanksDislike: "Thanks — noted",
     sending: "Sending…",
@@ -250,6 +259,11 @@ const els = {
   coverHome: document.getElementById("cover-home"),
   coverLink: document.getElementById("cover-link"),
   coverChanges: document.getElementById("cover-changes"),
+  coverRoutes: document.getElementById("cover-routes"),
+  coverRouteSelect: document.getElementById("cover-route-select"),
+  sidebarRoutes: document.getElementById("sidebar-routes"),
+  sidebarRouteSelect: document.getElementById("sidebar-route-select"),
+  routeBadge: document.getElementById("route-badge"),
   sidebarChanges: document.getElementById("sidebar-changes"),
   changesModal: document.getElementById("changes-modal"),
   changesPeriod: document.getElementById("changes-period"),
@@ -331,6 +345,163 @@ function resolvePages(rawPages) {
   return pages.filter(
     (page) => !isDraftSection(page.section) && !isDraftPage(page.md),
   );
+}
+
+/** Top-level section number from `1. Крошки` → `"1"`. */
+function pageSectionNum(page) {
+  const m = String(page.section || "").match(/^(\d+)/);
+  return m ? m[1] : null;
+}
+
+function findRoute(routeId) {
+  if (!routeId) return null;
+  return state.routes.find((r) => r.id === routeId) || null;
+}
+
+function routeTitle(route) {
+  if (!route) return t("routeAll");
+  const title = route.title;
+  if (title && typeof title === "object") {
+    return title[state.lang] || title.ru || title.en || route.id;
+  }
+  return String(title || route.id);
+}
+
+/** Page belongs to route if its section number is listed, or id is in `ids`. */
+function pageMatchesRoute(page, route) {
+  if (!route) return true;
+  const secs = (route.sections || []).map(String);
+  const sn = pageSectionNum(page);
+  if (sn && secs.includes(sn)) return true;
+  const ids = (route.ids || []).map(String);
+  return ids.includes(page.id);
+}
+
+function pagesForRoute(route) {
+  if (!route) return state.allPages.slice();
+  const byId = new Map(state.allPages.map((p) => [p.id, p]));
+  const ordered = [];
+  const seen = new Set();
+
+  // Explicit ids keep the author's order from route.txt / routes.json
+  for (const id of (route.ids || []).map(String)) {
+    const page = byId.get(id);
+    if (!page || seen.has(id)) continue;
+    ordered.push(page);
+    seen.add(id);
+  }
+
+  // Section numbers: append remaining matching pages in catalog order
+  const secs = (route.sections || []).map(String);
+  if (secs.length) {
+    for (const page of state.allPages) {
+      if (seen.has(page.id)) continue;
+      const sn = pageSectionNum(page);
+      if (sn && secs.includes(sn)) {
+        ordered.push(page);
+        seen.add(page.id);
+      }
+    }
+  }
+
+  return ordered;
+}
+
+function applyRouteFilter() {
+  const route = findRoute(state.routeId);
+  if (!route) {
+    state.routeId = null;
+    state.pages = state.allPages.slice();
+  } else {
+    state.pages = pagesForRoute(route);
+  }
+  if (state.index >= state.pages.length) state.index = 0;
+  updateStats();
+  renderRoutePickers();
+  updateRouteBadge();
+}
+
+function detectRouteId() {
+  const fromUrl = new URLSearchParams(location.search).get("route");
+  return findRoute(fromUrl) ? fromUrl : null;
+}
+
+async function loadRoutes() {
+  try {
+    const data = await fetch(`routes.json?v=${Date.now()}`, {
+      cache: "no-store",
+    }).then((r) => {
+      if (!r.ok) throw new Error(String(r.status));
+      return r.json();
+    });
+    state.routes = Array.isArray(data.routes) ? data.routes : [];
+  } catch (err) {
+    console.warn("routes.json unavailable", err);
+    state.routes = [];
+  }
+}
+
+function updateRouteBadge() {
+  const badge = els.routeBadge;
+  if (!badge) return;
+  const route = findRoute(state.routeId);
+  if (!route) {
+    badge.hidden = true;
+    badge.textContent = "";
+    return;
+  }
+  badge.hidden = false;
+  badge.textContent = `${t("routeActive")}: ${routeTitle(route)}`;
+}
+
+function fillRouteSelect(select) {
+  if (!select) return;
+  const current = state.routeId || "";
+  select.innerHTML = "";
+  const all = document.createElement("option");
+  all.value = "";
+  all.textContent = t("routeAll");
+  select.appendChild(all);
+  state.routes.forEach((route) => {
+    const opt = document.createElement("option");
+    opt.value = route.id;
+    opt.textContent = routeTitle(route);
+    select.appendChild(opt);
+  });
+  select.value = findRoute(current) ? current : "";
+  select.setAttribute("aria-label", t("routeSelect"));
+}
+
+function renderRoutePickers() {
+  const hasRoutes = state.routes.length > 0;
+  if (els.coverRoutes) els.coverRoutes.hidden = !hasRoutes;
+  if (els.sidebarRoutes) els.sidebarRoutes.hidden = !hasRoutes;
+  fillRouteSelect(els.coverRouteSelect);
+  fillRouteSelect(els.sidebarRouteSelect);
+}
+
+function setRoute(routeId) {
+  const next = findRoute(routeId) ? routeId : null;
+  if (next === state.routeId) return;
+  const wasCover = document.body.classList.contains("cover-open");
+  const pageId = wasCover ? null : state.pages[state.index]?.id;
+  state.routeId = next;
+  applyRouteFilter();
+  buildToc();
+
+  if (wasCover || !pageId) {
+    showCoverScreen();
+    if (state.pages.length) loadPage(0, false);
+    return;
+  }
+
+  const idx = state.pages.findIndex((p) => p.id === pageId);
+  if (idx >= 0) {
+    loadPage(idx, false);
+  } else {
+    showCoverScreen();
+    if (state.pages.length) loadPage(0, false);
+  }
 }
 
 function escapeHtml(text) {
@@ -672,7 +843,14 @@ function bookUrl(lang = state.lang, query = {}) {
   url.pathname = parts.join("/") || "/";
   url.search = "";
   url.hash = "";
-  for (const [key, value] of Object.entries(query)) {
+  const merged = { ...query };
+  if (state.routeId && merged.route === undefined) {
+    merged.route = state.routeId;
+  }
+  if (merged.route === null || merged.route === "") {
+    delete merged.route;
+  }
+  for (const [key, value] of Object.entries(merged)) {
     if (value != null && value !== "") url.searchParams.set(key, String(value));
   }
   // lang is encoded in the entry file; drop redundant ?lang=
@@ -735,7 +913,12 @@ function saveCollapsedSections() {
 
 function updateStats() {
   els.statPages.textContent = String(state.pages.length);
-  els.statAudio.textContent = String(state.audioAvailable.size);
+  const visible = new Set(state.pages.map((p) => p.id));
+  let audioCount = 0;
+  for (const id of state.audioAvailable) {
+    if (visible.has(id)) audioCount += 1;
+  }
+  els.statAudio.textContent = String(audioCount);
 }
 
 /** `10. Система/10.1. Кодировки/file.md` → `10.1. Кодировки` */
@@ -1573,12 +1756,13 @@ async function loadCatalog() {
   const manifest = await fetch(`${manifestFile()}?v=${Date.now()}`, {
     cache: "no-store",
   }).then((r) => r.json());
-  state.pages = resolvePages(manifest.pages);
+  state.allPages = resolvePages(manifest.pages);
+  applyRouteFilter();
   state.audioAvailable = new Set();
   if (state.lang !== "en") {
-    await Promise.all(state.pages.map((page) => checkAudio(page)));
+    await Promise.all(state.allPages.map((page) => checkAudio(page)));
   }
-  await Promise.all(state.pages.map((page) => indexPageText(page)));
+  await Promise.all(state.allPages.map((page) => indexPageText(page)));
   updateStats();
 }
 
@@ -1625,6 +1809,8 @@ function applyUiLang() {
   } else {
     document.title = t("bookTitle");
   }
+  renderRoutePickers();
+  updateRouteBadge();
 }
 
 async function setLang(lang, { keepPage = true } = {}) {
@@ -1675,25 +1861,34 @@ async function init() {
   if (onWrongEntry) {
     const params = new URLSearchParams(location.search);
     const p = params.get("p");
-    const next = p ? bookUrl(state.lang, { p }) : bookUrl(state.lang);
+    const route = params.get("route");
+    const q = {};
+    if (p) q.p = p;
+    if (route) q.route = route;
+    const next = Object.keys(q).length ? bookUrl(state.lang, q) : bookUrl(state.lang);
     history.replaceState(p ? { pageId: p } : { cover: true }, "", next.toString());
   }
   applyUiLang();
 
+  await loadRoutes();
+  state.routeId = detectRouteId();
   await Promise.all([loadCatalog(), loadChangesIndex()]);
   applyUiLang();
+  renderRoutePickers();
+  updateRouteBadge();
 
   const params = new URLSearchParams(location.search);
   const startId = params.get("p");
-  const startIndex = startId
-    ? Math.max(0, state.pages.findIndex((p) => p.id === startId))
-    : 0;
+  const found = startId
+    ? state.pages.findIndex((p) => p.id === startId)
+    : -1;
+  const startIndex = found >= 0 ? found : 0;
   const showCover = !startId;
 
   if (showCover) showCoverScreen();
 
   if (state.pages.length) {
-    await loadPage(startIndex === -1 ? 0 : startIndex, false);
+    await loadPage(startIndex, false);
   } else if (state.lang === "en") {
     // Empty EN catalog: stay on cover
     showCoverScreen();
@@ -1782,6 +1977,13 @@ els.coverHome?.addEventListener("click", (e) => {
   e.preventDefault();
   showCoverScreen();
 });
+function onRouteSelectChange(e) {
+  e.stopPropagation();
+  const value = e.target.value || null;
+  setRoute(value);
+}
+els.coverRouteSelect?.addEventListener("change", onRouteSelectChange);
+els.sidebarRouteSelect?.addEventListener("change", onRouteSelectChange);
 els.coverChanges?.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();

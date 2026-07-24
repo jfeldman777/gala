@@ -7,7 +7,7 @@
   <meta property="og:title" content="Дискурс">
   <meta property="og:locale" content="ru_RU">
   <meta name="twitter:title" content="Дискурс">
-  <link rel="stylesheet" href="style.css?v=40">
+  <link rel="stylesheet" href="style.css?v=43">
 </head>
 <body>
   <div id="cover-screen" class="cover-hidden" aria-hidden="true">
@@ -27,6 +27,9 @@
       <button type="button" id="cover-link" title="Скопировать ссылку на обложку" aria-label="Скопировать ссылку" data-i18n-title="copyCover" data-i18n-aria="copyLink">🔗</button>
       <button type="button" id="cover-changes" title="Что нового" aria-label="Что нового" data-i18n-title="whatsNew" data-i18n-aria="whatsNew">✦</button>
     </div>
+    <div id="cover-routes" class="cover-routes" hidden>
+      <select id="cover-route-select" class="route-select" aria-label="Route"></select>
+    </div>
   </div>
 
   <aside id="sidebar">
@@ -39,6 +42,10 @@
         <p id="sidebar-stats"><span data-i18n="statsRead">Читать</span> (<span id="stat-pages">…</span>)<span id="stats-listen-wrap"> <span data-i18n="statsAndListen">и слушать</span> (<span id="stat-audio">…</span>)</span> <a id="more-projects" href="12345.htm" data-i18n="more">(еще)</a>
           <button type="button" id="sidebar-changes" class="sidebar-changes-btn" title="Что нового" data-i18n="whatsNew" data-i18n-title="whatsNew">Что нового</button>
         </p>
+        <p id="route-badge" class="route-badge" hidden></p>
+        <div id="sidebar-routes" class="sidebar-routes" hidden>
+          <select id="sidebar-route-select" class="route-select" aria-label="Route"></select>
+        </div>
         <div class="lang-switch sidebar-lang" role="group" aria-label="Language">
           <button type="button" class="lang-btn" data-lang="ru" title="Русский">RU</button>
           <button type="button" class="lang-btn" data-lang="en" title="English">EN</button>
@@ -177,6 +184,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=40"></script>
+  <script src="app.js?v=43"></script>
 </body>
 </html>

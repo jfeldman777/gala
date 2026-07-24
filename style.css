@@ -96,6 +96,53 @@ body {
   align-items: center;
 }
 
+.cover-routes {
+  display: flex;
+  justify-content: center;
+  max-width: min(22rem, 100%);
+}
+
+.cover-routes[hidden],
+.sidebar-routes[hidden],
+.route-badge[hidden] {
+  display: none !important;
+}
+
+.route-select {
+  font-size: 0.95rem;
+  padding: 0.45rem 0.7rem;
+  min-width: 12rem;
+  max-width: 100%;
+  background: var(--paper);
+  border: 1px solid rgba(44, 36, 22, 0.25);
+  color: var(--ink);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.cover-routes .route-select {
+  background: rgba(255, 252, 245, 0.95);
+  font-size: 1rem;
+  min-width: 14rem;
+}
+
+.sidebar-routes {
+  margin: 0.55rem 0 0.35rem;
+}
+
+.sidebar-routes .route-select {
+  width: 100%;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.5rem;
+}
+
+.route-badge {
+  margin: 0.35rem 0 0;
+  font-size: 0.82rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
 #cover-toc,
 #cover-link,
 #cover-changes {
