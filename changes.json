@@ -1,7 +1,16 @@
 {
-  "generated": "2026-07-24T04:38:03+03:00",
+  "generated": "2026-07-24T08:21:11+03:00",
   "days_scanned": 90,
   "entries": [
+    {
+      "id": "4.9",
+      "title": "Модели и их применимость",
+      "section": "4. Кухня",
+      "md": "4. Кухня/4.9. Модели и их применимость.md",
+      "date": "2026-07-24T08:21:11+03:00",
+      "kind": "added",
+      "note": "Add philosophers route and catalog page 4.9."
+    },
     {
       "id": "10.4.2",
       "title": "Переключение ума",
