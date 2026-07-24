@@ -947,7 +947,8 @@ body.lang-en #play-btn,
 body.lang-en #progress-wrap,
 body.lang-en #auto-label,
 body.lang-en #no-audio,
-body.lang-en .audio-dot {
+body.lang-en .audio-dot,
+body.lang-en .player-row-meta {
   display: none !important;
 }
 
