@@ -1,7 +1,16 @@
 {
-  "generated": "2026-07-24T08:21:11+03:00",
+  "generated": "2026-07-24T12:08:06+03:00",
   "days_scanned": 90,
   "entries": [
+    {
+      "id": "3.9",
+      "title": "Два конвейера",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.9. Два конвейера.md",
+      "date": "2026-07-24T12:08:06+03:00",
+      "kind": "changed",
+      "note": "Add parents route and capitalize Rutherford in 3.9."
+    },
     {
       "id": "4.9",
       "title": "Модели и их применимость",
@@ -1126,15 +1135,6 @@
       "date": "2026-07-10T14:56:44+03:00",
       "kind": "added",
       "note": "Add pages 1.3.1–1.3.3, 3.11, and new Kitchen section."
-    },
-    {
-      "id": "3.9",
-      "title": "Два конвейера",
-      "section": "3. Сэндвичи",
-      "md": "3. Сэндвичи/3.9. Два конвейера.md",
-      "date": "2026-07-10T09:27:50+03:00",
-      "kind": "changed",
-      "note": "Add page 3.10 and update page 3.9."
     },
     {
       "id": "3.10",
