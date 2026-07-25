@@ -2106,17 +2106,20 @@ function renderChangesList() {
   }
 
   els.changesList.innerHTML = "";
+  // changes.json stores Russian titles; prefer the current catalog's title
+  const titleById = new Map(state.allPages.map((p) => [p.id, p.title]));
   items.forEach((entry) => {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "changes-item";
+    const title = titleById.get(entry.id) || entry.title;
     btn.innerHTML = `
       <span class="changes-item-meta">
         <span>${escapeHtml(formatChangesDate(entry.date))}</span>
         <span class="changes-kind">${escapeHtml(kindLabel(entry.kind))}</span>
       </span>
       <span class="changes-item-id">${escapeHtml(entry.id)}</span>
-      <span class="changes-item-title">${escapeHtml(entry.title)}</span>
+      <span class="changes-item-title">${escapeHtml(title)}</span>
     `;
     btn.addEventListener("click", () => openChangedPage(entry.id));
     els.changesList.appendChild(btn);
