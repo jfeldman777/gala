@@ -1573,7 +1573,7 @@ async function loadPage(index, autoplay = false) {
   }
 
   try {
-    const res = await fetch(encodeURI(mdPath), { cache: "no-store" });
+    const res = await fetch(`${encodeURI(mdPath)}?v=${Date.now()}`, { cache: "no-store" });
     if (!res.ok) {
       throw new Error(`${res.status} ${res.statusText}`);
     }
