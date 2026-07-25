@@ -1,7 +1,69 @@
 {
-  "generated": "2026-07-24T13:35:51+03:00",
+  "generated": "2026-07-25T22:01:00+03:00",
   "days_scanned": 90,
   "entries": [
+    {
+      "id": "10.9.2",
+      "title": "Фреге и Парменид",
+      "section": "10. Система",
+      "md": "10. Система/10.9. Примеры для подражания/10.9.2. Фреге и Парменид.md",
+      "date": "2026-07-25T21:25:00+03:00",
+      "kind": "added",
+      "note": "Add 10.9.2 Frege and Parmenides with EN mirror to the philosophers route."
+    },
+    {
+      "id": "10.3.3",
+      "title": "ЧЧД",
+      "section": "10. Система",
+      "md": "10. Система/10.3. Уровни/10.3.3. ЧЧД.md",
+      "date": "2026-07-25T18:53:39+03:00",
+      "kind": "changed",
+      "summary": "Игра «Расставь элементы правильно»",
+      "summary_en": "Game “Arrange the elements correctly”",
+      "note": "Link the arrange-elements game from page 10.3.3 in RU and EN."
+    },
+    {
+      "id": "10.9.1",
+      "title": "Колокольчики Галилея",
+      "section": "10. Система",
+      "md": "10. Система/10.9. Примеры для подражания/10.9.1. Колокольчики Галилея.md",
+      "date": "2026-07-25T15:23:13+03:00",
+      "kind": "added",
+      "note": "Add 10.9.1 Galileo's bells with EN mirror to the engineers route."
+    },
+    {
+      "id": "3.7.1.1",
+      "title": "Игра на выживание",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.7.1.1. Игра на выживание.md",
+      "date": "2026-07-24T21:07:56+03:00",
+      "kind": "added",
+      "summary": "Игра «Колобок и его команда»",
+      "summary_en": "Game “Kolobok and his team”",
+      "note": "Add page 3.7.1.1 Survival game and connect the Kolobok team game there."
+    },
+    {
+      "id": "3.7",
+      "title": "Уровни поля внимания",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.7. Уровни поля внимания.md",
+      "date": "2026-07-24T15:24:39+03:00",
+      "kind": "changed",
+      "summary": "Игра «Проверь, знаешь ли ты уровни» (tooo)",
+      "summary_en": "Game “Check whether you know the levels” (tooo)",
+      "note": "Connect tooo game to chapter 3.7 in RU/EN and projects lists."
+    },
+    {
+      "id": "3.7.3",
+      "title": "Маневры, развернуто",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.7.3. Маневры, развернуто.md",
+      "date": "2026-07-24T14:27:50+03:00",
+      "kind": "added",
+      "summary": "Игра «Маневры» (man)",
+      "summary_en": "Game “Maneuvers” (man)",
+      "note": "Add 3.7.3 Maneuvers expanded with man game links and EN projects page."
+    },
     {
       "id": "3.9",
       "title": "Два конвейера",

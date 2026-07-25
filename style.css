@@ -426,6 +426,12 @@ button:disabled {
   font-size: 0.98rem;
 }
 
+.changes-item-summary {
+  grid-column: 1 / -1;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
 #toc-close {
   display: none;
   width: 2.4rem;

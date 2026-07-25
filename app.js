@@ -2113,6 +2113,10 @@ function renderChangesList() {
     btn.type = "button";
     btn.className = "changes-item";
     const title = titleById.get(entry.id) || entry.title;
+    const summary =
+      (state.lang === "en" ? entry.summary_en : entry.summary) ||
+      entry.summary ||
+      "";
     btn.innerHTML = `
       <span class="changes-item-meta">
         <span>${escapeHtml(formatChangesDate(entry.date))}</span>
@@ -2120,6 +2124,7 @@ function renderChangesList() {
       </span>
       <span class="changes-item-id">${escapeHtml(entry.id)}</span>
       <span class="changes-item-title">${escapeHtml(title)}</span>
+      ${summary ? `<span class="changes-item-summary">${escapeHtml(summary)}</span>` : ""}
     `;
     btn.addEventListener("click", () => openChangedPage(entry.id));
     els.changesList.appendChild(btn);
