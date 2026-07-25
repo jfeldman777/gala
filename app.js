@@ -1803,7 +1803,7 @@ function applyUiLang() {
   });
   const moreProjects = document.getElementById("more-projects");
   if (moreProjects) {
-    moreProjects.href = state.lang === "en" ? "12345.en.htm" : "12345.htm";
+    moreProjects.href = state.lang === "en" ? "12345.en.htm?v=47" : "12345.htm?v=47";
   }
   if (els.playBtn) {
     els.playBtn.textContent = audio.paused ? t("listen") : t("pause");
