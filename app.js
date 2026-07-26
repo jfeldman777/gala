@@ -1542,6 +1542,15 @@ function updatePlayerUi() {
   els.nextBtn.disabled = state.index === state.pages.length - 1;
 }
 
+/** Tab title: book name on cover, otherwise current page. */
+function updateDocumentTitle(page = state.pages[state.index]) {
+  if (document.body.classList.contains("cover-open") || !page) {
+    document.title = t("bookTitle");
+    return;
+  }
+  document.title = `${page.id} — ${page.title}`;
+}
+
 async function loadPage(index, autoplay = false) {
   state.index = index;
   const page = state.pages[index];
@@ -1549,10 +1558,7 @@ async function loadPage(index, autoplay = false) {
 
   els.pageMeta.textContent = `${page.section} · ${page.id}`;
   els.pageTitle.textContent = title;
-  // Keep book title on the tab while the cover is up (loadPage preloads page 0 under it).
-  if (!document.body.classList.contains("cover-open")) {
-    document.title = `${page.id} — ${title}`;
-  }
+  updateDocumentTitle(page);
 
   // Include pages (5.3-3.1): always use source text; ignore own .md body
   let mdPath = page.md;
@@ -1569,6 +1575,7 @@ async function loadPage(index, autoplay = false) {
       updatePlayerUi();
       updateVoteUi();
       syncUrl(page);
+      updateDocumentTitle(page);
       document.getElementById("reader").scrollTop = 0;
       return;
     }
@@ -1612,6 +1619,7 @@ async function loadPage(index, autoplay = false) {
   updatePlayerUi();
   updateVoteUi();
   syncUrl(page);
+  updateDocumentTitle(page);
   document.getElementById("reader").scrollTop = 0;
 }
 
@@ -1811,11 +1819,7 @@ function applyUiLang() {
   if (els.playBtn) {
     els.playBtn.textContent = audio.paused ? t("listen") : t("pause");
   }
-  if (!document.body.classList.contains("cover-open") && state.pages[state.index]) {
-    document.title = `${state.pages[state.index].id} — ${state.pages[state.index].title}`;
-  } else {
-    document.title = t("bookTitle");
-  }
+  updateDocumentTitle();
   renderRoutePickers();
   updateRouteBadge();
 }
@@ -1900,6 +1904,7 @@ async function init() {
     // Empty EN catalog: stay on cover
     showCoverScreen();
   }
+  if (showCover) updateDocumentTitle();
 }
 
 document.querySelectorAll(".lang-btn").forEach((btn) => {
@@ -1923,7 +1928,7 @@ function showCoverScreen() {
   // Keep language entry file; drop page id so refresh shows the cover.
   const cover = bookUrl(state.lang);
   history.replaceState({ cover: true }, "", cover.toString());
-  document.title = t("bookTitle");
+  updateDocumentTitle();
   applyUiLang();
 }
 
@@ -1936,7 +1941,7 @@ function enterFromCover({ openTocAfter = false } = {}) {
   const page = state.pages[state.index];
   if (page) {
     syncUrl(page);
-    document.title = `${page.id} — ${page.title}`;
+    updateDocumentTitle(page);
   }
   if (openTocAfter) {
     openToc();
