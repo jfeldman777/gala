@@ -25,7 +25,7 @@ const state = {
 
 const I18N = {
   ru: {
-    bookTitle: "Дискурс",
+    bookTitle: "Дискурс Фельдмана",
     coverLine1: "Дискурс",
     coverLine2: "Фельдмана",
     coverHint: "обложка",
@@ -1549,7 +1549,10 @@ async function loadPage(index, autoplay = false) {
 
   els.pageMeta.textContent = `${page.section} · ${page.id}`;
   els.pageTitle.textContent = title;
-  document.title = `${page.id} — ${title}`;
+  // Keep book title on the tab while the cover is up (loadPage preloads page 0 under it).
+  if (!document.body.classList.contains("cover-open")) {
+    document.title = `${page.id} — ${title}`;
+  }
 
   // Include pages (5.3-3.1): always use source text; ignore own .md body
   let mdPath = page.md;
