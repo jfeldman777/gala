@@ -8,7 +8,7 @@
   <meta property="og:locale" content="ru_RU">
   <meta name="twitter:title" content="Дискурс Фельдмана">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="style.css?v=45">
+  <link rel="stylesheet" href="style.css?v=46">
 </head>
 <body>
   <div id="cover-screen" class="cover-hidden" aria-hidden="true">
@@ -26,6 +26,7 @@
       </div>
       <button type="button" id="cover-toc" title="К оглавлению" aria-label="К оглавлению" data-i18n-title="toc" data-i18n-aria="toc">☰</button>
       <button type="button" id="cover-link" title="Скопировать ссылку на обложку" aria-label="Скопировать ссылку" data-i18n-title="copyCover" data-i18n-aria="copyLink">🔗</button>
+      <button type="button" id="cover-qr" title="QR-код обложки" aria-label="QR-код обложки" data-i18n-title="qrCover" data-i18n-aria="qrCover">▦</button>
       <button type="button" id="cover-changes" title="Что нового" aria-label="Что нового" data-i18n-title="whatsNew" data-i18n-aria="whatsNew">✦</button>
     </div>
     <div id="cover-routes" class="cover-routes" hidden>
@@ -185,6 +186,31 @@
     </div>
   </div>
 
-  <script src="app.js?v=50"></script>
+  <div id="qr-modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close-qr></div>
+    <div class="modal-card qr-card" role="dialog" aria-labelledby="qr-title" aria-modal="true">
+      <button class="modal-close" type="button" data-close-qr aria-label="Закрыть" data-i18n-aria="close">×</button>
+      <h3 id="qr-title" data-i18n="qrTitle">QR-коды обложки</h3>
+      <p class="modal-context" data-i18n="qrIntro">Наведите камеру телефона — откроется русская или английская обложка книги.</p>
+      <div class="qr-grid">
+        <figure class="qr-item">
+          <img src="qr-cover-ru.png" width="222" height="222" alt="QR: русская обложка">
+          <figcaption>
+            <strong>RU</strong>
+            <a id="qr-link-ru" href="https://jfeldman777.github.io/gala/index.html" target="_blank" rel="noopener">jfeldman777.github.io/gala</a>
+          </figcaption>
+        </figure>
+        <figure class="qr-item">
+          <img src="qr-cover-en.png" width="222" height="222" alt="QR: English cover">
+          <figcaption>
+            <strong>EN</strong>
+            <a id="qr-link-en" href="https://jfeldman777.github.io/gala/en.html" target="_blank" rel="noopener">…/gala/en.html</a>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=51"></script>
 </body>
 </html>

@@ -35,6 +35,9 @@ const I18N = {
     copyCover: "Скопировать ссылку на обложку",
     copyPage: "Скопировать ссылку на страницу",
     copyLink: "Скопировать ссылку",
+    qrCover: "QR-код обложки",
+    qrTitle: "QR-коды обложки",
+    qrIntro: "Наведите камеру телефона — откроется русская или английская обложка книги.",
     whatsNew: "Что нового",
     statsRead: "Читать",
     statsAndListen: "и слушать",
@@ -123,6 +126,9 @@ const I18N = {
     copyCover: "Copy cover link",
     copyPage: "Copy page link",
     copyLink: "Copy link",
+    qrCover: "Cover QR code",
+    qrTitle: "Cover QR codes",
+    qrIntro: "Point your phone camera to open the Russian or English cover of the book.",
     whatsNew: "What's new",
     statsRead: "Read",
     statsAndListen: "and listen",
@@ -258,6 +264,7 @@ const els = {
   coverToc: document.getElementById("cover-toc"),
   coverHome: document.getElementById("cover-home"),
   coverLink: document.getElementById("cover-link"),
+  coverQr: document.getElementById("cover-qr"),
   coverChanges: document.getElementById("cover-changes"),
   coverRoutes: document.getElementById("cover-routes"),
   coverRouteSelect: document.getElementById("cover-route-select"),
@@ -269,6 +276,7 @@ const els = {
   changesPeriod: document.getElementById("changes-period"),
   changesSummary: document.getElementById("changes-summary"),
   changesList: document.getElementById("changes-list"),
+  qrModal: document.getElementById("qr-modal"),
 };
 
 function audioPath(page) {
@@ -1744,6 +1752,10 @@ window.addEventListener("keydown", (e) => {
     closeChangesModal();
     return;
   }
+  if (e.key === "Escape" && els.qrModal && !els.qrModal.hidden) {
+    closeQrModal();
+    return;
+  }
   if (e.key === "Escape" && document.body.classList.contains("toc-open")) {
     closeToc();
     return;
@@ -2001,6 +2013,11 @@ els.coverChanges?.addEventListener("click", (e) => {
   e.stopPropagation();
   openChangesModal();
 });
+els.coverQr?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  openQrModal();
+});
 els.sidebarChanges?.addEventListener("click", (e) => {
   e.preventDefault();
   openChangesModal();
@@ -2010,6 +2027,9 @@ els.changesPeriod?.addEventListener("change", () => {
 });
 els.changesModal?.addEventListener("click", (e) => {
   if (e.target.matches("[data-close-changes]")) closeChangesModal();
+});
+els.qrModal?.addEventListener("click", (e) => {
+  if (e.target.matches("[data-close-qr]")) closeQrModal();
 });
 
 const VISIT_KEY = "discourse-last-visit";
@@ -2150,6 +2170,30 @@ function openChangesModal() {
 
 function closeChangesModal() {
   if (els.changesModal) els.changesModal.hidden = true;
+}
+
+const CANONICAL_COVER = {
+  ru: "https://jfeldman777.github.io/gala/index.html",
+  en: "https://jfeldman777.github.io/gala/en.html",
+};
+
+function openQrModal() {
+  if (!els.qrModal) return;
+  const ru = document.getElementById("qr-link-ru");
+  const en = document.getElementById("qr-link-en");
+  if (ru) {
+    ru.href = CANONICAL_COVER.ru;
+    ru.textContent = "jfeldman777.github.io/gala";
+  }
+  if (en) {
+    en.href = CANONICAL_COVER.en;
+    en.textContent = "jfeldman777.github.io/gala/en.html";
+  }
+  els.qrModal.hidden = false;
+}
+
+function closeQrModal() {
+  if (els.qrModal) els.qrModal.hidden = true;
 }
 
 async function openChangedPage(pageId) {

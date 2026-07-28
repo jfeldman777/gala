@@ -145,6 +145,7 @@ body {
 
 #cover-toc,
 #cover-link,
+#cover-qr,
 #cover-changes {
   font-size: 1.35rem;
   line-height: 1;
@@ -159,6 +160,13 @@ body {
   font-size: 1.05rem;
   font-weight: normal;
   padding: 0.55rem 0.7rem;
+}
+
+#cover-qr {
+  font-size: 1.05rem;
+  font-weight: normal;
+  padding: 0.5rem 0.65rem;
+  letter-spacing: -0.06em;
 }
 
 #cover-changes {
@@ -1077,6 +1085,68 @@ body.lang-en {
   border-radius: 12px;
   padding: 1.25rem 1.25rem 1rem;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-card.qr-card {
+  width: min(100%, 36rem);
+}
+
+.qr-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.qr-item {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  text-align: center;
+}
+
+.qr-item img {
+  width: min(100%, 11rem);
+  height: auto;
+  aspect-ratio: 1;
+  background: #fffaf0;
+  border: 1px solid var(--border);
+  border-radius: 0.35rem;
+  padding: 0.4rem;
+}
+
+.qr-item figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  max-width: 100%;
+}
+
+.qr-item figcaption strong {
+  color: var(--ink);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+}
+
+.qr-item a {
+  color: var(--accent);
+  word-break: break-all;
+  text-decoration: none;
+  font-size: 0.78rem;
+}
+
+.qr-item a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 560px) {
+  .qr-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .modal-card h3 {
