@@ -379,7 +379,7 @@ button:disabled { opacity: 0.4; cursor: default; }
     position: relative;
   }
 
-  /* Картина мира — вверху; остальное (вкл. философию) — внизу */
+  /* Картина мира — вверху; центр заполняется доской; философия — внизу */
   .rail-left {
     display: contents;
   }
@@ -387,6 +387,7 @@ button:disabled { opacity: 0.4; cursor: default; }
   .card[data-id="worldview"].visible {
     order: 0;
     position: relative !important;
+    flex: 0 0 auto;
     align-self: center;
     margin: 0 auto;
     z-index: 5;
@@ -396,6 +397,7 @@ button:disabled { opacity: 0.4; cursor: default; }
 
   .card[data-id="examples"].visible {
     order: 4;
+    flex: 0 0 auto;
     align-self: center;
   }
 
@@ -411,15 +413,40 @@ button:disabled { opacity: 0.4; cursor: default; }
     justify-content: center;
     align-self: center;
     order: 3;
+    flex: 0 0 auto;
   }
 
-  /* Pack board + greens to the bottom; philosophy sits at the very bottom */
+  /* Middle grows and spreads bands so the center is not empty */
   .board {
     order: 2;
-    margin-top: auto;
+    flex: 1 1 auto;
+    margin-top: 0;
+    min-height: 0;
     height: auto;
-    grid-template-rows: auto auto auto;
+    display: flex;
+    flex-direction: column;
     gap: 0.35rem;
+  }
+
+  .hemisphere.north {
+    flex: 1 1 auto;
+    min-height: 0;
+    gap: 0.35rem;
+    justify-content: space-evenly;
+  }
+
+  .hemisphere.south {
+    flex: 0 0 auto;
+  }
+
+  .equator {
+    flex: 0 0 auto;
+    margin: 0.05rem 8%;
+  }
+
+  .hemisphere.north .band {
+    flex: 1 1 0;
+    justify-content: center;
   }
 
   .rail .card.rail-dark,
@@ -431,14 +458,6 @@ button:disabled { opacity: 0.4; cursor: default; }
     flex: 0 0 auto;
     padding: 0.18rem 0.35rem;
     font-size: 0.78rem;
-  }
-
-  .hemisphere.north {
-    gap: 0.4rem;
-  }
-
-  .hemisphere.north .band {
-    flex: 0 0 auto;
   }
 
   .band {
