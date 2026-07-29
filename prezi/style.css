@@ -379,7 +379,7 @@ button:disabled { opacity: 0.4; cursor: default; }
     position: relative;
   }
 
-  /* Картина мира — вверху; центр заполняется доской; философия — внизу */
+  /* Картина мира — вверху; плотный клубок по центру; философия — внизу */
   .rail-left {
     display: contents;
   }
@@ -416,23 +416,23 @@ button:disabled { opacity: 0.4; cursor: default; }
     flex: 0 0 auto;
   }
 
-  /* Middle grows and spreads bands so the center is not empty */
+  /* Tight cluster centered in the free space — do not stretch gaps */
   .board {
     order: 2;
-    flex: 1 1 auto;
-    margin-top: 0;
+    flex: 0 0 auto;
+    margin-top: auto;
+    margin-bottom: auto;
     min-height: 0;
     height: auto;
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.3rem;
   }
 
   .hemisphere.north {
-    flex: 1 1 auto;
-    min-height: 0;
-    gap: 0.35rem;
-    justify-content: space-evenly;
+    flex: 0 0 auto;
+    gap: 0.3rem;
+    justify-content: flex-start;
   }
 
   .hemisphere.south {
@@ -445,7 +445,7 @@ button:disabled { opacity: 0.4; cursor: default; }
   }
 
   .hemisphere.north .band {
-    flex: 1 1 0;
+    flex: 0 0 auto;
     justify-content: center;
   }
 
