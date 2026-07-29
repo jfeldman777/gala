@@ -144,7 +144,9 @@ button:disabled { opacity: 0.4; cursor: default; }
   left: 0.25rem;
   top: 0.4rem;
   bottom: 0.4rem;
-  justify-content: space-between;
+  /* Keep «примеры» under «Картина мира», not pinned to the bottom */
+  justify-content: flex-start;
+  gap: 0.55rem;
 }
 
 .rail-right {
