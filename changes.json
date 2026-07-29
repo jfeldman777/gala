@@ -3,6 +3,17 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "карта",
+      "title": "Карта Дискурса",
+      "section": "Проекты",
+      "date": "2026-07-29T13:30:00+03:00",
+      "kind": "added",
+      "summary": "Презентация по карте: карточки выходят на экран по одной",
+      "href": "prezi/",
+      "lang": "ru",
+      "note": "Announce Discourse Map presenter in RU what's-new."
+    },
+    {
       "id": "10.9.3",
       "title": "Камни с неба",
       "section": "10. Система",

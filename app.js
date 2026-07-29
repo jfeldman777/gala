@@ -2108,8 +2108,13 @@ function filteredChanges() {
   const visibleIds = new Set(state.pages.map((p) => p.id));
   return state.changes
     .filter((entry) => {
-      if (!visibleIds.has(entry.id)) return false;
-      return entryTimestamp(entry) >= cutoff;
+      if (entryTimestamp(entry) < cutoff) return false;
+      if (entry.href) {
+        if (entry.lang && entry.lang !== state.lang) return false;
+        if (Array.isArray(entry.langs) && !entry.langs.includes(state.lang)) return false;
+        return true;
+      }
+      return visibleIds.has(entry.id);
     })
     .sort((a, b) => entryTimestamp(b) - entryTimestamp(a) || String(b.id).localeCompare(String(a.id), "ru"));
 }
@@ -2154,7 +2159,14 @@ function renderChangesList() {
       <span class="changes-item-title">${escapeHtml(title)}</span>
       ${summary ? `<span class="changes-item-summary">${escapeHtml(summary)}</span>` : ""}
     `;
-    btn.addEventListener("click", () => openChangedPage(entry.id));
+    btn.addEventListener("click", () => {
+      if (entry.href) {
+        closeChangesModal();
+        location.href = entry.href;
+        return;
+      }
+      openChangedPage(entry.id);
+    });
     els.changesList.appendChild(btn);
   });
 }
