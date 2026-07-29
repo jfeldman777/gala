@@ -139,66 +139,37 @@ button:disabled { opacity: 0.4; cursor: default; }
 
 .board {
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr) minmax(0, 0.35fr);
+  grid-template-rows: repeat(4, minmax(0, 1fr));
   gap: 0.35rem;
   min-width: 0;
   min-height: 0;
   height: 100%;
 }
 
-.hemisphere {
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.hemisphere.north {
-  justify-content: flex-start;
-  gap: 0.55rem;
-  min-height: 0;
-}
-
-.hemisphere.mid {
-  justify-content: flex-start;
-  gap: 0.45rem;
-  min-height: 0;
-}
-
-.hemisphere.south {
-  flex: 0 0 auto;
-  justify-content: center;
-  gap: 0.35rem;
-  padding-bottom: 0.15rem;
-}
-
-.equator {
-  height: 0;
-  border-top: 1px dashed rgba(44, 36, 22, 0.28);
-  margin: 0.1rem 8%;
-}
-
 .band {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.35rem;
   min-height: 0;
+  overflow: auto;
+  padding: 0.15rem 0.1rem;
 }
 
-.hemisphere.north .band {
-  flex: 0 0 auto;
+.band.quarter {
+  border-top: 1px dashed rgba(44, 36, 22, 0.18);
 }
 
-.hemisphere.mid .band,
-.hemisphere.south .band {
-  flex: 0 0 auto;
+.band.quarter:first-child {
+  border-top: none;
 }
 
 .band-head {
-  min-height: 1.6rem;
+  min-height: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex: 0 0 auto;
 }
 
 .band-cards {
@@ -207,6 +178,7 @@ button:disabled { opacity: 0.4; cursor: default; }
   gap: 0.4rem;
   align-items: center;
   min-height: 0;
+  flex: 0 0 auto;
 }
 
 .card-line {
@@ -406,8 +378,9 @@ button:disabled { opacity: 0.4; cursor: default; }
   #btn-all { display: none; }
 
   /*
-   * Stage grid — mid sits on the real vertical center of the play area:
-   * worldview | north(2fr) | mid(auto on equator) | gap(1fr) | south(1fr) | phil
+   * Four equal vertical quarters on the board:
+   * problems | models | understand | optimal
+   * Worldview above, philosophy/examples below.
    */
   .stage {
     order: 1;
@@ -417,17 +390,25 @@ button:disabled { opacity: 0.4; cursor: default; }
     overflow: hidden;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 2fr) auto minmax(0, 1fr) minmax(0, 1fr) auto;
-    gap: 0.15rem 0;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 0.2rem 0;
     padding: max(0.55rem, env(safe-area-inset-top, 0px)) 0.45rem 0.25rem;
     position: relative;
     align-content: stretch;
   }
 
   .rail-left,
-  .board,
   .rail-right {
     display: contents;
+  }
+
+  .board {
+    grid-row: 2;
+    display: grid;
+    grid-template-rows: repeat(4, minmax(0, 1fr));
+    gap: 0.2rem;
+    min-height: 0;
+    height: 100%;
   }
 
   .card[data-id="worldview"].visible {
@@ -436,90 +417,36 @@ button:disabled { opacity: 0.4; cursor: default; }
     position: relative !important;
     z-index: 5;
     max-width: calc(100% - 1rem);
-    margin: 0.1rem auto 0.15rem;
+    margin: 0.1rem auto 0.1rem;
     transform: none;
   }
 
   .card[data-id="examples"].visible {
-    grid-row: 6;
-    justify-self: center;
-  }
-
-  .hemisphere.north {
-    grid-row: 2;
-    position: relative;
-    top: auto;
-    left: auto;
-    right: auto;
-    height: auto;
-    min-height: 0;
-    gap: 0.25rem;
-    justify-content: flex-start;
-    overflow: auto;
-    padding: 0 0.1rem;
-  }
-
-  .hemisphere.mid {
     grid-row: 3;
-    position: relative;
-    top: auto;
-    left: auto;
-    right: auto;
-    height: auto;
-    min-height: 0;
-    gap: 0.2rem;
-    justify-content: flex-start;
-    overflow: auto;
-    border-top: 1px dashed rgba(44, 36, 22, 0.4);
-    margin: 0 8%;
-    padding-top: 0.2rem;
-    width: auto;
-    justify-self: stretch;
-  }
-
-  .equator {
-    grid-row: 4;
-    display: block;
-    border: none;
-    height: auto;
-    margin: 0;
-    min-height: 0;
-  }
-
-  .hemisphere.south {
-    grid-row: 5;
-    position: relative;
-    top: auto;
-    left: auto;
-    right: auto;
-    height: auto;
-    min-height: 0;
-    gap: 0.2rem;
-    justify-content: center;
-    overflow: auto;
-    padding: 0.1rem;
+    justify-self: center;
   }
 
   .rail .card.rail-dark.visible,
   .rail .card.rail-green.visible {
-    grid-row: 6;
+    grid-row: 3;
     justify-self: center;
   }
 
-  .hemisphere.north .band,
-  .hemisphere.mid .band,
-  .hemisphere.south .band {
-    flex: 0 0 auto;
+  .band.quarter {
+    min-height: 0;
+    overflow: auto;
     justify-content: flex-start;
+    gap: 0.25rem;
+    padding: 0.1rem 0.05rem;
+    border-top: 1px dashed rgba(44, 36, 22, 0.22);
   }
 
-  .stage.is-complete .hemisphere.north,
-  .stage.is-complete .hemisphere.mid {
-    justify-content: flex-start;
+  .band.quarter:first-child {
+    border-top: none;
   }
 
-  .stage.is-complete .hemisphere.south {
-    justify-content: center;
+  .stage.is-complete .band.quarter {
+    justify-content: flex-start;
   }
 
   .rail .card.rail-dark,
