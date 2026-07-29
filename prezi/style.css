@@ -373,8 +373,20 @@ button:disabled { opacity: 0.4; cursor: default; }
     -webkit-overflow-scrolling: touch;
     display: flex;
     flex-direction: column;
-    gap: 0.45rem;
-    padding: 0.35rem 0.45rem 0.4rem;
+    justify-content: flex-end;
+    gap: 0.35rem;
+    padding: 0.35rem 0.45rem 0.35rem;
+    position: relative;
+  }
+
+  /* First card stays near the top; everything else hugs the bottom */
+  .card[data-id="worldview"].visible {
+    position: absolute !important;
+    top: 0.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    max-width: calc(100% - 1rem);
   }
 
   .rail {
@@ -391,6 +403,10 @@ button:disabled { opacity: 0.4; cursor: default; }
     align-self: stretch;
   }
 
+  .rail-left {
+    min-height: 0;
+  }
+
   .rail .card.rail-dark,
   .rail .card.rail-green {
     min-height: 0;
@@ -399,7 +415,7 @@ button:disabled { opacity: 0.4; cursor: default; }
     max-width: 100%;
     flex: 0 0 auto;
     padding: 0.18rem 0.35rem;
-    font-size: 0.65rem;
+    font-size: 0.78rem;
   }
 
   .board {
@@ -464,7 +480,7 @@ button:disabled { opacity: 0.4; cursor: default; }
     max-width: 100%;
     height: max-content;
     padding: 0.12rem 0.28rem;
-    font-size: 0.65rem;
+    font-size: 0.78rem;
     line-height: 1.15;
   }
 
@@ -476,14 +492,14 @@ button:disabled { opacity: 0.4; cursor: default; }
   .card.header.visible {
     max-width: 100%;
     width: max-content;
-    font-size: 0.62rem;
+    font-size: 0.74rem;
     letter-spacing: 0.02em;
     padding: 0.1rem 0.32rem;
   }
 
   .card.header-box.caps.visible {
     letter-spacing: 0.05em;
-    font-size: 0.6rem;
+    font-size: 0.72rem;
   }
 
   .card.flash {
