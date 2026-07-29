@@ -117,6 +117,7 @@ button:disabled { opacity: 0.4; cursor: default; }
   outline: none;
   cursor: pointer;
   align-items: stretch;
+  overflow: hidden;
 }
 
 .rail {
@@ -126,6 +127,7 @@ button:disabled { opacity: 0.4; cursor: default; }
   justify-content: flex-start;
   padding-top: 0.2rem;
   min-height: 0;
+  overflow: hidden;
 }
 
 .rail-left {
@@ -144,6 +146,7 @@ button:disabled { opacity: 0.4; cursor: default; }
   min-width: 0;
   min-height: 0;
   height: 100%;
+  overflow: hidden;
 }
 
 .band {
@@ -152,7 +155,7 @@ button:disabled { opacity: 0.4; cursor: default; }
   justify-content: flex-start;
   gap: 0.35rem;
   min-height: 0;
-  overflow: auto;
+  overflow: hidden;
   padding: 0.15rem 0.1rem;
 }
 
@@ -178,12 +181,14 @@ button:disabled { opacity: 0.4; cursor: default; }
   gap: 0.4rem;
   align-items: center;
   min-height: 0;
-  flex: 0 0 auto;
+  flex: 1 1 auto;
+  overflow: hidden;
+  justify-content: flex-start;
 }
 
 .card-line {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 0.45rem;
   justify-content: center;
   align-items: center;
@@ -378,9 +383,8 @@ button:disabled { opacity: 0.4; cursor: default; }
   #btn-all { display: none; }
 
   /*
-   * Four equal vertical quarters on the board:
-   * problems | models | understand | optimal
-   * Worldview above, philosophy/examples below.
+   * Mobile: simple column — worldview / 4 equal quarters / greens
+   * Avoid display:contents (breaks layout on phones).
    */
   .stage {
     order: 1;
@@ -388,56 +392,50 @@ button:disabled { opacity: 0.4; cursor: default; }
     min-height: 0;
     height: 100%;
     overflow: hidden;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr) auto;
-    gap: 0.2rem 0;
-    padding: max(0.55rem, env(safe-area-inset-top, 0px)) 0.45rem 0.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: max(0.45rem, env(safe-area-inset-top, 0px)) 0.4rem 0.2rem;
     position: relative;
-    align-content: stretch;
   }
 
   .rail-left,
   .rail-right {
-    display: contents;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+    flex: 0 0 auto;
+    min-height: 0;
+    padding: 0;
+    align-self: stretch;
   }
 
   .board {
-    grid-row: 2;
+    flex: 1 1 0;
+    min-height: 0;
+    height: auto;
     display: grid;
     grid-template-rows: repeat(4, minmax(0, 1fr));
-    gap: 0.2rem;
-    min-height: 0;
-    height: 100%;
+    gap: 0.15rem;
+    overflow: hidden;
   }
 
   .card[data-id="worldview"].visible {
-    grid-row: 1;
-    justify-self: center;
     position: relative !important;
-    z-index: 5;
     max-width: calc(100% - 1rem);
-    margin: 0.1rem auto 0.1rem;
+    margin: 0;
     transform: none;
-  }
-
-  .card[data-id="examples"].visible {
-    grid-row: 3;
-    justify-self: center;
-  }
-
-  .rail .card.rail-dark.visible,
-  .rail .card.rail-green.visible {
-    grid-row: 3;
-    justify-self: center;
   }
 
   .band.quarter {
     min-height: 0;
-    overflow: auto;
+    overflow: hidden;
     justify-content: flex-start;
-    gap: 0.25rem;
-    padding: 0.1rem 0.05rem;
+    gap: 0.2rem;
+    padding: 0.08rem 0.05rem;
     border-top: 1px dashed rgba(44, 36, 22, 0.22);
   }
 
@@ -445,8 +443,10 @@ button:disabled { opacity: 0.4; cursor: default; }
     border-top: none;
   }
 
-  .stage.is-complete .band.quarter {
-    justify-content: flex-start;
+  .band-cards {
+    gap: 0.25rem;
+    width: 100%;
+    overflow: hidden;
   }
 
   .rail .card.rail-dark,
@@ -460,24 +460,10 @@ button:disabled { opacity: 0.4; cursor: default; }
     font-size: 0.95rem;
   }
 
-  .band {
-    gap: 0.3rem;
-    overflow: visible;
-  }
-
-  .band-head {
-    min-height: 0;
-  }
-
-  .band-cards {
-    gap: 0.3rem;
-    width: 100%;
-  }
-
   .card-line {
     position: relative;
     flex-wrap: wrap;
-    gap: 0.35rem;
+    gap: 0.3rem;
     width: 100%;
     justify-content: center;
     align-items: center;
@@ -485,7 +471,7 @@ button:disabled { opacity: 0.4; cursor: default; }
 
   /* Hidden cards leave the flow so new ones don't sit on/under old ones */
   .card:not(.visible) {
-    position: absolute;
+    position: absolute !important;
     left: 0;
     top: 0;
     width: 1px;
