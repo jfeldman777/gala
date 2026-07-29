@@ -3,6 +3,15 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "10.9.4",
+      "title": "Теорема Архимеда",
+      "section": "10. Система",
+      "md": "10. Система/10.9. Примеры для подражания/10.9.4. Теорема Архимеда.md",
+      "date": "2026-07-29T16:45:00+03:00",
+      "kind": "added",
+      "note": "Add 10.9.4 Archimedes theorem with EN mirror to the engineers route."
+    },
+    {
       "id": "карта",
       "title": "Карта Дискурса",
       "section": "Проекты",
