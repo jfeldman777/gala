@@ -379,14 +379,24 @@ button:disabled { opacity: 0.4; cursor: default; }
     position: relative;
   }
 
-  /* First card stays near the top; everything else hugs the bottom */
+  /* Картина мира — вверху; остальное (вкл. философию) — внизу */
+  .rail-left {
+    display: contents;
+  }
+
   .card[data-id="worldview"].visible {
-    position: absolute !important;
-    top: 0.2rem;
-    left: 50%;
-    transform: translateX(-50%);
+    order: 0;
+    position: relative !important;
+    align-self: center;
+    margin: 0 auto;
     z-index: 5;
     max-width: calc(100% - 1rem);
+    transform: none;
+  }
+
+  .card[data-id="examples"].visible {
+    order: 4;
+    align-self: center;
   }
 
   .rail {
@@ -397,15 +407,10 @@ button:disabled { opacity: 0.4; cursor: default; }
     justify-content: center;
   }
 
-  .rail-left,
   .rail-right {
     justify-content: center;
-    align-self: stretch;
-  }
-
-  .rail-left {
-    order: 1;
-    min-height: 0;
+    align-self: center;
+    order: 3;
   }
 
   /* Pack board + greens to the bottom; philosophy sits at the very bottom */
@@ -415,10 +420,6 @@ button:disabled { opacity: 0.4; cursor: default; }
     height: auto;
     grid-template-rows: auto auto auto;
     gap: 0.35rem;
-  }
-
-  .rail-right {
-    order: 3;
   }
 
   .rail .card.rail-dark,
