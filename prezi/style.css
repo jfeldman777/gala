@@ -428,10 +428,11 @@ button:disabled { opacity: 0.4; cursor: default; }
   }
 
   /*
-   * Board fills the stage height so 25% = real bottom quarter.
-   * north (problems+models) under worldview
-   * mid (как это понимать) from equator
-   * south (оптимальным) bottom quarter
+   * Board fills the stage height.
+   * - top half: problems + models (pressed under Картина мира)
+   * - equator at mid
+   * - ниже экватора: как это понимать (сверху зоны вниз)
+   * - bottom quarter: оптимальным
    */
   .board {
     order: 2;
@@ -441,21 +442,26 @@ button:disabled { opacity: 0.4; cursor: default; }
     min-height: 0;
     height: 100%;
     display: grid;
-    grid-template-rows: auto auto minmax(0, 1fr) 25%;
-    gap: 0.2rem;
+    grid-template-rows: 50% auto minmax(0, 1fr) 25%;
+    gap: 0;
   }
 
   .hemisphere.north {
     gap: 0.25rem;
     justify-content: flex-start;
-    align-self: start;
+    align-self: stretch;
+    min-height: 0;
+    overflow: auto;
+    padding-bottom: 0.15rem;
   }
 
   .hemisphere.mid {
     min-height: 0;
     gap: 0.25rem;
-    justify-content: flex-start;
+    justify-content: flex-start; /* с экватора вниз */
+    align-self: stretch;
     overflow: auto;
+    padding-top: 0.15rem;
   }
 
   .hemisphere.south {
@@ -467,7 +473,7 @@ button:disabled { opacity: 0.4; cursor: default; }
   }
 
   .equator {
-    margin: 0.05rem 8%;
+    margin: 0 8%;
     align-self: stretch;
   }
 
@@ -482,7 +488,7 @@ button:disabled { opacity: 0.4; cursor: default; }
     flex: 1 1 0;
     min-height: 0;
     height: 100%;
-    grid-template-rows: auto auto minmax(0, 1fr) 25%;
+    grid-template-rows: 50% auto minmax(0, 1fr) 25%;
   }
 
   .stage.is-complete .hemisphere.north {
