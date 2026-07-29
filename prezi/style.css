@@ -428,11 +428,9 @@ button:disabled { opacity: 0.4; cursor: default; }
   }
 
   /*
-   * Board fills the stage height.
-   * - top half: problems + models (pressed under Картина мира)
-   * - equator at mid
-   * - ниже экватора: как это понимать (сверху зоны вниз)
-   * - bottom quarter: оптимальным
+   * - top 50%: problems + models under Картина мира
+   * - next 25% starts ON the equator: как это понимать downward
+   * - bottom 25%: оптимальным
    */
   .board {
     order: 2;
@@ -442,7 +440,7 @@ button:disabled { opacity: 0.4; cursor: default; }
     min-height: 0;
     height: 100%;
     display: grid;
-    grid-template-rows: 50% auto minmax(0, 1fr) 25%;
+    grid-template-rows: 50% 25% 25%;
     gap: 0;
   }
 
@@ -452,16 +450,24 @@ button:disabled { opacity: 0.4; cursor: default; }
     align-self: stretch;
     min-height: 0;
     overflow: auto;
-    padding-bottom: 0.15rem;
+    padding-bottom: 0.1rem;
+  }
+
+  .equator {
+    display: none; /* линия экватора — верхний край зоны «как это понимать» */
   }
 
   .hemisphere.mid {
     min-height: 0;
     gap: 0.25rem;
-    justify-content: flex-start; /* с экватора вниз */
+    justify-content: flex-start;
     align-self: stretch;
     overflow: auto;
-    padding-top: 0.15rem;
+    border-top: 1px dashed rgba(44, 36, 22, 0.28);
+    padding-top: 0.2rem;
+    margin: 0 8%;
+    width: auto;
+    justify-self: stretch;
   }
 
   .hemisphere.south {
@@ -469,11 +475,6 @@ button:disabled { opacity: 0.4; cursor: default; }
     gap: 0.2rem;
     justify-content: center;
     overflow: auto;
-    align-self: stretch;
-  }
-
-  .equator {
-    margin: 0 8%;
     align-self: stretch;
   }
 
@@ -488,19 +489,16 @@ button:disabled { opacity: 0.4; cursor: default; }
     flex: 1 1 0;
     min-height: 0;
     height: 100%;
-    grid-template-rows: 50% auto minmax(0, 1fr) 25%;
+    grid-template-rows: 50% 25% 25%;
   }
 
-  .stage.is-complete .hemisphere.north {
+  .stage.is-complete .hemisphere.north,
+  .stage.is-complete .hemisphere.mid {
     justify-content: flex-start;
   }
 
   .stage.is-complete .hemisphere.north .band {
     flex: 0 0 auto;
-    justify-content: flex-start;
-  }
-
-  .stage.is-complete .hemisphere.mid {
     justify-content: flex-start;
   }
 
