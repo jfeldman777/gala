@@ -21,6 +21,12 @@
   let finaleTimer = 0;
   let finaleShownForEnd = false;
 
+  // 1-based order of appearance from steps (headers included; spoken-only skipped)
+  const orderByCard = new Map();
+  data.steps.forEach((s, i) => {
+    if (s?.card && !orderByCard.has(s.card)) orderByCard.set(s.card, i + 1);
+  });
+
   function mount() {
     els.title.textContent = data.title;
 
@@ -84,7 +90,8 @@
     const el = document.createElement("div");
     el.className = `card ${card.kind}`;
     el.dataset.id = card.id;
-    el.textContent = card.text;
+    const n = orderByCard.get(card.id);
+    el.textContent = n != null ? `${n}. ${card.text}` : card.text;
     cardEls.set(card.id, el);
     return el;
   }
