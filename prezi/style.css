@@ -450,6 +450,36 @@ button:disabled { opacity: 0.4; cursor: default; }
     justify-content: flex-start;
   }
 
+  /* End of show: fill the sheet evenly without a hollow middle */
+  .stage.is-complete {
+    justify-content: space-between;
+  }
+
+  .stage.is-complete .board {
+    flex: 1 1 auto;
+    min-height: 0;
+    justify-content: space-evenly;
+  }
+
+  .stage.is-complete .hemisphere.north {
+    flex: 1 1 auto;
+    min-height: 0;
+    justify-content: space-evenly;
+  }
+
+  .stage.is-complete .hemisphere.north .band {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+
+  .stage.is-complete .hemisphere.south {
+    flex: 0 0 auto;
+  }
+
+  .stage.is-complete .rail-right {
+    margin-top: 0;
+  }
+
   .rail .card.rail-dark,
   .rail .card.rail-green {
     min-height: 0;

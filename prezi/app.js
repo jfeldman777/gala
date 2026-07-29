@@ -125,6 +125,7 @@
 
     els.btnPrev.disabled = step <= 0;
     els.btnNext.disabled = step >= total;
+    els.stage?.classList.toggle("is-complete", step >= total && total > 0);
   }
 
   function next() {
