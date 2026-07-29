@@ -47,7 +47,7 @@ window.PREZI = {
     { id: "state", text: "Государство", kind: "purple", row: "optimal" },
     { id: "life", text: "СВОЮ ЖИЗНЬ", kind: "blue", row: "optimal" },
     { id: "self", text: "Саморазвитие", kind: "purple", row: "optimal" },
-    { id: "edu", text: "Обучение-образование", kind: "blue", row: "optimal" },
+    { id: "edu", text: "образование", kind: "blue", row: "optimal" },
     { id: "comm", text: "коммуникация", kind: "purple", row: "optimal" },
     { id: "discuss", text: "Дискуссия", kind: "blue wide", row: "optimal" },
   ],
