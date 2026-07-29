@@ -62,7 +62,6 @@ window.PREZI = {
     { match: "Психология", card: "psych" },
     { match: "Гуманитарное знание", card: "hum" },
     { match: "Что считать оптимальным и как это построить", card: "h-optimal" },
-    { match: "Оптимальные", card: null, note: "словесный шаг" },
     { match: "Государство", card: "state" },
     { match: "Образование", card: "edu" },
     { match: "Коммуникация", card: "comm" },
