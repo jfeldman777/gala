@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Карта Дискурса — показ</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+  <header class="bar">
+    <a class="back" href="../index.html">← Дискурс</a>
+    <div class="bar-center">
+      <strong id="title">Карта Дискурса</strong>
+      <span id="step-label" class="step-label">Готово к показу</span>
+    </div>
+    <div class="bar-actions">
+      <span id="progress" class="progress">0 / 0</span>
+      <button type="button" id="btn-prev" title="Назад (←)">←</button>
+      <button type="button" id="btn-next" class="primary" title="Дальше (пробел / →)">Дальше</button>
+      <button type="button" id="btn-reset" title="С начала">↺</button>
+      <button type="button" id="btn-all" title="Показать всё">Все</button>
+    </div>
+  </header>
+
+  <main id="stage" class="stage" tabindex="0" aria-label="Сцена презентации">
+    <aside class="rail rail-left" id="rail-left"></aside>
+    <section class="board" id="board">
+      <div class="hemisphere north">
+        <div class="band" data-row="problems">
+          <div class="band-head" id="slot-h-problems"></div>
+          <div class="band-cards" id="row-problems"></div>
+        </div>
+        <div class="band" data-row="models">
+          <div class="band-head" id="slot-h-models"></div>
+          <div class="band-cards" id="row-models"></div>
+        </div>
+        <div class="band" data-row="understand">
+          <div class="band-head" id="slot-h-understand"></div>
+          <div class="band-cards" id="row-understand"></div>
+        </div>
+      </div>
+      <div class="equator" aria-hidden="true"></div>
+      <div class="hemisphere south">
+        <div class="band" data-row="optimal">
+          <div class="band-head" id="slot-h-optimal"></div>
+          <div class="band-cards" id="row-optimal"></div>
+        </div>
+      </div>
+    </section>
+    <aside class="rail rail-right" id="rail-right"></aside>
+  </main>
+
+  <p class="hint">Клик по сцене или пробел / → — следующая карточка · ← — назад · Esc — с начала</p>
+
+  <script src="data.js?v=3"></script>
+  <script src="app.js?v=3"></script>
+</body>
+</html>
