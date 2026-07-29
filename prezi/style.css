@@ -45,6 +45,12 @@ body {
 
 .back:hover { text-decoration: underline; }
 
+.back.more {
+  padding: 0.2rem 0.45rem;
+  border: 1px solid rgba(240, 217, 168, 0.45);
+  border-radius: 0.25rem;
+}
+
 .bar-center {
   flex: 1;
   min-width: 12rem;
