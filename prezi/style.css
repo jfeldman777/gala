@@ -428,54 +428,63 @@ button:disabled { opacity: 0.4; cursor: default; }
   }
 
   /*
-   * - top 50%: problems + models under Картина мира
-   * - next 25% starts ON the equator: как это понимать downward
-   * - bottom 25%: оптимальным
+   * Absolute zones on a full-height board (percentages of the board, not content):
+   * 0–50% north, 50–75% mid on the equator, 75–100% south
    */
   .board {
     order: 2;
     flex: 1 1 0;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 0;
     min-height: 0;
     height: 100%;
-    display: grid;
-    grid-template-rows: 50% 25% 25%;
-    gap: 0;
-  }
-
-  .hemisphere.north {
-    gap: 0.25rem;
-    justify-content: flex-start;
-    align-self: stretch;
-    min-height: 0;
-    overflow: auto;
-    padding-bottom: 0.1rem;
+    position: relative;
+    display: block;
   }
 
   .equator {
-    display: none; /* линия экватора — верхний край зоны «как это понимать» */
+    display: none;
+  }
+
+  .hemisphere.north {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    gap: 0.25rem;
+    justify-content: flex-start;
+    overflow: auto;
+    padding: 0 0.1rem 0.15rem;
+    box-sizing: border-box;
   }
 
   .hemisphere.mid {
-    min-height: 0;
+    position: absolute;
+    top: 50%;
+    left: 8%;
+    right: 8%;
+    height: 25%;
     gap: 0.25rem;
     justify-content: flex-start;
-    align-self: stretch;
     overflow: auto;
-    border-top: 1px dashed rgba(44, 36, 22, 0.28);
-    padding-top: 0.2rem;
-    margin: 0 8%;
+    border-top: 1px dashed rgba(44, 36, 22, 0.35);
+    padding-top: 0.25rem;
+    box-sizing: border-box;
+    margin: 0;
     width: auto;
-    justify-self: stretch;
   }
 
   .hemisphere.south {
-    min-height: 0;
+    position: absolute;
+    top: 75%;
+    left: 0;
+    right: 0;
+    height: 25%;
     gap: 0.2rem;
     justify-content: center;
     overflow: auto;
-    align-self: stretch;
+    padding: 0.1rem;
+    box-sizing: border-box;
   }
 
   .hemisphere.north .band,
@@ -489,16 +498,10 @@ button:disabled { opacity: 0.4; cursor: default; }
     flex: 1 1 0;
     min-height: 0;
     height: 100%;
-    grid-template-rows: 50% 25% 25%;
   }
 
   .stage.is-complete .hemisphere.north,
   .stage.is-complete .hemisphere.mid {
-    justify-content: flex-start;
-  }
-
-  .stage.is-complete .hemisphere.north .band {
-    flex: 0 0 auto;
     justify-content: flex-start;
   }
 
