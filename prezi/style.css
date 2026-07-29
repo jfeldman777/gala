@@ -501,14 +501,14 @@ button:disabled { opacity: 0.4; cursor: default; }
     width: max-content;
     max-width: 100%;
     flex: 0 0 auto;
-    padding: 0.22rem 0.4rem;
-    font-size: 0.8rem;
+    padding: 0.28rem 0.48rem;
+    font-size: 0.92rem;
   }
 
   .card-line {
     position: relative;
     flex-wrap: wrap;
-    gap: 0.22rem;
+    gap: 0.28rem;
     width: 100%;
     justify-content: center;
     align-items: center;
@@ -543,9 +543,9 @@ button:disabled { opacity: 0.4; cursor: default; }
     width: max-content;
     max-width: 100%;
     height: max-content;
-    padding: 0.18rem 0.38rem;
-    font-size: 0.8rem;
-    line-height: 1.15;
+    padding: 0.26rem 0.48rem;
+    font-size: 0.95rem;
+    line-height: 1.2;
   }
 
   .card.wide.visible {
@@ -556,14 +556,14 @@ button:disabled { opacity: 0.4; cursor: default; }
   .card.header.visible {
     max-width: 100%;
     width: 100%;
-    font-size: 0.78rem;
+    font-size: 0.9rem;
     letter-spacing: 0.02em;
-    padding: 0.12rem 0.35rem;
+    padding: 0.18rem 0.42rem;
   }
 
   .card.header-box.caps.visible {
     letter-spacing: 0.05em;
-    font-size: 0.74rem;
+    font-size: 0.86rem;
   }
 
   .card.flash {
