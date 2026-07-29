@@ -18,6 +18,8 @@
 
   const cardEls = new Map();
   let step = 0; // how many steps already revealed
+  let finaleTimer = 0;
+  let finaleShownForEnd = false;
 
   function mount() {
     els.title.textContent = data.title;
@@ -125,7 +127,42 @@
 
     els.btnPrev.disabled = step <= 0;
     els.btnNext.disabled = step >= total;
-    els.stage?.classList.toggle("is-complete", step >= total && total > 0);
+    const done = step >= total && total > 0;
+    els.stage?.classList.toggle("is-complete", done);
+    if (done) {
+      maybeShowFinale();
+    } else {
+      hideFinale(true);
+      finaleShownForEnd = false;
+    }
+  }
+
+  function maybeShowFinale() {
+    const el = document.getElementById("finale");
+    if (!el || finaleShownForEnd) return;
+    finaleShownForEnd = true;
+    window.clearTimeout(finaleTimer);
+    el.hidden = false;
+    el.classList.remove("is-leaving");
+    // reflow so the enter transition can run
+    void el.offsetWidth;
+    el.classList.add("is-on");
+    finaleTimer = window.setTimeout(() => {
+      el.classList.add("is-leaving");
+      el.classList.remove("is-on");
+      finaleTimer = window.setTimeout(() => {
+        el.hidden = true;
+        el.classList.remove("is-leaving");
+      }, 500);
+    }, 2000);
+  }
+
+  function hideFinale(immediate) {
+    const el = document.getElementById("finale");
+    if (!el) return;
+    window.clearTimeout(finaleTimer);
+    el.classList.remove("is-on", "is-leaving");
+    if (immediate) el.hidden = true;
   }
 
   function next() {
