@@ -2145,7 +2145,9 @@ function renderChangesList() {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "changes-item";
-    const title = titleById.get(entry.id) || entry.title;
+    const title =
+      titleById.get(entry.id) ||
+      (state.lang === "en" && entry.title_en ? entry.title_en : entry.title);
     const summary =
       (state.lang === "en" ? entry.summary_en : entry.summary) ||
       entry.summary ||
@@ -2162,7 +2164,9 @@ function renderChangesList() {
     btn.addEventListener("click", () => {
       if (entry.href) {
         closeChangesModal();
-        location.href = entry.href;
+        const href =
+          state.lang === "en" && entry.href_en ? entry.href_en : entry.href;
+        location.href = href;
         return;
       }
       openChangedPage(entry.id);

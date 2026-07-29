@@ -3,6 +3,19 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "учителям",
+      "title": "Маршрут «Учителям»",
+      "title_en": "Route “For teachers”",
+      "section": "Маршруты",
+      "date": "2026-07-29T18:20:00+03:00",
+      "kind": "added",
+      "summary": "Новый маршрут чтения для учителей",
+      "summary_en": "New reading route for teachers",
+      "href": "index.html?route=teachers",
+      "href_en": "en.html?route=teachers",
+      "note": "Add teachers route from route4.txt."
+    },
+    {
       "id": "10.9.4",
       "title": "Теорема Архимеда",
       "section": "10. Система",
