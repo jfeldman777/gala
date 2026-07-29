@@ -156,7 +156,12 @@ button:disabled { opacity: 0.4; cursor: default; }
 
 .board {
   display: grid;
-  grid-template-rows: repeat(4, minmax(0, 1fr));
+  /* Models + understand ~15% taller; problems/optimal give up space → those rows sit higher */
+  grid-template-rows:
+    minmax(0, 0.85fr)
+    minmax(0, 1.15fr)
+    minmax(0, 1.15fr)
+    minmax(0, 0.85fr);
   gap: 0.25rem;
   min-width: 0;
   min-height: 0;
@@ -443,12 +448,12 @@ button:disabled { opacity: 0.4; cursor: default; }
     width: 100%;
     height: auto;
     display: grid;
-    /* Problems has 3 card lines — needs more height than equal quarters */
+    /* Problems still densest; models + understand raised (~15% more share / start higher) */
     grid-template-rows:
-      minmax(0, 2.1fr)
-      minmax(0, 1.2fr)
-      minmax(0, 1fr)
-      minmax(0, 1fr);
+      minmax(0, 1.7fr)
+      minmax(0, 1.4fr)
+      minmax(0, 1.15fr)
+      minmax(0, 0.95fr);
     gap: 0.1rem;
     overflow: hidden;
   }
