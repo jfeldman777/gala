@@ -355,10 +355,57 @@ function resolvePages(rawPages) {
   );
 }
 
-/** Top-level section number from `1. Крошки` → `"1"`. */
+/** Leading chapter number from page.section, e.g. "10. Система" → "10". */
 function pageSectionNum(page) {
   const m = String(page.section || "").match(/^(\d+)/);
   return m ? m[1] : null;
+}
+
+/** Directory segments of page.md (everything except the filename). */
+function pageDirSegments(page) {
+  const md = String(page.md || "").replace(/\\/g, "/");
+  const parts = md.split("/").filter(Boolean);
+  return parts.slice(0, -1);
+}
+
+/** True if token names a real folder on disk, e.g. "3" → "3. Сэндвичи", "10.1" → "10.1. Кодировки". */
+function isFolderToken(folderId) {
+  const id = String(folderId);
+  return state.allPages.some((page) =>
+    pageDirSegments(page).some(
+      (part) =>
+        part === id || part.startsWith(`${id}.`) || part.startsWith(`${id} `)
+    )
+  );
+}
+
+function pagesInFolder(folderId) {
+  const id = String(folderId);
+  return state.allPages.filter((page) =>
+    pageDirSegments(page).some(
+      (part) =>
+        part === id || part.startsWith(`${id}.`) || part.startsWith(`${id} `)
+    )
+  );
+}
+
+/**
+ * Route list token:
+ * - existing page id → one page
+ * - folder number ("3", "10.1") → all pages in that folder (catalog order)
+ * - not by id-prefix branches (1.3 does NOT pull 1.3.1)
+ */
+function parseRouteToken(token, byId) {
+  const raw = String(token || "").trim();
+  if (!raw) return null;
+
+  const forced = raw.match(/^(.+)\.$/) || raw.match(/^(.+)\*$/);
+  const folderId = forced ? forced[1] : raw;
+  if (isFolderToken(folderId)) {
+    return { type: "folder", id: folderId };
+  }
+
+  return { type: "page", id: forced ? forced[1] : raw };
 }
 
 function findRoute(routeId) {
@@ -375,14 +422,34 @@ function routeTitle(route) {
   return String(title || route.id);
 }
 
-/** Page belongs to route if its section number is listed, or id is in `ids`. */
+/** Page belongs to route if listed directly or covered by an expanded folder/section. */
 function pageMatchesRoute(page, route) {
   if (!route) return true;
-  const secs = (route.sections || []).map(String);
+  const byId = new Map(state.allPages.map((p) => [p.id, p]));
   const sn = pageSectionNum(page);
-  if (sn && secs.includes(sn)) return true;
-  const ids = (route.ids || []).map(String);
-  return ids.includes(page.id);
+
+  for (const token of route.sections || []) {
+    if (sn && String(token) === sn) return true;
+  }
+  for (const token of route.ids || []) {
+    const parsed = parseRouteToken(token, byId);
+    if (!parsed) continue;
+    if (parsed.type === "folder") {
+      if (
+        pageDirSegments(page).some(
+          (part) =>
+            part === parsed.id ||
+            part.startsWith(`${parsed.id}.`) ||
+            part.startsWith(`${parsed.id} `)
+        )
+      ) {
+        return true;
+      }
+      continue;
+    }
+    if (parsed.id === page.id) return true;
+  }
+  return false;
 }
 
 function pagesForRoute(route) {
@@ -391,24 +458,27 @@ function pagesForRoute(route) {
   const ordered = [];
   const seen = new Set();
 
-  // Explicit ids keep the author's order from route.txt / routes.json
-  for (const id of (route.ids || []).map(String)) {
-    const page = byId.get(id);
-    if (!page || seen.has(id)) continue;
+  function addPage(page) {
+    if (!page || seen.has(page.id)) return;
     ordered.push(page);
-    seen.add(id);
+    seen.add(page.id);
   }
 
-  // Section numbers: append remaining matching pages in catalog order
-  const secs = (route.sections || []).map(String);
-  if (secs.length) {
+  // Explicit tokens keep the author's order; folder numbers expand in place
+  for (const token of route.ids || []) {
+    const parsed = parseRouteToken(token, byId);
+    if (!parsed) continue;
+    if (parsed.type === "folder") {
+      for (const page of pagesInFolder(parsed.id)) addPage(page);
+      continue;
+    }
+    addPage(byId.get(parsed.id));
+  }
+
+  // Legacy route.sections: append remaining matching pages in catalog order
+  for (const token of route.sections || []) {
     for (const page of state.allPages) {
-      if (seen.has(page.id)) continue;
-      const sn = pageSectionNum(page);
-      if (sn && secs.includes(sn)) {
-        ordered.push(page);
-        seen.add(page.id);
-      }
+      if (pageSectionNum(page) === String(token)) addPage(page);
     }
   }
 

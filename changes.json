@@ -3,6 +3,30 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "психологам",
+      "title": "Маршрут «Психологам»",
+      "title_en": "Route “For psychologists”",
+      "section": "Маршруты",
+      "date": "2026-07-30T11:30:00+03:00",
+      "kind": "added",
+      "summary": "Новый маршрут чтения для психологов",
+      "summary_en": "New reading route for psychologists",
+      "href": "index.html?route=psychologists",
+      "href_en": "en.html?route=psychologists",
+      "note": "Add psychologists route from route5.txt."
+    },
+    {
+      "id": "3.12",
+      "title": "Радуга Дона Бека",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.12. Радуга Дона Бека.md",
+      "date": "2026-07-30T11:30:00+03:00",
+      "kind": "changed",
+      "summary": "Спиральная динамика и уровни ТУАИ",
+      "summary_en": "Spiral Dynamics and the TUAI levels",
+      "note": "Expand 3.12 Don Beck rainbow with Spiral Dynamics notes."
+    },
+    {
       "id": "учителям",
       "title": "Маршрут «Учителям»",
       "title_en": "Route “For teachers”",
