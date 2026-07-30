@@ -3,6 +3,17 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "11.6",
+      "title": "Внуки Щедровицкого",
+      "section": "11. Проекции",
+      "md": "11. Проекции/11.6. Внуки Щедровицкого.md",
+      "date": "2026-07-30T16:15:00+03:00",
+      "kind": "changed",
+      "summary": "Одесская группа «Синекторы»",
+      "summary_en": "Odessa group “Synektors”",
+      "note": "Rename Odessa circle Media-key to Synektors group in 11.6 RU/EN."
+    },
+    {
       "id": "психологам",
       "title": "Маршрут «Психологам»",
       "title_en": "Route “For psychologists”",
