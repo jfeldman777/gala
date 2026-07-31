@@ -3,6 +3,15 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "10.9.5",
+      "title": "Безумный Левенгук",
+      "section": "10. Система",
+      "md": "10. Система/10.9. Примеры для подражания/10.9.5. Безумный Левенгук.md",
+      "date": "2026-07-31T10:40:00+03:00",
+      "kind": "added",
+      "note": "Add 10.9.5 Mad Leeuwenhoek with EN mirror to engineers and teachers routes."
+    },
+    {
       "id": "11.6",
       "title": "Внуки Щедровицкого",
       "section": "11. Проекции",
