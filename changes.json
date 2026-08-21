@@ -1,7 +1,72 @@
 {
-  "generated": "2026-07-26T04:31:00+03:00",
+  "generated": "2026-08-21T21:10:00+03:00",
   "days_scanned": 90,
   "entries": [
+    {
+      "id": "система-скачать",
+      "title": "Скачать всю книгу одним файлом",
+      "title_en": "Download the whole book as one file",
+      "section": "Система",
+      "date": "2026-08-21T21:05:00+03:00",
+      "kind": "feature",
+      "summary": "На обложке ⬇ и в оглавлении «Скачать»: один .md файл (вся книга или текущий маршрут)",
+      "summary_en": "Cover ⬇ and sidebar Download: one .md file (whole book or current route)",
+      "href": "index.html",
+      "href_en": "en.html",
+      "note": "Book download as single markdown file."
+    },
+    {
+      "id": "система-speaktor",
+      "title": "Слушать: моя запись или Speaktor",
+      "title_en": "Listen: my recording or Speaktor",
+      "section": "Система",
+      "date": "2026-08-21T19:00:00+03:00",
+      "kind": "feature",
+      "summary": "Где есть запись — «Моим голосом»; где нет — настроенная читалка (Speaktor). Настройка: долгое нажатие на □□",
+      "summary_en": "Where recorded — My voice; otherwise the configured reader (Speaktor). Long-press □□ to set up",
+      "href": "index.html",
+      "href_en": "en.html",
+      "note": "Voice priority + Speaktor reader with how-to."
+    },
+    {
+      "id": "система-порядок",
+      "title": "Порядок чтения: обложка → оглавление → текст",
+      "title_en": "Reading order: cover → contents → text",
+      "section": "Система",
+      "date": "2026-08-21T18:15:00+03:00",
+      "kind": "feature",
+      "summary": "Свайп по книге: первая страница — обложка, вторая — оглавление, дальше дисклеймер и главы. С оглавления — ссылка «К обложке»",
+      "summary_en": "Swipe through the book: cover first, then contents, then disclaimer and chapters. Contents has a To cover link",
+      "href": "index.html",
+      "href_en": "en.html",
+      "note": "Cover/TOC as virtual pages in reading order."
+    },
+    {
+      "id": "система-закладка",
+      "title": "Закладка на обложке",
+      "title_en": "Cover bookmark",
+      "section": "Система",
+      "date": "2026-08-21T17:00:00+03:00",
+      "kind": "feature",
+      "summary": "Кнопка 🔖 запоминает последнюю прочитанную страницу и возвращает к ней",
+      "summary_en": "The 🔖 button remembers the last page and returns to it",
+      "href": "index.html",
+      "href_en": "en.html",
+      "note": "Cover bookmark resume."
+    },
+    {
+      "id": "система-автор",
+      "title": "Об авторе с обложки",
+      "title_en": "About the author from the cover",
+      "section": "Система",
+      "date": "2026-08-21T16:30:00+03:00",
+      "kind": "feature",
+      "summary": "Имя на обложке ведёт на страницу об авторе; подсказка при наведении",
+      "summary_en": "The cover name opens the about-author page; tooltip on hover",
+      "href": "index.html",
+      "href_en": "en.html",
+      "note": "Cover author Notion link + tooltip."
+    },
     {
       "id": "10.9.5",
       "title": "Безумный Левенгук",

@@ -106,7 +106,7 @@ const I18N = {
     messagePlaceholder: "Замечание, вопрос, опечатка…",
     cancel: "Отмена",
     send: "Отправить",
-    changesIntro: "Страницы, которые появились или изменились за выбранный срок.",
+    changesIntro: "Новые свойства системы и страницы за выбранный срок.",
     period: "Период",
     periodSince: "с прошлого визита",
     period3: "3 дня",
@@ -132,10 +132,16 @@ const I18N = {
     noAudioDot: "Записи пока нет",
     kindNew: "новое",
     kindChanged: "изменено",
+    kindFeature: "система",
     changesEmpty: "За этот срок страницы не менялись.",
     firstVisitWeek: "первый визит — показана неделя",
     pagesShort: "стр.",
     noChanges: "нет изменений",
+    downloadBook: "Скачать книгу одним файлом",
+    downloadBookShort: "Скачать",
+    downloadBookProgress: "Скачиваю…",
+    downloadBookDone: "Готово",
+    downloadBookFail: "Не удалось скачать",
     linkCopied: "Ссылка скопирована",
     loadError: "Не удалось загрузить текст страницы",
     refreshHint: "Обновите страницу (Ctrl+F5).",
@@ -228,7 +234,7 @@ const I18N = {
     messagePlaceholder: "Note, question, typo…",
     cancel: "Cancel",
     send: "Send",
-    changesIntro: "Pages added or changed in the selected period.",
+    changesIntro: "New system features and pages in the selected period.",
     period: "Period",
     periodSince: "since last visit",
     period3: "3 days",
@@ -254,10 +260,16 @@ const I18N = {
     noAudioDot: "No recording yet",
     kindNew: "new",
     kindChanged: "updated",
+    kindFeature: "system",
     changesEmpty: "No page changes in this period.",
     firstVisitWeek: "first visit — showing one week",
     pagesShort: "pp.",
     noChanges: "no changes",
+    downloadBook: "Download the book as one file",
+    downloadBookShort: "Download",
+    downloadBookProgress: "Downloading…",
+    downloadBookDone: "Done",
+    downloadBookFail: "Download failed",
     linkCopied: "Link copied",
     loadError: "Could not load page text",
     refreshHint: "Refresh the page (Ctrl+F5).",
@@ -338,6 +350,8 @@ const els = {
   coverQr: document.getElementById("cover-qr"),
   coverChanges: document.getElementById("cover-changes"),
   coverBookmark: document.getElementById("cover-bookmark"),
+  coverDownload: document.getElementById("cover-download"),
+  sidebarDownload: document.getElementById("sidebar-download"),
   coverRoutes: document.getElementById("cover-routes"),
   coverRouteSelect: document.getElementById("cover-route-select"),
   sidebarRoutes: document.getElementById("sidebar-routes"),
@@ -1002,6 +1016,90 @@ function isEnEntryPath() {
 }
 
 /** Build URL on the RU/EN entry HTML so link previews get the right <title>. */
+function bookDownloadFilename() {
+  const route = findRoute(state.routeId);
+  if (route) {
+    const safe = String(route.id || "route").replace(/[^\w.-]+/g, "-");
+    return state.lang === "en"
+      ? `discourse-${safe}.md`
+      : `diskurs-${safe}.md`;
+  }
+  return state.lang === "en" ? "feldman-discourse.md" : "diskurs-feldmana.md";
+}
+
+function setDownloadBusy(busy, label) {
+  for (const btn of [els.coverDownload, els.sidebarDownload]) {
+    if (!btn) continue;
+    btn.disabled = busy;
+    if (busy) {
+      btn.classList.add("is-busy");
+      if (label) {
+        btn.title = label;
+        btn.setAttribute("aria-label", label);
+      }
+    } else {
+      btn.classList.remove("is-busy");
+      btn.title = t("downloadBook");
+      btn.setAttribute("aria-label", t("downloadBook"));
+    }
+  }
+}
+
+async function downloadBookAsFile() {
+  const pages = state.pages.filter((p) => !p.isCover && !p.isToc);
+  if (!pages.length) return;
+  if (downloadBookAsFile.busy) return;
+  downloadBookAsFile.busy = true;
+  setDownloadBusy(true, `${t("downloadBookProgress")} 0/${pages.length}`);
+
+  const chunks = [`# ${t("bookTitle")}\n`];
+  try {
+    for (let i = 0; i < pages.length; i += 1) {
+      const page = pages[i];
+      setDownloadBusy(
+        true,
+        `${t("downloadBookProgress")} ${i + 1}/${pages.length}`,
+      );
+      const src = page.sourcePage || page;
+      let body = "";
+      if (src?.md) {
+        try {
+          const res = await fetch(`${encodeURI(src.md)}?v=${Date.now()}`, {
+            cache: "no-store",
+          });
+          if (res.ok) body = (await res.text()).trim();
+        } catch {
+          body = "";
+        }
+      }
+      const heading = page.title
+        ? `## ${page.id}. ${page.title}`
+        : `## ${page.id}`;
+      chunks.push(`\n\n---\n\n${heading}\n\n${body || ""}\n`);
+    }
+
+    const blob = new Blob([chunks.join("")], {
+      type: "text/markdown;charset=utf-8",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = bookDownloadFilename();
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    setDownloadBusy(true, t("downloadBookDone"));
+    setTimeout(() => setDownloadBusy(false), 1200);
+  } catch (err) {
+    console.error("downloadBookAsFile", err);
+    setDownloadBusy(true, t("downloadBookFail"));
+    setTimeout(() => setDownloadBusy(false), 1600);
+  } finally {
+    downloadBookAsFile.busy = false;
+  }
+}
+
 function bookUrl(lang = state.lang, query = {}) {
   const url = new URL(location.href);
   const parts = url.pathname.split("/");
@@ -2895,6 +2993,16 @@ els.coverChanges?.addEventListener("click", (e) => {
   e.stopPropagation();
   openChangesModal();
 });
+els.coverDownload?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  downloadBookAsFile();
+});
+els.sidebarDownload?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  downloadBookAsFile();
+});
 els.coverQr?.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
@@ -2976,6 +3084,7 @@ function formatChangesDate(iso) {
 function kindLabel(kind) {
   if (kind === "added") return t("kindNew");
   if (kind === "changed") return t("kindChanged");
+  if (kind === "feature") return t("kindFeature");
   return kind || "";
 }
 

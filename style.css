@@ -196,7 +196,8 @@ a.cover-author:focus-visible::after {
 #cover-link,
 #cover-qr,
 #cover-changes,
-#cover-bookmark {
+#cover-bookmark,
+#cover-download {
   font-size: 1.35rem;
   line-height: 1;
   padding: 0.45rem 0.75rem;
@@ -227,6 +228,17 @@ a.cover-author:focus-visible::after {
   font-size: 1.05rem;
   font-weight: normal;
   padding: 0.55rem 0.7rem;
+}
+
+#cover-download {
+  font-size: 1.05rem;
+  font-weight: normal;
+  padding: 0.5rem 0.65rem;
+}
+
+#cover-download.is-busy,
+#sidebar-download.is-busy {
+  opacity: 0.7;
 }
 
 #cover-qr {
@@ -386,7 +398,8 @@ button:disabled {
   text-decoration: underline;
 }
 
-.sidebar-changes-btn {
+.sidebar-changes-btn,
+.sidebar-download-btn {
   display: inline;
   margin-left: 0.35rem;
   padding: 0;
@@ -400,7 +413,8 @@ button:disabled {
   text-decoration: none;
 }
 
-.sidebar-changes-btn:hover {
+.sidebar-changes-btn:hover,
+.sidebar-download-btn:hover {
   background: transparent;
   text-decoration: underline;
 }

@@ -8,7 +8,7 @@
   <meta property="og:locale" content="en_US">
   <meta name="twitter:title" content="Feldman's Discourse">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="style.css?v=59">
+  <link rel="stylesheet" href="style.css?v=60">
 </head>
 <body class="lang-en">
   <div id="cover-screen" class="cover-hidden" aria-hidden="true">
@@ -26,6 +26,7 @@
       </div>
       <button type="button" id="cover-bookmark" title="Bookmark" aria-label="Bookmark">🔖</button>
       <button type="button" id="cover-link" title="Copy cover link" aria-label="Copy link" data-i18n-title="copyCover" data-i18n-aria="copyLink">🔗</button>
+      <button type="button" id="cover-download" title="Download the book as one file" aria-label="Download the book as one file" data-i18n-title="downloadBook" data-i18n-aria="downloadBook">⬇</button>
       <button type="button" id="cover-qr" title="Cover QR code" aria-label="Cover QR code" data-i18n-title="qrCover" data-i18n-aria="qrCover">▦</button>
       <button type="button" id="cover-changes" title="What's new" aria-label="What's new" data-i18n-title="whatsNew" data-i18n-aria="whatsNew">✦</button>
     </div>
@@ -43,6 +44,7 @@
         </button>
         <p id="sidebar-stats"><span data-i18n="statsRead">Read</span> (<span id="stat-pages">…</span>)<span id="stats-listen-wrap"> <span data-i18n="statsAndListen">and listen</span> (<span id="stat-audio">…</span>)</span> <a id="more-projects" href="12345.en.htm" data-i18n="more">(more)</a>
           <button type="button" id="sidebar-changes" class="sidebar-changes-btn" title="What's new" data-i18n="whatsNew" data-i18n-title="whatsNew">What's new</button>
+          <button type="button" id="sidebar-download" class="sidebar-download-btn" title="Download the book as one file" data-i18n="downloadBookShort" data-i18n-title="downloadBook">Download</button>
         </p>
         <p id="route-badge" class="route-badge" hidden></p>
         <div id="sidebar-routes" class="sidebar-routes" hidden>
@@ -175,7 +177,7 @@
     <div class="modal-card changes-card" role="dialog" aria-labelledby="changes-title" aria-modal="true">
       <button class="modal-close" type="button" data-close-changes aria-label="Close" data-i18n-aria="close">×</button>
       <h3 id="changes-title" data-i18n="whatsNew">What's new</h3>
-      <p class="modal-context" data-i18n="changesIntro">Pages added or changed in the selected period.</p>
+      <p class="modal-context" data-i18n="changesIntro">New system features and pages in the selected period.</p>
       <div class="changes-toolbar">
         <label class="changes-period-label">
           <span data-i18n="period">Period</span>
@@ -282,6 +284,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=78"></script>
+  <script src="app.js?v=80"></script>
 </body>
 </html>
