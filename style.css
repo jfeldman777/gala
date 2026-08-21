@@ -1028,6 +1028,19 @@ mark.page-find-hit.current {
   margin-top: 0.2rem;
 }
 
+.read-app-install {
+  margin: -0.15rem 0 0.75rem 1.7rem;
+  font-size: 0.88rem;
+}
+
+.read-app-install a {
+  color: var(--accent);
+}
+
+#read-app-form:not(:has(#read-app-mode-speak:checked)) .read-app-voice-wrap {
+  display: none;
+}
+
 .read-app-voice-wrap {
   display: flex;
   flex-direction: column;

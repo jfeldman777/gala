@@ -47,12 +47,17 @@ const I18N = {
     textSpeaking: "Читаю…",
     textSpeakStop: "Остановлено",
     readAppTitle: "Читалка",
-    readAppIntro: "Настройте один раз — дальше кнопка всегда будет делать это сама. Долгое нажатие — снова настройки.",
-    readAppSpeak: "Голос браузера (сразу читает)",
-    readAppClipboard: "Копировать текст (для внешней читалки)",
-    readAppVoice: "Голос",
+    readAppIntro: "Один раз выберите читалку. Где нет моей записи, «Слушать» откроет её. Долгое нажатие на □□ — снова настройки.",
+    readAppSpeaktor: "Speaktor (рекомендую) — откроет страницу в приложении",
+    readAppShare: "Другое приложение — меню «Поделиться»",
+    readAppSpeak: "Голос браузера (обычно хуже)",
+    readAppClipboard: "Только скопировать текст страницы",
+    readAppVoice: "Голос браузера",
     readAppSave: "Сохранить",
     readAppChange: "Настроить читалку",
+    readAppInstall: "Установить Speaktor",
+    speaktorOpened: "Открываю Speaktor…",
+    speaktorPasteUrl: "Ссылка скопирована — вставьте URL в Speaktor",
     qrCover: "QR-код обложки",
     qrTitle: "QR-коды обложки",
     qrIntro: "Наведите камеру телефона — откроется русская или английская обложка книги.",
@@ -158,12 +163,17 @@ const I18N = {
     textSpeaking: "Reading…",
     textSpeakStop: "Stopped",
     readAppTitle: "Reading app",
-    readAppIntro: "Set this once — the button will always do it automatically. Long-press to change.",
-    readAppSpeak: "Browser voice (reads aloud)",
-    readAppClipboard: "Copy text (for an external reader)",
-    readAppVoice: "Voice",
+    readAppIntro: "Pick a reader once. Where my recording is missing, Listen opens it. Long-press □□ to change.",
+    readAppSpeaktor: "Speaktor (recommended) — opens the page in the app",
+    readAppShare: "Another app — system Share sheet",
+    readAppSpeak: "Browser voice (usually worse)",
+    readAppClipboard: "Just copy the page text",
+    readAppVoice: "Browser voice",
     readAppSave: "Save",
     readAppChange: "Configure reader",
+    readAppInstall: "Install Speaktor",
+    speaktorOpened: "Opening Speaktor…",
+    speaktorPasteUrl: "Link copied — paste the URL into Speaktor",
     qrCover: "Cover QR code",
     qrTitle: "Cover QR codes",
     qrIntro: "Point your phone camera to open the Russian or English cover of the book.",
@@ -293,6 +303,8 @@ const els = {
   readAppVoice: document.getElementById("read-app-voice"),
   readAppModeSpeak: document.getElementById("read-app-mode-speak"),
   readAppModeClipboard: document.getElementById("read-app-mode-clipboard"),
+  readAppModeSpeaktor: document.getElementById("read-app-mode-speaktor"),
+  readAppModeShare: document.getElementById("read-app-mode-share"),
   statPages: document.getElementById("stat-pages"),
   statAudio: document.getElementById("stat-audio"),
   tocSearch: document.getElementById("toc-search"),
@@ -1051,7 +1063,14 @@ function getReadAppSettings() {
     const raw = localStorage.getItem(READ_APP_KEY);
     if (!raw) return null;
     const data = JSON.parse(raw);
-    if (data?.mode === "speak" || data?.mode === "clipboard") return data;
+    if (
+      data?.mode === "speaktor" ||
+      data?.mode === "share" ||
+      data?.mode === "speak" ||
+      data?.mode === "clipboard"
+    ) {
+      return data;
+    }
   } catch {
     /* ignore */
   }
@@ -1072,12 +1091,89 @@ function updateCopyTextButtonTitle() {
   if (!btn) return;
   const settings = getReadAppSettings();
   let title = t("readAppChange");
-  if (settings?.mode === "speak") title = `${t("copyText")}: ${t("readAppSpeak")}`;
+  if (settings?.mode === "speaktor") title = `${t("copyText")}: Speaktor`;
+  else if (settings?.mode === "share") title = `${t("copyText")}: ${t("readAppShare")}`;
+  else if (settings?.mode === "speak") title = `${t("copyText")}: ${t("readAppSpeak")}`;
   else if (settings?.mode === "clipboard") {
     title = `${t("copyText")}: ${t("readAppClipboard")}`;
   }
   btn.title = title;
   btn.setAttribute("aria-label", title);
+}
+
+function currentPageShareLink() {
+  const page = state.pages[state.index];
+  if (!page || page.isCover) return coverUrl();
+  return pageUrl(page);
+}
+
+async function openInSpeaktor() {
+  const link = currentPageShareLink();
+  const page = state.pages[state.index];
+  const title = (
+    els.pageTitle?.textContent ||
+    page?.title ||
+    t("bookTitle")
+  ).trim();
+  const btn = els.copyText;
+  const restore = btn?.title || t("copyText");
+  const isAndroid = /Android/i.test(navigator.userAgent || "");
+
+  // Android: send the page URL straight into Speaktor (it can read website URLs)
+  if (isAndroid) {
+    const intent =
+      "intent:#Intent;" +
+      "action=android.intent.action.SEND;" +
+      "type=text/plain;" +
+      `S.android.intent.extra.SUBJECT=${encodeURIComponent(title)};` +
+      `S.android.intent.extra.TEXT=${encodeURIComponent(link)};` +
+      "package=com.speaktor.app;" +
+      `S.browser_fallback_url=${encodeURIComponent(
+        "https://play.google.com/store/apps/details?id=com.speaktor.app",
+      )};` +
+      "end";
+    window.location.href = intent;
+    flashCopyButton(btn, t("speaktorOpened"), restore);
+    return;
+  }
+
+  // iOS / desktop: share sheet (pick Speaktor) or open web + copy URL once
+  if (typeof navigator.share === "function") {
+    try {
+      await navigator.share({ title, url: link, text: link });
+      flashCopyButton(btn, t("textShared"), restore);
+      return;
+    } catch (err) {
+      if (err && err.name === "AbortError") return;
+    }
+  }
+
+  await copyTextToClipboard(link);
+  window.open("https://app.speaktor.com/", "_blank", "noopener,noreferrer");
+  flashCopyButton(btn, t("speaktorPasteUrl"), restore);
+}
+
+async function sharePageToReaderApp() {
+  const link = currentPageShareLink();
+  const page = state.pages[state.index];
+  const title = (
+    els.pageTitle?.textContent ||
+    page?.title ||
+    t("bookTitle")
+  ).trim();
+  const btn = els.copyText;
+  const restore = btn?.title || t("copyText");
+  if (typeof navigator.share === "function") {
+    try {
+      await navigator.share({ title, url: link, text: link });
+      flashCopyButton(btn, t("textShared"), restore);
+      return;
+    } catch (err) {
+      if (err && err.name === "AbortError") return;
+    }
+  }
+  await copyTextToClipboard(link);
+  flashCopyButton(btn, t("linkCopied"), restore);
 }
 
 function stopBrowserSpeech() {
@@ -1128,7 +1224,11 @@ function openReadAppModal() {
   if (!els.readAppModal) return;
   fillReadAppVoices();
   const settings = getReadAppSettings();
-  const mode = settings?.mode || "speak";
+  const mode = settings?.mode || "speaktor";
+  if (els.readAppModeSpeaktor) {
+    els.readAppModeSpeaktor.checked = mode === "speaktor";
+  }
+  if (els.readAppModeShare) els.readAppModeShare.checked = mode === "share";
   if (els.readAppModeSpeak) els.readAppModeSpeak.checked = mode === "speak";
   if (els.readAppModeClipboard) {
     els.readAppModeClipboard.checked = mode === "clipboard";
@@ -1199,13 +1299,8 @@ function speakPageText(text, voiceURI) {
 }
 
 async function runReadAppAction() {
-  const text = pagePlainText();
   const btn = els.copyText;
   if (!btn) return;
-  if (!text) {
-    flashCopyButton(btn, t("textCopyEmpty"), btn.title || t("copyText"));
-    return;
-  }
 
   const settings = getReadAppSettings();
   if (!settings) {
@@ -1213,9 +1308,25 @@ async function runReadAppAction() {
     return;
   }
 
+  if (settings.mode === "speaktor") {
+    await openInSpeaktor();
+    return;
+  }
+  if (settings.mode === "share") {
+    await sharePageToReaderApp();
+    return;
+  }
+
+  const text = pagePlainText();
+  if (!text) {
+    flashCopyButton(btn, t("textCopyEmpty"), btn.title || t("copyText"));
+    return;
+  }
+
   if (settings.mode === "speak") {
     if (window.speechSynthesis?.speaking) {
       stopBrowserSpeech();
+      updatePlayerUi();
       flashCopyButton(btn, t("textSpeakStop"), btn.title || t("copyText"));
       return;
     }
@@ -2273,7 +2384,11 @@ els.copyText?.addEventListener("contextmenu", (e) => {
 
 els.readAppForm?.addEventListener("submit", (e) => {
   e.preventDefault();
-  const mode = els.readAppModeClipboard?.checked ? "clipboard" : "speak";
+  let mode = "speaktor";
+  if (els.readAppModeShare?.checked) mode = "share";
+  else if (els.readAppModeSpeak?.checked) mode = "speak";
+  else if (els.readAppModeClipboard?.checked) mode = "clipboard";
+  else if (els.readAppModeSpeaktor?.checked) mode = "speaktor";
   const voiceURI = els.readAppVoice?.value || "";
   saveReadAppSettings({ mode, voiceURI });
   closeReadAppModal();

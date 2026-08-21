@@ -8,7 +8,7 @@
   <meta property="og:locale" content="ru_RU">
   <meta name="twitter:title" content="Дискурс Фельдмана">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="style.css?v=57">
+  <link rel="stylesheet" href="style.css?v=58">
 </head>
 <body>
   <div id="cover-screen" class="cover-hidden" aria-hidden="true">
@@ -224,19 +224,32 @@
     <div class="modal-card" role="dialog" aria-labelledby="read-app-title" aria-modal="true">
       <button class="modal-close" type="button" data-close-read-app aria-label="Закрыть" data-i18n-aria="close">×</button>
       <h3 id="read-app-title" data-i18n="readAppTitle">Читалка</h3>
-      <p class="modal-context" data-i18n="readAppIntro">Настройте один раз — дальше кнопка всегда будет делать это сама. Долгое нажатие — снова настройки.</p>
+      <p class="modal-context" data-i18n="readAppIntro">Один раз выберите читалку. Где нет моей записи, «Слушать» откроет её. Долгое нажатие на □□ — снова настройки.</p>
       <form id="read-app-form">
         <label class="read-app-option">
-          <input id="read-app-mode-speak" type="radio" name="read-mode" value="speak" checked>
-          <span data-i18n="readAppSpeak">Голос браузера (сразу читает)</span>
+          <input id="read-app-mode-speaktor" type="radio" name="read-mode" value="speaktor" checked>
+          <span data-i18n="readAppSpeaktor">Speaktor (рекомендую) — откроет страницу в приложении</span>
+        </label>
+        <p class="read-app-install">
+          <a href="https://play.google.com/store/apps/details?id=com.speaktor.app" target="_blank" rel="noopener noreferrer" data-i18n="readAppInstall">Установить Speaktor</a>
+          ·
+          <a href="https://apps.apple.com/app/text-reader-text-to-speech/id1632901543" target="_blank" rel="noopener noreferrer">iOS</a>
+        </p>
+        <label class="read-app-option">
+          <input id="read-app-mode-share" type="radio" name="read-mode" value="share">
+          <span data-i18n="readAppShare">Другое приложение — меню «Поделиться»</span>
+        </label>
+        <label class="read-app-option">
+          <input id="read-app-mode-speak" type="radio" name="read-mode" value="speak">
+          <span data-i18n="readAppSpeak">Голос браузера (обычно хуже)</span>
         </label>
         <label class="read-app-voice-wrap">
-          <span data-i18n="readAppVoice">Голос</span>
+          <span data-i18n="readAppVoice">Голос браузера</span>
           <select id="read-app-voice"></select>
         </label>
         <label class="read-app-option">
           <input id="read-app-mode-clipboard" type="radio" name="read-mode" value="clipboard">
-          <span data-i18n="readAppClipboard">Копировать текст (для внешней читалки)</span>
+          <span data-i18n="readAppClipboard">Только скопировать текст страницы</span>
         </label>
         <div class="modal-actions">
           <button type="button" data-close-read-app data-i18n="cancel">Отмена</button>
@@ -246,6 +259,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=75"></script>
+  <script src="app.js?v=76"></script>
 </body>
 </html>

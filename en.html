@@ -8,7 +8,7 @@
   <meta property="og:locale" content="en_US">
   <meta name="twitter:title" content="Feldman's Discourse">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="style.css?v=57">
+  <link rel="stylesheet" href="style.css?v=58">
 </head>
 <body class="lang-en">
   <div id="cover-screen" class="cover-hidden" aria-hidden="true">
@@ -224,19 +224,32 @@
     <div class="modal-card" role="dialog" aria-labelledby="read-app-title" aria-modal="true">
       <button class="modal-close" type="button" data-close-read-app aria-label="Close" data-i18n-aria="close">×</button>
       <h3 id="read-app-title" data-i18n="readAppTitle">Reading app</h3>
-      <p class="modal-context" data-i18n="readAppIntro">Set this once — the button will always do it automatically. Long-press to change.</p>
+      <p class="modal-context" data-i18n="readAppIntro">Pick a reader once. Where my recording is missing, Listen opens it. Long-press □□ to change.</p>
       <form id="read-app-form">
         <label class="read-app-option">
-          <input id="read-app-mode-speak" type="radio" name="read-mode" value="speak" checked>
-          <span data-i18n="readAppSpeak">Browser voice (reads aloud)</span>
+          <input id="read-app-mode-speaktor" type="radio" name="read-mode" value="speaktor" checked>
+          <span data-i18n="readAppSpeaktor">Speaktor (recommended) — opens the page in the app</span>
+        </label>
+        <p class="read-app-install">
+          <a href="https://play.google.com/store/apps/details?id=com.speaktor.app" target="_blank" rel="noopener noreferrer" data-i18n="readAppInstall">Install Speaktor</a>
+          ·
+          <a href="https://apps.apple.com/app/text-reader-text-to-speech/id1632901543" target="_blank" rel="noopener noreferrer">iOS</a>
+        </p>
+        <label class="read-app-option">
+          <input id="read-app-mode-share" type="radio" name="read-mode" value="share">
+          <span data-i18n="readAppShare">Another app — system Share sheet</span>
+        </label>
+        <label class="read-app-option">
+          <input id="read-app-mode-speak" type="radio" name="read-mode" value="speak">
+          <span data-i18n="readAppSpeak">Browser voice (usually worse)</span>
         </label>
         <label class="read-app-voice-wrap">
-          <span data-i18n="readAppVoice">Voice</span>
+          <span data-i18n="readAppVoice">Browser voice</span>
           <select id="read-app-voice"></select>
         </label>
         <label class="read-app-option">
           <input id="read-app-mode-clipboard" type="radio" name="read-mode" value="clipboard">
-          <span data-i18n="readAppClipboard">Copy text (for an external reader)</span>
+          <span data-i18n="readAppClipboard">Just copy the page text</span>
         </label>
         <div class="modal-actions">
           <button type="button" data-close-read-app data-i18n="cancel">Cancel</button>
@@ -246,6 +259,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=75"></script>
+  <script src="app.js?v=76"></script>
 </body>
 </html>
