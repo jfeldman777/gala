@@ -500,9 +500,9 @@ function applyRouteFilter() {
   const route = findRoute(state.routeId);
   if (!route) {
     state.routeId = null;
-    state.pages = prependTocPage(state.allPages.slice());
+    state.pages = prependFrontPages(state.allPages.slice());
   } else {
-    state.pages = prependTocPage(pagesForRoute(route));
+    state.pages = prependFrontPages(pagesForRoute(route));
   }
   if (state.index >= state.pages.length) state.index = 0;
   updateStats();
@@ -510,9 +510,16 @@ function applyRouteFilter() {
   updateRouteBadge();
 }
 
-function prependTocPage(pages) {
-  const rest = (pages || []).filter((p) => !p.isToc);
+function prependFrontPages(pages) {
+  const rest = (pages || []).filter((p) => !p.isToc && !p.isCover);
   return [
+    {
+      id: "cover",
+      title: "Обложка",
+      section: "",
+      md: "",
+      isCover: true,
+    },
     {
       id: "toc",
       title: "Оглавление",
@@ -593,17 +600,18 @@ function setRoute(routeId) {
   buildToc();
 
   if (wasCover || !pageId) {
-    showCoverScreen();
     if (state.pages.length) loadPage(0, false);
+    else showCoverScreen();
     return;
   }
 
   const idx = state.pages.findIndex((p) => p.id === pageId);
   if (idx >= 0) {
     loadPage(idx, false);
+  } else if (state.pages.length) {
+    loadPage(0, false);
   } else {
     showCoverScreen();
-    if (state.pages.length) loadPage(0, false);
   }
 }
 
@@ -1015,7 +1023,7 @@ function saveCollapsedSections() {
 }
 
 function updateStats() {
-  const contentPages = state.pages.filter((p) => !p.isToc);
+  const contentPages = state.pages.filter((p) => !p.isToc && !p.isCover);
   els.statPages.textContent = String(contentPages.length);
   const visible = new Set(contentPages.map((p) => p.id));
   let audioCount = 0;
@@ -1094,7 +1102,7 @@ function buildToc() {
   let current = null;
 
   state.pages.forEach((page, index) => {
-    if (page.isToc) return;
+    if (page.isToc || page.isCover) return;
     if (!current || current.section !== page.section) {
       current = { section: page.section, items: [] };
       groups.push(current);
@@ -1391,7 +1399,7 @@ function setStoredVote(pageId, vote) {
 function updateVoteUi() {
   const page = state.pages[state.index];
   if (!page || !els.voteLike) return;
-  if (page.isToc) {
+  if (page.isToc || page.isCover) {
     els.voteLike.disabled = true;
     els.voteDislike.disabled = true;
     els.voteLike.classList.remove("selected");
@@ -1641,11 +1649,19 @@ async function submitFeedback(event) {
 function updatePlayerUi() {
   const page = state.pages[state.index];
   if (!page) return;
-  const hasAudio = !page.isToc && state.lang !== "en" && state.audioAvailable.has(page.id);
+  const hasAudio =
+    !page.isToc &&
+    !page.isCover &&
+    state.lang !== "en" &&
+    state.audioAvailable.has(page.id);
 
-  els.playerInfo.textContent = page.isToc ? t("toc") : `${page.id}`;
+  els.playerInfo.textContent = page.isCover
+    ? t("bookTitle")
+    : page.isToc
+      ? t("toc")
+      : `${page.id}`;
   // EN: no audio UI at all (no "missing recording", slider, Listen, auto-advance)
-  els.noAudio.hidden = page.isToc || state.lang === "en" || hasAudio;
+  els.noAudio.hidden = page.isToc || page.isCover || state.lang === "en" || hasAudio;
   els.progressWrap.hidden = !hasAudio;
   els.playBtn.hidden = !hasAudio;
   els.playerControls.hidden = false;
@@ -1659,7 +1675,7 @@ function updatePlayerUi() {
 
 /** Tab title: book name on cover, otherwise current page. */
 function updateDocumentTitle(page = state.pages[state.index]) {
-  if (document.body.classList.contains("cover-open") || !page) {
+  if (document.body.classList.contains("cover-open") || page?.isCover || !page) {
     document.title = t("bookTitle");
     return;
   }
@@ -1673,7 +1689,7 @@ function updateDocumentTitle(page = state.pages[state.index]) {
 function renderTocContentPage() {
   const items = state.pages
     .map((page, index) => ({ page, index }))
-    .filter(({ page }) => !page.isToc);
+    .filter(({ page }) => !page.isToc && !page.isCover);
   let html = `<div class="toc-page">`;
   let currentSection = null;
   for (const { page, index } of items) {
@@ -1701,6 +1717,21 @@ async function loadPage(index, autoplay = false) {
   state.index = index;
   const page = state.pages[index];
   if (!page) return;
+
+  if (page.isCover) {
+    showCoverScreen();
+    audio.pause();
+    audio.currentTime = 0;
+    audio.removeAttribute("src");
+    audio.load();
+    buildToc();
+    updatePlayerUi();
+    updateVoteUi();
+    updateDocumentTitle(page);
+    return;
+  }
+
+  hideCoverScreen();
 
   if (page.isToc) {
     const tocTitle = t("toc");
@@ -1809,6 +1840,7 @@ function goPrev() {
 
 function togglePlay() {
   const page = state.pages[state.index];
+  if (!page || page.isCover || page.isToc) return;
   if (!state.audioAvailable.has(page.id)) return;
 
   if (!audio.src) {
@@ -1849,7 +1881,6 @@ function isPhoneSwipeNav() {
 }
 
 function swipeBlocked() {
-  if (document.body.classList.contains("cover-open")) return true;
   if (document.body.classList.contains("toc-open")) return true;
   if (els.feedbackModal && !els.feedbackModal.hidden) return true;
   if (els.changesModal && !els.changesModal.hidden) return true;
@@ -1858,7 +1889,7 @@ function swipeBlocked() {
   return false;
 }
 
-const swipeNav = { x: 0, y: 0, active: false };
+const swipeNav = { x: 0, y: 0, active: false, didNav: false };
 
 document.addEventListener(
   "touchstart",
@@ -1876,6 +1907,7 @@ document.addEventListener(
     swipeNav.x = t.clientX;
     swipeNav.y = t.clientY;
     swipeNav.active = true;
+    swipeNav.didNav = false;
   },
   { passive: true }
 );
@@ -1895,6 +1927,7 @@ document.addEventListener(
     // Need a clear horizontal swipe (not a vertical scroll)
     if (absX < 56 || absX < absY * 1.25) return;
     // Swipe left → next (forward); swipe right → previous
+    swipeNav.didNav = true;
     if (dx < 0) goNext(false);
     else goPrev();
   },
@@ -1990,6 +2023,7 @@ window.addEventListener("keydown", (e) => {
   if (e.code === "ArrowRight") goNext(false);
   if (e.code === "ArrowLeft") goPrev();
   if (e.code === "Space" && state.lang !== "en") {
+    if (document.body.classList.contains("cover-open")) return;
     e.preventDefault();
     togglePlay();
   }
@@ -2077,19 +2111,19 @@ async function setLang(lang, { keepPage = true } = {}) {
   await loadCatalog();
   applyUiLang();
 
-  if (wasCover || !pageId) {
-    showCoverScreen();
+  if (wasCover || !pageId || pageId === "cover") {
     if (state.pages.length) await loadPage(0, false);
+    else showCoverScreen();
     return;
   }
 
   const idx = state.pages.findIndex((p) => p.id === pageId);
   if (idx >= 0) {
-    enterFromCover({ startAtToc: false });
     await loadPage(idx, false);
+  } else if (state.pages.length) {
+    await loadPage(0, false);
   } else {
     showCoverScreen();
-    if (state.pages.length) await loadPage(0, false);
   }
 }
 
@@ -2127,9 +2161,6 @@ async function init() {
     ? state.pages.findIndex((p) => p.id === startId)
     : -1;
   const startIndex = found >= 0 ? found : 0;
-  const showCover = !startId;
-
-  if (showCover) showCoverScreen();
 
   if (state.pages.length) {
     await loadPage(startIndex, false);
@@ -2137,7 +2168,7 @@ async function init() {
     // Empty EN catalog: stay on cover
     showCoverScreen();
   }
-  if (showCover) updateDocumentTitle();
+  if (!startId) updateDocumentTitle();
 }
 
 document.querySelectorAll(".lang-btn").forEach((btn) => {
@@ -2165,7 +2196,7 @@ function readReadingBookmark() {
 }
 
 function saveReadingBookmark(page) {
-  if (!page?.id || page.isToc || document.body.classList.contains("cover-open")) return;
+  if (!page?.id || page.isToc || page.isCover || document.body.classList.contains("cover-open")) return;
   try {
     localStorage.setItem(
       BOOKMARK_KEY,
@@ -2249,21 +2280,25 @@ function showCoverScreen() {
   updateCoverBookmarkBtn();
 }
 
-function enterFromCover({ openTocAfter = false, startAtToc = true } = {}) {
+function hideCoverScreen() {
   document.body.classList.remove("cover-open");
   if (els.coverScreen) {
     els.coverScreen.classList.add("cover-hidden");
     els.coverScreen.setAttribute("aria-hidden", "true");
   }
-  // From the cover title, reading starts at the TOC page (first in order)
-  if (startAtToc && state.pages[0]?.isToc) {
-    loadPage(0, false);
-  } else {
-    const page = state.pages[state.index];
-    if (page) {
-      syncUrl(page);
-      updateDocumentTitle(page);
+}
+
+function enterFromCover({ openTocAfter = false, startAtToc = true } = {}) {
+  if (startAtToc) {
+    const tocIdx = state.pages.findIndex((p) => p.isToc);
+    if (tocIdx >= 0) {
+      loadPage(tocIdx, false);
+    } else {
+      hideCoverScreen();
+      goNext(false);
     }
+  } else {
+    hideCoverScreen();
   }
   if (openTocAfter) {
     openToc();
@@ -2301,6 +2336,10 @@ async function copyCoverLink() {
 }
 
 els.coverEnter?.addEventListener("click", (e) => {
+  if (swipeNav.didNav) {
+    swipeNav.didNav = false;
+    return;
+  }
   if (e.target instanceof Element && e.target.closest("#cover-author, .cover-author")) {
     return;
   }
@@ -2330,7 +2369,9 @@ els.coverLink?.addEventListener("click", (e) => {
 });
 els.coverHome?.addEventListener("click", (e) => {
   e.preventDefault();
-  showCoverScreen();
+  const idx = state.pages.findIndex((p) => p.isCover);
+  if (idx >= 0) loadPage(idx, false);
+  else showCoverScreen();
 });
 function onRouteSelectChange(e) {
   e.stopPropagation();
@@ -2545,9 +2586,6 @@ function closeQrModal() {
 
 async function openChangedPage(pageId) {
   closeChangesModal();
-  if (document.body.classList.contains("cover-open")) {
-    enterFromCover({ startAtToc: false });
-  }
   const index = state.pages.findIndex((p) => p.id === pageId);
   if (index >= 0) await loadPage(index, false);
 }
