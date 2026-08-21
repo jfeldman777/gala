@@ -40,6 +40,9 @@ const I18N = {
     copyCover: "Скопировать ссылку на обложку",
     copyPage: "Скопировать ссылку на страницу",
     copyLink: "Скопировать ссылку",
+    copyText: "Скопировать текст страницы",
+    textCopied: "Текст скопирован",
+    textCopyEmpty: "Нечего копировать",
     qrCover: "QR-код обложки",
     qrTitle: "QR-коды обложки",
     qrIntro: "Наведите камеру телефона — откроется русская или английская обложка книги.",
@@ -136,6 +139,9 @@ const I18N = {
     copyCover: "Copy cover link",
     copyPage: "Copy page link",
     copyLink: "Copy link",
+    copyText: "Copy page text",
+    textCopied: "Text copied",
+    textCopyEmpty: "Nothing to copy",
     qrCover: "Cover QR code",
     qrTitle: "Cover QR codes",
     qrIntro: "Point your phone camera to open the Russian or English cover of the book.",
@@ -257,6 +263,7 @@ const els = {
   tocBackdrop: document.getElementById("toc-backdrop"),
   sidebar: document.getElementById("sidebar"),
   copyLink: document.getElementById("copy-link"),
+  copyText: document.getElementById("copy-text"),
   statPages: document.getElementById("stat-pages"),
   statAudio: document.getElementById("stat-audio"),
   tocSearch: document.getElementById("toc-search"),
@@ -994,15 +1001,54 @@ async function copyPageLink() {
     document.execCommand("copy");
     input.remove();
   }
-  const btn = els.copyLink;
+  flashCopyButton(els.copyLink, t("linkCopied"), t("copyPage"));
+}
+
+function pagePlainText() {
+  const page = state.pages[state.index];
+  if (!page || page.isCover) return "";
+  const title = (els.pageTitle?.textContent || page.title || "").trim();
+  const body = (els.content?.innerText || "").trim();
+  if (!title && !body) return "";
+  if (!title) return body;
+  if (!body) return title;
+  return `${title}\n\n${body}`;
+}
+
+async function copyPageText() {
+  const text = pagePlainText();
+  const btn = els.copyText;
+  if (!btn) return;
+  if (!text) {
+    flashCopyButton(btn, t("textCopyEmpty"), t("copyText"));
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+  }
+  flashCopyButton(btn, t("textCopied"), t("copyText"));
+}
+
+function flashCopyButton(btn, doneTitle, restoreTitle) {
+  if (!btn) return;
   const prev = btn.textContent;
   btn.textContent = "✓";
   btn.classList.add("copied");
-  btn.title = t("linkCopied");
+  btn.title = doneTitle;
   setTimeout(() => {
     btn.textContent = prev;
     btn.classList.remove("copied");
-    btn.title = t("copyPage");
+    btn.title = restoreTitle;
   }, 1400);
 }
 
@@ -1975,6 +2021,11 @@ els.copyLink.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   copyPageLink();
+});
+els.copyText?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  copyPageText();
 });
 
 els.tocSearch?.addEventListener("input", () => {

@@ -673,14 +673,16 @@ mark.page-find-hit.current {
   font-weight: bold;
 }
 
-#copy-link {
+#copy-link,
+#copy-text {
   font-size: 1.05rem;
   line-height: 1;
   padding: 0.35rem 0.55rem;
   min-width: 2.4rem;
 }
 
-#copy-link.copied {
+#copy-link.copied,
+#copy-text.copied {
   background: var(--accent-soft);
   color: var(--accent);
 }
@@ -1396,7 +1398,8 @@ body.lang-en {
     min-width: 1.9rem;
   }
 
-  #copy-link {
+  #copy-link,
+  #copy-text {
     display: inline-flex;
     align-items: center;
     justify-content: center;
