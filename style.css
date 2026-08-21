@@ -986,6 +986,26 @@ mark.page-find-hit.current {
   padding-bottom: 2rem;
 }
 
+.toc-page-cover-link {
+  align-self: flex-start;
+  margin: 0 0 0.85rem;
+  padding: 0.35rem 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.toc-page-cover-link:hover,
+.toc-page-cover-link:focus-visible {
+  color: var(--ink);
+  outline: none;
+}
+
 .toc-page-lead {
   margin: 0 0 0.75rem;
   font-size: 1.05rem;

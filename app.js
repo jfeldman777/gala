@@ -1690,7 +1690,11 @@ function renderTocContentPage() {
   const items = state.pages
     .map((page, index) => ({ page, index }))
     .filter(({ page }) => !page.isToc && !page.isCover);
+  const coverIdx = state.pages.findIndex((p) => p.isCover);
   let html = `<div class="toc-page">`;
+  if (coverIdx >= 0) {
+    html += `<button type="button" class="toc-page-cover-link" data-index="${coverIdx}">← ${escapeHtml(t("toCover"))}</button>`;
+  }
   let currentSection = null;
   for (const { page, index } of items) {
     if (page.section !== currentSection) {
@@ -1705,8 +1709,13 @@ function renderTocContentPage() {
 }
 
 function bindTocContentPageClicks() {
-  els.content.querySelectorAll(".toc-page-item").forEach((btn) => {
-    btn.addEventListener("click", () => {
+  els.content.querySelectorAll(".toc-page-item, .toc-page-cover-link").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      if (swipeNav.didNav) {
+        swipeNav.didNav = false;
+        e.preventDefault();
+        return;
+      }
       const index = Number(btn.dataset.index);
       if (Number.isFinite(index)) goToPage(index, false);
     });
@@ -1899,7 +1908,8 @@ document.addEventListener(
     const target = e.target;
     if (
       target instanceof Element &&
-      target.closest("input, textarea, select, button, a, .route-select")
+      target.closest("input, textarea, select, button, a, .route-select") &&
+      !target.closest(".toc-page-item")
     ) {
       return;
     }
