@@ -158,8 +158,8 @@ const I18N = {
   en: {
     bookTitle: "Feldman's Discourse",
     coverLine1: "Discourse",
-    coverLine2: "Feldman",
-    coverAuthor: "Feldman",
+    coverLine2: "Feldman's",
+    coverAuthor: "Feldman's",
     aboutAuthor: "About the author",
     bookmark: "Bookmark",
     bookmarkGo: "Go to bookmark",
@@ -2970,6 +2970,11 @@ els.coverEnter?.addEventListener("keydown", (e) => {
 els.coverAuthor = document.getElementById("cover-author");
 els.coverAuthor?.addEventListener("click", (e) => {
   e.stopPropagation();
+});
+els.coverToc?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  enterFromCover({ startAtToc: true });
 });
 els.coverBookmark?.addEventListener("click", (e) => {
   e.preventDefault();

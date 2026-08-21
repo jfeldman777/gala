@@ -80,6 +80,11 @@ body {
   text-shadow: 0 1px 0 rgba(255, 248, 220, 0.35), 0 2px 10px rgba(90, 70, 20, 0.18);
 }
 
+/* EN title reads “Feldman's Discourse” (author line above title word). */
+body.lang-en .cover-text .cover-author {
+  order: -1;
+}
+
 .cover-line {
   font-size: clamp(3.6rem, 12vw, 7.2rem);
   font-style: italic;
@@ -139,14 +144,21 @@ a.cover-author:focus-visible::after {
 }
 
 .cover-actions {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: 0.55rem;
   align-items: stretch;
   width: min(22rem, 100%);
 }
 
-.cover-actions > * {
+.cover-actions-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.55rem;
+  align-items: stretch;
+}
+
+.cover-actions-row > * {
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
@@ -154,6 +166,10 @@ a.cover-author:focus-visible::after {
   align-items: center;
   justify-content: center;
   margin: 0;
+}
+
+.cover-actions-row > .lang-switch {
+  display: contents;
 }
 
 .cover-routes {
@@ -203,6 +219,7 @@ a.cover-author:focus-visible::after {
   font-weight: 600;
 }
 
+#cover-toc,
 #cover-link,
 #cover-qr,
 #cover-changes,
