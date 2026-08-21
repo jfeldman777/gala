@@ -140,10 +140,27 @@ a.cover-author:focus-visible::after {
 
 .cover-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 0.55rem;
-  justify-content: center;
+  align-items: stretch;
+  width: min(17.5rem, 100%);
+}
+
+.cover-actions-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.55rem;
+  align-items: stretch;
+}
+
+.cover-actions-row > * {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  margin: 0;
 }
 
 .cover-routes {
@@ -200,8 +217,9 @@ a.cover-author:focus-visible::after {
 #cover-download {
   font-size: 1.35rem;
   line-height: 1;
-  padding: 0.45rem 0.75rem;
-  min-width: 2.6rem;
+  padding: 0.45rem 0.35rem;
+  min-width: 0;
+  height: 2.55rem;
   background: var(--paper);
   border-color: rgba(44, 36, 22, 0.25);
   font-weight: bold;
@@ -262,7 +280,20 @@ a.cover-author:focus-visible::after {
 .lang-switch {
   display: inline-flex;
   gap: 0.2rem;
-  margin-right: 0.25rem;
+  justify-content: center;
+}
+
+.cover-actions .lang-switch {
+  margin-right: 0;
+  height: 2.55rem;
+  align-items: stretch;
+}
+
+.cover-actions .lang-btn {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0.35rem 0.25rem;
 }
 
 .lang-btn {
