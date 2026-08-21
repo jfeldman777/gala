@@ -3049,7 +3049,7 @@ function rememberVisit() {
 
 async function loadChangesIndex() {
   try {
-    const data = await fetch(`changes.json?v=${Date.now()}`, {
+    const data = await fetch(`changes.json?v=20260821b`, {
       cache: "no-store",
     }).then((r) => {
       if (!r.ok) throw new Error(String(r.status));
