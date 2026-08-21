@@ -196,7 +196,8 @@ a.cover-author:focus-visible::after {
 #cover-toc,
 #cover-link,
 #cover-qr,
-#cover-changes {
+#cover-changes,
+#cover-bookmark {
   font-size: 1.35rem;
   line-height: 1;
   padding: 0.45rem 0.75rem;
@@ -204,6 +205,22 @@ a.cover-author:focus-visible::after {
   background: var(--paper);
   border-color: rgba(44, 36, 22, 0.25);
   font-weight: bold;
+}
+
+#cover-bookmark {
+  font-size: 1.15rem;
+  font-weight: normal;
+  padding: 0.45rem 0.65rem;
+}
+
+#cover-bookmark[hidden] {
+  display: none !important;
+}
+
+#cover-bookmark.is-flash {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 #cover-link {

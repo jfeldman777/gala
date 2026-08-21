@@ -30,6 +30,9 @@ const I18N = {
     coverLine2: "Фельдмана",
     coverAuthor: "Фельдмана",
     aboutAuthor: "Об авторе",
+    bookmark: "Закладка",
+    bookmarkGo: "К закладке",
+    bookmarkEmpty: "Пока нет закладки — откройте любую страницу",
     coverHint: "обложка",
     coverEnter: "Открыть книгу",
     toCover: "К обложке",
@@ -123,6 +126,9 @@ const I18N = {
     coverLine2: "Feldman",
     coverAuthor: "Feldman",
     aboutAuthor: "About the author",
+    bookmark: "Bookmark",
+    bookmarkGo: "Go to bookmark",
+    bookmarkEmpty: "No bookmark yet — open any page",
     coverHint: "cover",
     coverEnter: "Open the book",
     toCover: "To cover",
@@ -270,6 +276,7 @@ const els = {
   coverLink: document.getElementById("cover-link"),
   coverQr: document.getElementById("cover-qr"),
   coverChanges: document.getElementById("cover-changes"),
+  coverBookmark: document.getElementById("cover-bookmark"),
   coverRoutes: document.getElementById("cover-routes"),
   coverRouteSelect: document.getElementById("cover-route-select"),
   sidebarRoutes: document.getElementById("sidebar-routes"),
@@ -1658,6 +1665,7 @@ async function loadPage(index, autoplay = false) {
       updateVoteUi();
       syncUrl(page);
       updateDocumentTitle(page);
+      saveReadingBookmark(page);
       document.getElementById("reader").scrollTop = 0;
       return;
     }
@@ -1702,6 +1710,7 @@ async function loadPage(index, autoplay = false) {
   updateVoteUi();
   syncUrl(page);
   updateDocumentTitle(page);
+  saveReadingBookmark(page);
   document.getElementById("reader").scrollTop = 0;
 }
 
@@ -1965,6 +1974,7 @@ function applyUiLang() {
   updateDocumentTitle();
   renderRoutePickers();
   updateRouteBadge();
+  updateCoverBookmarkBtn();
 }
 
 async function setLang(lang, { keepPage = true } = {}) {
@@ -2060,6 +2070,88 @@ document.querySelectorAll(".lang-btn").forEach((btn) => {
 
 init();
 
+const BOOKMARK_KEY = "discourse-bookmark";
+
+function readReadingBookmark() {
+  try {
+    const raw = localStorage.getItem(BOOKMARK_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (!data || !data.pageId) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function saveReadingBookmark(page) {
+  if (!page?.id || document.body.classList.contains("cover-open")) return;
+  try {
+    localStorage.setItem(
+      BOOKMARK_KEY,
+      JSON.stringify({
+        pageId: page.id,
+        routeId: state.routeId || null,
+        lang: state.lang,
+        title: page.title || "",
+        at: Date.now(),
+      })
+    );
+  } catch {
+    /* ignore */
+  }
+  updateCoverBookmarkBtn();
+}
+
+function updateCoverBookmarkBtn() {
+  const btn = els.coverBookmark;
+  if (!btn) return;
+  const bm = readReadingBookmark();
+  const has = Boolean(bm?.pageId);
+  btn.hidden = !has;
+  if (!has) {
+    btn.title = t("bookmark");
+    btn.setAttribute("aria-label", t("bookmark"));
+    return;
+  }
+  const label = bm.title
+    ? `${t("bookmarkGo")}: ${bm.pageId} — ${bm.title}`
+    : `${t("bookmarkGo")}: ${bm.pageId}`;
+  btn.title = label;
+  btn.setAttribute("aria-label", label);
+}
+
+async function openReadingBookmark() {
+  const bm = readReadingBookmark();
+  const btn = els.coverBookmark;
+  if (!bm?.pageId) {
+    if (btn) {
+      btn.classList.add("is-flash");
+      btn.title = t("bookmarkEmpty");
+      setTimeout(() => {
+        btn.classList.remove("is-flash");
+        updateCoverBookmarkBtn();
+      }, 1600);
+    }
+    return;
+  }
+
+  if (bm.routeId && findRoute(bm.routeId)) {
+    setRoute(bm.routeId);
+  } else if (state.routeId) {
+    setRoute(null);
+  }
+
+  enterFromCover();
+
+  let idx = state.pages.findIndex((p) => p.id === bm.pageId);
+  if (idx < 0 && state.routeId) {
+    setRoute(null);
+    idx = state.pages.findIndex((p) => p.id === bm.pageId);
+  }
+  if (idx >= 0) await loadPage(idx, false);
+}
+
 function showCoverScreen() {
   document.body.classList.add("cover-open");
   if (els.coverScreen) {
@@ -2073,6 +2165,7 @@ function showCoverScreen() {
   history.replaceState({ cover: true }, "", cover.toString());
   updateDocumentTitle();
   applyUiLang();
+  updateCoverBookmarkBtn();
 }
 
 function enterFromCover({ openTocAfter = false } = {}) {
@@ -2140,6 +2233,11 @@ els.coverAuthor?.addEventListener("click", (e) => {
   e.stopPropagation();
 });
 els.coverToc?.addEventListener("click", () => enterFromCover({ openTocAfter: true }));
+els.coverBookmark?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  openReadingBookmark();
+});
 els.coverLink?.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
