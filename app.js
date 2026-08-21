@@ -1750,6 +1750,63 @@ els.progress.addEventListener("input", () => {
 els.playBtn.addEventListener("click", togglePlay);
 els.prevBtn.addEventListener("click", goPrev);
 els.nextBtn.addEventListener("click", () => goNext(false));
+
+function isPhoneSwipeNav() {
+  return window.matchMedia("(max-width: 820px), (pointer: coarse)").matches;
+}
+
+function swipeBlocked() {
+  if (document.body.classList.contains("cover-open")) return true;
+  if (document.body.classList.contains("toc-open")) return true;
+  if (els.feedbackModal && !els.feedbackModal.hidden) return true;
+  if (els.changesModal && !els.changesModal.hidden) return true;
+  if (els.qrModal && !els.qrModal.hidden) return true;
+  if (state.pageFind?.open) return true;
+  return false;
+}
+
+const swipeNav = { x: 0, y: 0, active: false };
+
+document.addEventListener(
+  "touchstart",
+  (e) => {
+    if (!isPhoneSwipeNav() || swipeBlocked()) return;
+    if (e.touches.length !== 1) return;
+    const target = e.target;
+    if (
+      target instanceof Element &&
+      target.closest("input, textarea, select, button, a, .route-select")
+    ) {
+      return;
+    }
+    const t = e.touches[0];
+    swipeNav.x = t.clientX;
+    swipeNav.y = t.clientY;
+    swipeNav.active = true;
+  },
+  { passive: true }
+);
+
+document.addEventListener(
+  "touchend",
+  (e) => {
+    if (!swipeNav.active) return;
+    swipeNav.active = false;
+    if (!isPhoneSwipeNav() || swipeBlocked()) return;
+    const t = e.changedTouches[0];
+    if (!t) return;
+    const dx = t.clientX - swipeNav.x;
+    const dy = t.clientY - swipeNav.y;
+    const absX = Math.abs(dx);
+    const absY = Math.abs(dy);
+    // Need a clear horizontal swipe (not a vertical scroll)
+    if (absX < 56 || absX < absY * 1.25) return;
+    // Swipe right → next (+1), swipe left → previous (-1)
+    if (dx > 0) goNext(false);
+    else goPrev();
+  },
+  { passive: true }
+);
 els.autoAdvance.addEventListener("change", (e) => {
   state.autoAdvance = e.target.checked;
 });
