@@ -8,7 +8,7 @@
   <meta property="og:locale" content="en_US">
   <meta name="twitter:title" content="Feldman's Discourse">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="style.css?v=54">
+  <link rel="stylesheet" href="style.css?v=55">
 </head>
 <body class="lang-en">
   <div id="cover-screen" class="cover-hidden" aria-hidden="true">
@@ -73,12 +73,20 @@
     <article id="reader">
       <div id="reader-top">
         <div id="page-meta"></div>
-        <button id="page-find-open" type="button" title="Find on page (Ctrl+F)" aria-label="Find on page" data-i18n-title="pageFind" data-i18n-aria="pageFindShort">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-            <circle cx="11" cy="11" r="6.5"></circle>
-            <path d="M20 20l-3.2-3.2"></path>
-          </svg>
-        </button>
+        <div class="reader-top-actions">
+          <button id="copy-text" type="button" title="Copy page text" aria-label="Copy page text" data-i18n-title="copyText" data-i18n-aria="copyText">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+              <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+            </svg>
+          </button>
+          <button id="page-find-open" type="button" title="Find on page (Ctrl+F)" aria-label="Find on page" data-i18n-title="pageFind" data-i18n-aria="pageFindShort">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="6.5"></circle>
+              <path d="M20 20l-3.2-3.2"></path>
+            </svg>
+          </button>
+        </div>
       </div>
       <div id="page-find-bar" hidden>
         <input id="page-find-input" type="search" placeholder="Find on this page…" autocomplete="off" spellcheck="false" data-i18n-placeholder="pageFindInput">
@@ -112,7 +120,6 @@
     <div class="player-row player-row-main">
       <div id="player-info"></div>
       <button id="toc-open" type="button" title="Table of contents" aria-label="Table of contents" data-i18n-title="toc" data-i18n-aria="toc">☰</button>
-      <button id="copy-text" type="button" title="Copy page text" aria-label="Copy page text" data-i18n-title="copyText" data-i18n-aria="copyText">📋</button>
       <button id="copy-link" type="button" title="Copy page link" aria-label="Copy link" data-i18n-title="copyPage" data-i18n-aria="copyLink">🔗</button>
       <div id="player-controls">
         <button id="prev-btn" type="button" title="Previous page" aria-label="Back" data-i18n-title="prevPage" data-i18n-aria="back">◀</button>
@@ -212,6 +219,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=68"></script>
+  <script src="app.js?v=69"></script>
 </body>
 </html>

@@ -582,7 +582,15 @@ button:disabled {
   margin-bottom: 0;
 }
 
-#page-find-open {
+.reader-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  flex-shrink: 0;
+}
+
+#page-find-open,
+#copy-text {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -596,7 +604,9 @@ button:disabled {
 }
 
 #page-find-open:hover,
-#page-find-open.active {
+#page-find-open.active,
+#copy-text:hover,
+#copy-text.copied {
   color: var(--accent);
   background: var(--accent-soft);
   border-color: var(--border);
@@ -673,16 +683,14 @@ mark.page-find-hit.current {
   font-weight: bold;
 }
 
-#copy-link,
-#copy-text {
+#copy-link {
   font-size: 1.05rem;
   line-height: 1;
   padding: 0.35rem 0.55rem;
   min-width: 2.4rem;
 }
 
-#copy-link.copied,
-#copy-text.copied {
+#copy-link.copied {
   background: var(--accent-soft);
   color: var(--accent);
 }
@@ -1398,8 +1406,7 @@ body.lang-en {
     min-width: 1.9rem;
   }
 
-  #copy-link,
-  #copy-text {
+  #copy-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;

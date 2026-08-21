@@ -1041,12 +1041,14 @@ async function copyPageText() {
 
 function flashCopyButton(btn, doneTitle, restoreTitle) {
   if (!btn) return;
-  const prev = btn.textContent;
-  btn.textContent = "✓";
+  const label = btn.querySelector("svg") ? null : btn.textContent;
+  if (!btn.querySelector("svg")) {
+    btn.textContent = "✓";
+  }
   btn.classList.add("copied");
   btn.title = doneTitle;
   setTimeout(() => {
-    btn.textContent = prev;
+    if (label != null) btn.textContent = label;
     btn.classList.remove("copied");
     btn.title = restoreTitle;
   }, 1400);
