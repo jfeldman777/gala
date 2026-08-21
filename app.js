@@ -2108,7 +2108,8 @@ function updateCoverBookmarkBtn() {
   if (!btn) return;
   const bm = readReadingBookmark();
   const has = Boolean(bm?.pageId);
-  btn.hidden = !has;
+  btn.hidden = false;
+  btn.classList.toggle("has-bookmark", has);
   if (!has) {
     btn.title = t("bookmark");
     btn.setAttribute("aria-label", t("bookmark"));

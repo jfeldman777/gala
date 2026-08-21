@@ -213,8 +213,9 @@ a.cover-author:focus-visible::after {
   padding: 0.45rem 0.65rem;
 }
 
-#cover-bookmark[hidden] {
-  display: none !important;
+#cover-bookmark.has-bookmark {
+  background: var(--accent-soft);
+  border-color: var(--accent);
 }
 
 #cover-bookmark.is-flash {
