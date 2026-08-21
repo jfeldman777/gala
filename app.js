@@ -500,14 +500,28 @@ function applyRouteFilter() {
   const route = findRoute(state.routeId);
   if (!route) {
     state.routeId = null;
-    state.pages = state.allPages.slice();
+    state.pages = prependTocPage(state.allPages.slice());
   } else {
-    state.pages = pagesForRoute(route);
+    state.pages = prependTocPage(pagesForRoute(route));
   }
   if (state.index >= state.pages.length) state.index = 0;
   updateStats();
   renderRoutePickers();
   updateRouteBadge();
+}
+
+function prependTocPage(pages) {
+  const rest = (pages || []).filter((p) => !p.isToc);
+  return [
+    {
+      id: "toc",
+      title: "Оглавление",
+      section: "",
+      md: "",
+      isToc: true,
+    },
+    ...rest,
+  ];
 }
 
 function detectRouteId() {
@@ -1001,8 +1015,9 @@ function saveCollapsedSections() {
 }
 
 function updateStats() {
-  els.statPages.textContent = String(state.pages.length);
-  const visible = new Set(state.pages.map((p) => p.id));
+  const contentPages = state.pages.filter((p) => !p.isToc);
+  els.statPages.textContent = String(contentPages.length);
+  const visible = new Set(contentPages.map((p) => p.id));
   let audioCount = 0;
   for (const id of state.audioAvailable) {
     if (visible.has(id)) audioCount += 1;
@@ -1079,6 +1094,7 @@ function buildToc() {
   let current = null;
 
   state.pages.forEach((page, index) => {
+    if (page.isToc) return;
     if (!current || current.section !== page.section) {
       current = { section: page.section, items: [] };
       groups.push(current);
@@ -1375,6 +1391,15 @@ function setStoredVote(pageId, vote) {
 function updateVoteUi() {
   const page = state.pages[state.index];
   if (!page || !els.voteLike) return;
+  if (page.isToc) {
+    els.voteLike.disabled = true;
+    els.voteDislike.disabled = true;
+    els.voteLike.classList.remove("selected");
+    els.voteDislike.classList.remove("selected");
+    els.voteStatus.hidden = true;
+    els.voteStatus.textContent = "";
+    return;
+  }
 
   const vote = getStoredVote(page.id);
   els.voteLike.classList.toggle("selected", vote === "like");
@@ -1615,11 +1640,12 @@ async function submitFeedback(event) {
 
 function updatePlayerUi() {
   const page = state.pages[state.index];
-  const hasAudio = state.lang !== "en" && state.audioAvailable.has(page.id);
+  if (!page) return;
+  const hasAudio = !page.isToc && state.lang !== "en" && state.audioAvailable.has(page.id);
 
-  els.playerInfo.textContent = `${page.id}`;
+  els.playerInfo.textContent = page.isToc ? t("toc") : `${page.id}`;
   // EN: no audio UI at all (no "missing recording", slider, Listen, auto-advance)
-  els.noAudio.hidden = state.lang === "en" || hasAudio;
+  els.noAudio.hidden = page.isToc || state.lang === "en" || hasAudio;
   els.progressWrap.hidden = !hasAudio;
   els.playBtn.hidden = !hasAudio;
   els.playerControls.hidden = false;
@@ -1637,12 +1663,66 @@ function updateDocumentTitle(page = state.pages[state.index]) {
     document.title = t("bookTitle");
     return;
   }
+  if (page.isToc) {
+    document.title = `${t("toc")} — ${t("bookTitle")}`;
+    return;
+  }
   document.title = `${page.id} — ${page.title}`;
+}
+
+function renderTocContentPage() {
+  const items = state.pages
+    .map((page, index) => ({ page, index }))
+    .filter(({ page }) => !page.isToc);
+  let html = `<div class="toc-page">`;
+  let currentSection = null;
+  for (const { page, index } of items) {
+    if (page.section !== currentSection) {
+      currentSection = page.section;
+      html += `<h2 class="toc-page-section">${escapeHtml(currentSection)}</h2>`;
+    }
+    const title = page.sourcePage ? page.sourcePage.title : page.title;
+    html += `<button type="button" class="toc-page-item" data-index="${index}"><span class="num">${escapeHtml(page.id)}</span><span class="title">${escapeHtml(title)}</span></button>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function bindTocContentPageClicks() {
+  els.content.querySelectorAll(".toc-page-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const index = Number(btn.dataset.index);
+      if (Number.isFinite(index)) goToPage(index, false);
+    });
+  });
 }
 
 async function loadPage(index, autoplay = false) {
   state.index = index;
   const page = state.pages[index];
+  if (!page) return;
+
+  if (page.isToc) {
+    const tocTitle = t("toc");
+    els.pageMeta.textContent = tocTitle;
+    els.pageTitle.textContent = tocTitle;
+    updateDocumentTitle(page);
+    els.content.innerHTML = renderTocContentPage();
+    resetPageFindForLoad(els.content.innerHTML);
+    bindTocContentPageClicks();
+    audio.pause();
+    audio.currentTime = 0;
+    audio.removeAttribute("src");
+    audio.load();
+    buildToc();
+    updatePlayerUi();
+    updateVoteUi();
+    syncUrl(page);
+    updateDocumentTitle(page);
+    document.getElementById("reader").scrollTop = 0;
+    return;
+  }
+
   const title = page.title;
 
   els.pageMeta.textContent = `${page.section} · ${page.id}`;
@@ -2005,7 +2085,7 @@ async function setLang(lang, { keepPage = true } = {}) {
 
   const idx = state.pages.findIndex((p) => p.id === pageId);
   if (idx >= 0) {
-    enterFromCover();
+    enterFromCover({ startAtToc: false });
     await loadPage(idx, false);
   } else {
     showCoverScreen();
@@ -2085,7 +2165,7 @@ function readReadingBookmark() {
 }
 
 function saveReadingBookmark(page) {
-  if (!page?.id || document.body.classList.contains("cover-open")) return;
+  if (!page?.id || page.isToc || document.body.classList.contains("cover-open")) return;
   try {
     localStorage.setItem(
       BOOKMARK_KEY,
@@ -2143,7 +2223,7 @@ async function openReadingBookmark() {
     setRoute(null);
   }
 
-  enterFromCover();
+  enterFromCover({ startAtToc: false });
 
   let idx = state.pages.findIndex((p) => p.id === bm.pageId);
   if (idx < 0 && state.routeId) {
@@ -2169,16 +2249,21 @@ function showCoverScreen() {
   updateCoverBookmarkBtn();
 }
 
-function enterFromCover({ openTocAfter = false } = {}) {
+function enterFromCover({ openTocAfter = false, startAtToc = true } = {}) {
   document.body.classList.remove("cover-open");
   if (els.coverScreen) {
     els.coverScreen.classList.add("cover-hidden");
     els.coverScreen.setAttribute("aria-hidden", "true");
   }
-  const page = state.pages[state.index];
-  if (page) {
-    syncUrl(page);
-    updateDocumentTitle(page);
+  // From the cover title, reading starts at the TOC page (first in order)
+  if (startAtToc && state.pages[0]?.isToc) {
+    loadPage(0, false);
+  } else {
+    const page = state.pages[state.index];
+    if (page) {
+      syncUrl(page);
+      updateDocumentTitle(page);
+    }
   }
   if (openTocAfter) {
     openToc();
@@ -2233,7 +2318,6 @@ els.coverAuthor = document.getElementById("cover-author");
 els.coverAuthor?.addEventListener("click", (e) => {
   e.stopPropagation();
 });
-els.coverToc?.addEventListener("click", () => enterFromCover({ openTocAfter: true }));
 els.coverBookmark?.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
@@ -2462,7 +2546,7 @@ function closeQrModal() {
 async function openChangedPage(pageId) {
   closeChangesModal();
   if (document.body.classList.contains("cover-open")) {
-    enterFromCover();
+    enterFromCover({ startAtToc: false });
   }
   const index = state.pages.findIndex((p) => p.id === pageId);
   if (index >= 0) await loadPage(index, false);

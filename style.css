@@ -193,7 +193,6 @@ a.cover-author:focus-visible::after {
   font-weight: 600;
 }
 
-#cover-toc,
 #cover-link,
 #cover-qr,
 #cover-changes,
@@ -978,6 +977,57 @@ mark.page-find-hit.current {
   background: #fdecea;
   padding: 0.85rem 1rem;
   border-radius: 8px;
+}
+
+.toc-page {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding-bottom: 2rem;
+}
+
+.toc-page-lead {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  color: var(--muted);
+}
+
+.toc-page-section {
+  margin: 1.1rem 0 0.35rem;
+  font-size: 1.05rem;
+  color: var(--accent);
+}
+
+.toc-page-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  width: 100%;
+  text-align: left;
+  border: none;
+  border-radius: 0.25rem;
+  background: transparent;
+  padding: 0.4rem 0.45rem;
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.toc-page-item:hover,
+.toc-page-item:focus-visible {
+  background: var(--accent-soft);
+  outline: none;
+}
+
+.toc-page-item .num {
+  min-width: 3rem;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.toc-page-item .title {
+  flex: 1;
 }
 
 #prev-btn,
