@@ -28,6 +28,8 @@ const I18N = {
     bookTitle: "Дискурс Фельдмана",
     coverLine1: "Дискурс",
     coverLine2: "Фельдмана",
+    coverAuthor: "Фельдмана",
+    aboutAuthor: "Об авторе",
     coverHint: "обложка",
     coverEnter: "Открыть книгу",
     toCover: "К обложке",
@@ -117,8 +119,10 @@ const I18N = {
   },
   en: {
     bookTitle: "Feldman's Discourse",
-    coverLine1: "Feldman's",
-    coverLine2: "Discourse",
+    coverLine1: "Discourse",
+    coverLine2: "Feldman",
+    coverAuthor: "Feldman",
+    aboutAuthor: "About the author",
     coverHint: "cover",
     coverEnter: "Open the book",
     toCover: "To cover",
@@ -2117,7 +2121,24 @@ async function copyCoverLink() {
   }, 1400);
 }
 
-els.coverEnter?.addEventListener("click", () => enterFromCover());
+els.coverEnter?.addEventListener("click", (e) => {
+  if (e.target instanceof Element && e.target.closest("#cover-author, .cover-author")) {
+    return;
+  }
+  enterFromCover();
+});
+els.coverEnter?.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  if (e.target instanceof Element && e.target.closest("#cover-author, .cover-author")) {
+    return;
+  }
+  e.preventDefault();
+  enterFromCover();
+});
+els.coverAuthor = document.getElementById("cover-author");
+els.coverAuthor?.addEventListener("click", (e) => {
+  e.stopPropagation();
+});
 els.coverToc?.addEventListener("click", () => enterFromCover({ openTocAfter: true }));
 els.coverLink?.addEventListener("click", (e) => {
   e.preventDefault();

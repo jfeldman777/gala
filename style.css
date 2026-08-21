@@ -87,6 +87,19 @@ body {
   letter-spacing: 0.01em;
 }
 
+a.cover-author {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a.cover-author:hover,
+a.cover-author:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+  outline: none;
+}
+
 .cover-years {
   margin-top: 0.35em;
   font-size: clamp(1.5rem, 4.2vw, 2.7rem);

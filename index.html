@@ -8,17 +8,17 @@
   <meta property="og:locale" content="ru_RU">
   <meta name="twitter:title" content="Дискурс Фельдмана">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="style.css?v=47">
+  <link rel="stylesheet" href="style.css?v=48">
 </head>
 <body>
   <div id="cover-screen" class="cover-hidden" aria-hidden="true">
-    <button type="button" id="cover-enter" class="cover-image-btn" title="Открыть книгу" aria-label="Открыть книгу" data-i18n-title="coverEnter" data-i18n-aria="coverEnter">
+    <div id="cover-enter" class="cover-image-btn" role="button" tabindex="0" title="Открыть книгу" aria-label="Открыть книгу" data-i18n-title="coverEnter" data-i18n-aria="coverEnter">
       <span class="cover-text">
         <span class="cover-line" data-i18n="coverLine1">Дискурс</span>
-        <span class="cover-line" data-i18n="coverLine2">Фельдмана</span>
+        <a id="cover-author" class="cover-line cover-author" href="https://aromatic-keyboard-369.notion.site/22522db3cb0880f1a1fffd512d49ceba" target="_blank" rel="noopener noreferrer" data-i18n="coverAuthor" data-i18n-title="aboutAuthor" title="Об авторе">Фельдмана</a>
         <span class="cover-years">1989-2026</span>
       </span>
-    </button>
+    </div>
     <div class="cover-actions">
       <div class="lang-switch" role="group" aria-label="Language">
         <button type="button" class="lang-btn" data-lang="ru" title="Русский">RU</button>
@@ -211,6 +211,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=60"></script>
+  <script src="app.js?v=61"></script>
 </body>
 </html>
