@@ -40,9 +40,19 @@ const I18N = {
     copyCover: "Скопировать ссылку на обложку",
     copyPage: "Скопировать ссылку на страницу",
     copyLink: "Скопировать ссылку",
-    copyText: "Скопировать текст страницы",
-    textCopied: "Текст скопирован",
+    copyText: "Читалка",
+    textCopied: "Текст скопирован — откройте читалку",
+    textShared: "Откройте текст в приложении для чтения",
     textCopyEmpty: "Нечего копировать",
+    textSpeaking: "Читаю…",
+    textSpeakStop: "Остановлено",
+    readAppTitle: "Читалка",
+    readAppIntro: "Настройте один раз — дальше кнопка всегда будет делать это сама. Долгое нажатие — снова настройки.",
+    readAppSpeak: "Голос браузера (сразу читает)",
+    readAppClipboard: "Копировать текст (для внешней читалки)",
+    readAppVoice: "Голос",
+    readAppSave: "Сохранить",
+    readAppChange: "Настроить читалку",
     qrCover: "QR-код обложки",
     qrTitle: "QR-коды обложки",
     qrIntro: "Наведите камеру телефона — откроется русская или английская обложка книги.",
@@ -73,10 +83,12 @@ const I18N = {
     back: "Назад",
     forward: "Вперёд",
     listen: "▶ Слушать",
+    listenMyVoice: "▶ Моим голосом",
+    listenReader: "▶ Читалка",
     pause: "⏸ Пауза",
     autoAdvance: "Автопереход",
     autoShort: "Авто",
-    noAudio: "Записи для этой страницы пока нет",
+    noAudio: "Нет моей записи — сработает читалка",
     replyEmail: "Email для ответа",
     optional: "(необязательно)",
     message: "Сообщение",
@@ -139,9 +151,19 @@ const I18N = {
     copyCover: "Copy cover link",
     copyPage: "Copy page link",
     copyLink: "Copy link",
-    copyText: "Copy page text",
-    textCopied: "Text copied",
+    copyText: "Reader",
+    textCopied: "Text copied — open your reading app",
+    textShared: "Open the text in a reading app",
     textCopyEmpty: "Nothing to copy",
+    textSpeaking: "Reading…",
+    textSpeakStop: "Stopped",
+    readAppTitle: "Reading app",
+    readAppIntro: "Set this once — the button will always do it automatically. Long-press to change.",
+    readAppSpeak: "Browser voice (reads aloud)",
+    readAppClipboard: "Copy text (for an external reader)",
+    readAppVoice: "Voice",
+    readAppSave: "Save",
+    readAppChange: "Configure reader",
     qrCover: "Cover QR code",
     qrTitle: "Cover QR codes",
     qrIntro: "Point your phone camera to open the Russian or English cover of the book.",
@@ -172,10 +194,12 @@ const I18N = {
     back: "Back",
     forward: "Forward",
     listen: "▶ Listen",
+    listenMyVoice: "▶ My voice",
+    listenReader: "▶ Reader",
     pause: "⏸ Pause",
     autoAdvance: "Auto-advance",
     autoShort: "Auto",
-    noAudio: "No recording for this page yet",
+    noAudio: "No recording — reader will be used",
     replyEmail: "Email for a reply",
     optional: "(optional)",
     message: "Message",
@@ -264,6 +288,11 @@ const els = {
   sidebar: document.getElementById("sidebar"),
   copyLink: document.getElementById("copy-link"),
   copyText: document.getElementById("copy-text"),
+  readAppModal: document.getElementById("read-app-modal"),
+  readAppForm: document.getElementById("read-app-form"),
+  readAppVoice: document.getElementById("read-app-voice"),
+  readAppModeSpeak: document.getElementById("read-app-mode-speak"),
+  readAppModeClipboard: document.getElementById("read-app-mode-clipboard"),
   statPages: document.getElementById("stat-pages"),
   statAudio: document.getElementById("stat-audio"),
   tocSearch: document.getElementById("toc-search"),
@@ -1015,14 +1044,109 @@ function pagePlainText() {
   return `${title}\n\n${body}`;
 }
 
-async function copyPageText() {
-  const text = pagePlainText();
+const READ_APP_KEY = "discourse-read-app";
+
+function getReadAppSettings() {
+  try {
+    const raw = localStorage.getItem(READ_APP_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (data?.mode === "speak" || data?.mode === "clipboard") return data;
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
+function saveReadAppSettings(data) {
+  try {
+    localStorage.setItem(READ_APP_KEY, JSON.stringify(data));
+  } catch {
+    /* ignore */
+  }
+  updateCopyTextButtonTitle();
+}
+
+function updateCopyTextButtonTitle() {
   const btn = els.copyText;
   if (!btn) return;
-  if (!text) {
-    flashCopyButton(btn, t("textCopyEmpty"), t("copyText"));
+  const settings = getReadAppSettings();
+  let title = t("readAppChange");
+  if (settings?.mode === "speak") title = `${t("copyText")}: ${t("readAppSpeak")}`;
+  else if (settings?.mode === "clipboard") {
+    title = `${t("copyText")}: ${t("readAppClipboard")}`;
+  }
+  btn.title = title;
+  btn.setAttribute("aria-label", title);
+}
+
+function stopBrowserSpeech() {
+  try {
+    window.speechSynthesis?.cancel();
+  } catch {
+    /* ignore */
+  }
+}
+
+function fillReadAppVoices() {
+  const select = els.readAppVoice;
+  if (!select || !window.speechSynthesis) return;
+  const voices = window.speechSynthesis.getVoices() || [];
+  const preferredLang = state.lang === "en" ? "en" : "ru";
+  const sorted = [...voices].sort((a, b) => {
+    const aHit = a.lang?.toLowerCase().startsWith(preferredLang) ? 0 : 1;
+    const bHit = b.lang?.toLowerCase().startsWith(preferredLang) ? 0 : 1;
+    if (aHit !== bHit) return aHit - bHit;
+    return String(a.name).localeCompare(String(b.name));
+  });
+  const current = select.value || getReadAppSettings()?.voiceURI || "";
+  select.innerHTML = "";
+  if (!sorted.length) {
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "—";
+    select.appendChild(opt);
     return;
   }
+  sorted.forEach((voice) => {
+    const opt = document.createElement("option");
+    opt.value = voice.voiceURI;
+    opt.textContent = `${voice.name} (${voice.lang})`;
+    select.appendChild(opt);
+  });
+  if (current && [...select.options].some((o) => o.value === current)) {
+    select.value = current;
+  } else {
+    const firstPref = sorted.find((v) =>
+      v.lang?.toLowerCase().startsWith(preferredLang),
+    );
+    select.value = (firstPref || sorted[0]).voiceURI;
+  }
+}
+
+function openReadAppModal() {
+  if (!els.readAppModal) return;
+  fillReadAppVoices();
+  const settings = getReadAppSettings();
+  const mode = settings?.mode || "speak";
+  if (els.readAppModeSpeak) els.readAppModeSpeak.checked = mode === "speak";
+  if (els.readAppModeClipboard) {
+    els.readAppModeClipboard.checked = mode === "clipboard";
+  }
+  if (settings?.voiceURI && els.readAppVoice) {
+    const has = [...els.readAppVoice.options].some(
+      (o) => o.value === settings.voiceURI,
+    );
+    if (has) els.readAppVoice.value = settings.voiceURI;
+  }
+  els.readAppModal.hidden = false;
+}
+
+function closeReadAppModal() {
+  if (els.readAppModal) els.readAppModal.hidden = true;
+}
+
+async function copyTextToClipboard(text) {
   try {
     await navigator.clipboard.writeText(text);
   } catch {
@@ -1036,7 +1160,71 @@ async function copyPageText() {
     document.execCommand("copy");
     ta.remove();
   }
-  flashCopyButton(btn, t("textCopied"), t("copyText"));
+}
+
+function speakPageText(text, voiceURI) {
+  if (!window.speechSynthesis) {
+    copyTextToClipboard(text).then(() => {
+      flashCopyButton(
+        els.copyText,
+        t("textCopied"),
+        els.copyText?.title || t("copyText"),
+      );
+    });
+    return;
+  }
+  stopBrowserSpeech();
+  audio.pause();
+  const utter = new SpeechSynthesisUtterance(text);
+  const voices = window.speechSynthesis.getVoices() || [];
+  const voice =
+    voices.find((v) => v.voiceURI === voiceURI) ||
+    voices.find((v) =>
+      v.lang?.toLowerCase().startsWith(state.lang === "en" ? "en" : "ru"),
+    ) ||
+    voices[0];
+  if (voice) utter.voice = voice;
+  utter.lang = voice?.lang || (state.lang === "en" ? "en-US" : "ru-RU");
+  utter.rate = 1;
+  utter.onstart = () => updatePlayerUi();
+  utter.onend = () => updatePlayerUi();
+  utter.onerror = () => updatePlayerUi();
+  window.speechSynthesis.speak(utter);
+  updatePlayerUi();
+  flashCopyButton(
+    els.copyText,
+    t("textSpeaking"),
+    els.copyText?.title || t("copyText"),
+  );
+}
+
+async function runReadAppAction() {
+  const text = pagePlainText();
+  const btn = els.copyText;
+  if (!btn) return;
+  if (!text) {
+    flashCopyButton(btn, t("textCopyEmpty"), btn.title || t("copyText"));
+    return;
+  }
+
+  const settings = getReadAppSettings();
+  if (!settings) {
+    openReadAppModal();
+    return;
+  }
+
+  if (settings.mode === "speak") {
+    if (window.speechSynthesis?.speaking) {
+      stopBrowserSpeech();
+      flashCopyButton(btn, t("textSpeakStop"), btn.title || t("copyText"));
+      return;
+    }
+    speakPageText(text, settings.voiceURI);
+    return;
+  }
+
+  await copyTextToClipboard(text);
+  flashCopyButton(btn, t("textCopied"), btn.title || t("copyText"));
 }
 
 function flashCopyButton(btn, doneTitle, restoreTitle) {
@@ -1051,6 +1239,7 @@ function flashCopyButton(btn, doneTitle, restoreTitle) {
     if (label != null) btn.textContent = label;
     btn.classList.remove("copied");
     btn.title = restoreTitle;
+    updateCopyTextButtonTitle();
   }, 1400);
 }
 
@@ -1694,29 +1883,42 @@ async function submitFeedback(event) {
   }
 }
 
+function pageHasRecording(page = state.pages[state.index]) {
+  return Boolean(
+    page &&
+      !page.isCover &&
+      !page.isToc &&
+      state.lang !== "en" &&
+      state.audioAvailable.has(page.id),
+  );
+}
+
 function updatePlayerUi() {
   const page = state.pages[state.index];
   if (!page) return;
-  const hasAudio =
-    !page.isToc &&
-    !page.isCover &&
-    state.lang !== "en" &&
-    state.audioAvailable.has(page.id);
+  const hasRecording = pageHasRecording(page);
+  const canListen = !page.isCover && !page.isToc;
+  const ttsSpeaking = Boolean(window.speechSynthesis?.speaking);
+  const recordingPlaying = hasRecording && !audio.paused;
 
   els.playerInfo.textContent = page.isCover
     ? t("bookTitle")
     : page.isToc
       ? t("toc")
       : `${page.id}`;
-  // EN: no audio UI at all (no "missing recording", slider, Listen, auto-advance)
-  els.noAudio.hidden = page.isToc || page.isCover || state.lang === "en" || hasAudio;
-  els.progressWrap.hidden = !hasAudio;
-  els.playBtn.hidden = !hasAudio;
+  // Recording progress only when your voice file exists; Listen stays for TTS fallback
+  els.noAudio.hidden = !canListen || hasRecording;
+  els.progressWrap.hidden = !hasRecording;
+  els.playBtn.hidden = !canListen;
   els.playerControls.hidden = false;
   if (els.autoAdvance?.closest("label")) {
-    els.autoAdvance.closest("label").hidden = !hasAudio;
+    els.autoAdvance.closest("label").hidden = !hasRecording;
   }
-  els.playBtn.textContent = audio.paused ? t("listen") : t("pause");
+  els.playBtn.textContent = recordingPlaying || ttsSpeaking
+    ? t("pause")
+    : hasRecording
+      ? t("listenMyVoice")
+      : t("listenReader");
   els.prevBtn.disabled = state.index === 0;
   els.nextBtn.disabled = state.index === state.pages.length - 1;
 }
@@ -1771,6 +1973,7 @@ function bindTocContentPageClicks() {
 }
 
 async function loadPage(index, autoplay = false) {
+  stopBrowserSpeech();
   state.index = index;
   const page = state.pages[index];
   if (!page) return;
@@ -1859,7 +2062,7 @@ async function loadPage(index, autoplay = false) {
   audio.pause();
   audio.currentTime = 0;
 
-  if (state.lang !== "en" && state.audioAvailable.has(page.id)) {
+  if (pageHasRecording(page)) {
     audio.src = audioPath(page);
     if (autoplay) {
       try {
@@ -1871,6 +2074,13 @@ async function loadPage(index, autoplay = false) {
   } else {
     audio.removeAttribute("src");
     audio.load();
+    if (autoplay) {
+      const settings = getReadAppSettings();
+      if (settings?.mode === "speak") {
+        const text = pagePlainText();
+        if (text) speakPageText(text, settings.voiceURI);
+      }
+    }
   }
 
   buildToc();
@@ -1898,17 +2108,23 @@ function goPrev() {
 function togglePlay() {
   const page = state.pages[state.index];
   if (!page || page.isCover || page.isToc) return;
-  if (!state.audioAvailable.has(page.id)) return;
 
-  if (!audio.src) {
-    audio.src = audioPath(page);
+  // Priority: your recorded voice when available
+  if (pageHasRecording(page)) {
+    stopBrowserSpeech();
+    if (!audio.src) {
+      audio.src = audioPath(page);
+    }
+    if (audio.paused) {
+      audio.play();
+    } else {
+      audio.pause();
+    }
+    return;
   }
 
-  if (audio.paused) {
-    audio.play();
-  } else {
-    audio.pause();
-  }
+  // No recording → configured reader (browser voice / clipboard)
+  runReadAppAction();
 }
 
 audio.addEventListener("play", updatePlayerUi);
@@ -1942,6 +2158,7 @@ function swipeBlocked() {
   if (els.feedbackModal && !els.feedbackModal.hidden) return true;
   if (els.changesModal && !els.changesModal.hidden) return true;
   if (els.qrModal && !els.qrModal.hidden) return true;
+  if (els.readAppModal && !els.readAppModal.hidden) return true;
   if (state.pageFind?.open) return true;
   return false;
 }
@@ -2027,8 +2244,49 @@ els.copyLink.addEventListener("click", (e) => {
 els.copyText?.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  copyPageText();
+  if (copyTextLongPress.moved) return;
+  runReadAppAction();
 });
+
+const copyTextLongPress = { timer: null, moved: false };
+els.copyText?.addEventListener("pointerdown", (e) => {
+  if (e.button != null && e.button !== 0) return;
+  copyTextLongPress.moved = false;
+  clearTimeout(copyTextLongPress.timer);
+  copyTextLongPress.timer = setTimeout(() => {
+    copyTextLongPress.moved = true;
+    openReadAppModal();
+  }, 550);
+});
+const clearCopyTextLongPress = () => {
+  clearTimeout(copyTextLongPress.timer);
+  copyTextLongPress.timer = null;
+};
+els.copyText?.addEventListener("pointerup", clearCopyTextLongPress);
+els.copyText?.addEventListener("pointerleave", clearCopyTextLongPress);
+els.copyText?.addEventListener("pointercancel", clearCopyTextLongPress);
+els.copyText?.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+  openReadAppModal();
+});
+
+els.readAppForm?.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const mode = els.readAppModeClipboard?.checked ? "clipboard" : "speak";
+  const voiceURI = els.readAppVoice?.value || "";
+  saveReadAppSettings({ mode, voiceURI });
+  closeReadAppModal();
+  runReadAppAction();
+});
+els.readAppModal?.addEventListener("click", (e) => {
+  if (e.target.matches("[data-close-read-app]")) closeReadAppModal();
+});
+
+if (window.speechSynthesis) {
+  window.speechSynthesis.addEventListener("voiceschanged", () => {
+    if (els.readAppModal && !els.readAppModal.hidden) fillReadAppVoices();
+  });
+}
 
 els.tocSearch?.addEventListener("input", () => {
   applyTocFilter();
@@ -2072,6 +2330,10 @@ window.addEventListener("keydown", (e) => {
     closeQrModal();
     return;
   }
+  if (e.key === "Escape" && els.readAppModal && !els.readAppModal.hidden) {
+    closeReadAppModal();
+    return;
+  }
   if (e.key === "Escape" && document.body.classList.contains("toc-open")) {
     closeToc();
     return;
@@ -2085,7 +2347,7 @@ window.addEventListener("keydown", (e) => {
   }
   if (e.code === "ArrowRight") goNext(false);
   if (e.code === "ArrowLeft") goPrev();
-  if (e.code === "Space" && state.lang !== "en") {
+  if (e.code === "Space") {
     if (document.body.classList.contains("cover-open")) return;
     e.preventDefault();
     togglePlay();
@@ -2146,12 +2408,24 @@ function applyUiLang() {
     moreProjects.href = state.lang === "en" ? "12345.en.htm?v=47" : "12345.htm?v=49";
   }
   if (els.playBtn) {
-    els.playBtn.textContent = audio.paused ? t("listen") : t("pause");
+    const page = state.pages[state.index];
+    const hasRecording = pageHasRecording(page);
+    const ttsSpeaking = Boolean(window.speechSynthesis?.speaking);
+    const recordingPlaying = hasRecording && !audio.paused;
+    els.playBtn.textContent =
+      recordingPlaying || ttsSpeaking
+        ? t("pause")
+        : hasRecording
+          ? t("listenMyVoice")
+          : page && !page.isCover && !page.isToc
+            ? t("listenReader")
+            : t("listen");
   }
   updateDocumentTitle();
   renderRoutePickers();
   updateRouteBadge();
   updateCoverBookmarkBtn();
+  updateCopyTextButtonTitle();
 }
 
 async function setLang(lang, { keepPage = true } = {}) {
