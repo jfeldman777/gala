@@ -48,16 +48,16 @@ const I18N = {
     textSpeakStop: "Остановлено",
     readAppTitle: "Читалка",
     readAppIntro: "Один раз выберите читалку. Где нет моей записи, «Слушать» откроет её. Долгое нажатие на □□ — снова настройки.",
-    readAppSpeaktor: "Speaktor (рекомендую) — откроет страницу в приложении",
+    readAppSpeaktor: "Speaktor (рекомендую) — отправит текст в приложение",
     readAppShare: "Другое приложение — меню «Поделиться»",
     readAppSpeak: "Голос браузера (обычно хуже)",
     readAppClipboard: "Только скопировать текст страницы",
     readAppVoice: "Голос браузера",
     readAppSave: "Сохранить",
     readAppChange: "Настроить читалку",
-    readAppInstall: "Установить Speaktor",
-    speaktorOpened: "Открываю Speaktor…",
-    speaktorPasteUrl: "Ссылка скопирована — вставьте URL в Speaktor",
+    readAppInstall: "Сначала установите Speaktor",
+    speaktorOpened: "Открыл Speaktor с текстом",
+    speaktorPasteText: "Текст скопирован — в Speaktor: вставка / Write",
     qrCover: "QR-код обложки",
     qrTitle: "QR-коды обложки",
     qrIntro: "Наведите камеру телефона — откроется русская или английская обложка книги.",
@@ -164,16 +164,16 @@ const I18N = {
     textSpeakStop: "Stopped",
     readAppTitle: "Reading app",
     readAppIntro: "Pick a reader once. Where my recording is missing, Listen opens it. Long-press □□ to change.",
-    readAppSpeaktor: "Speaktor (recommended) — opens the page in the app",
+    readAppSpeaktor: "Speaktor (recommended) — sends page text to the app",
     readAppShare: "Another app — system Share sheet",
     readAppSpeak: "Browser voice (usually worse)",
     readAppClipboard: "Just copy the page text",
     readAppVoice: "Browser voice",
     readAppSave: "Save",
     readAppChange: "Configure reader",
-    readAppInstall: "Install Speaktor",
-    speaktorOpened: "Opening Speaktor…",
-    speaktorPasteUrl: "Link copied — paste the URL into Speaktor",
+    readAppInstall: "Install Speaktor first",
+    speaktorOpened: "Opened Speaktor with text",
+    speaktorPasteText: "Text copied — in Speaktor use Paste / Write",
     qrCover: "Cover QR code",
     qrTitle: "Cover QR codes",
     qrIntro: "Point your phone camera to open the Russian or English cover of the book.",
@@ -1107,7 +1107,7 @@ function currentPageShareLink() {
   return pageUrl(page);
 }
 
-async function openInSpeaktor() {
+function speaktorPayload() {
   const link = currentPageShareLink();
   const page = state.pages[state.index];
   const title = (
@@ -1115,65 +1115,89 @@ async function openInSpeaktor() {
     page?.title ||
     t("bookTitle")
   ).trim();
+  const body = pagePlainText();
+  // Speaktor reads pasted/shared text best; keep Intent URLs from exploding
+  const maxLen = 3500;
+  if (!body) return { title, text: link, link };
+  if (body.length <= maxLen) return { title, text: body, link };
+  return {
+    title,
+    text: `${body.slice(0, maxLen)}\n\n…\n${link}`,
+    link,
+  };
+}
+
+async function openInSpeaktor() {
+  const { title, text } = speaktorPayload();
   const btn = els.copyText;
   const restore = btn?.title || t("copyText");
   const isAndroid = /Android/i.test(navigator.userAgent || "");
 
-  // Android: send the page URL straight into Speaktor (it can read website URLs)
+  // Always leave text in clipboard as a silent backup
+  try {
+    await copyTextToClipboard(text);
+  } catch {
+    /* ignore */
+  }
+
+  // Android: open Speaktor with page TEXT (not a URL — Speaktor often ignores shared links)
+  // No Play Store fallback — that was sending people to «Install»
   if (isAndroid) {
     const intent =
       "intent:#Intent;" +
       "action=android.intent.action.SEND;" +
       "type=text/plain;" +
       `S.android.intent.extra.SUBJECT=${encodeURIComponent(title)};` +
-      `S.android.intent.extra.TEXT=${encodeURIComponent(link)};` +
+      `S.android.intent.extra.TEXT=${encodeURIComponent(text)};` +
       "package=com.speaktor.app;" +
-      `S.browser_fallback_url=${encodeURIComponent(
-        "https://play.google.com/store/apps/details?id=com.speaktor.app",
-      )};` +
       "end";
-    window.location.href = intent;
+    const a = document.createElement("a");
+    a.href = intent;
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
     flashCopyButton(btn, t("speaktorOpened"), restore);
     return;
   }
 
-  // iOS / desktop: share sheet (pick Speaktor) or open web + copy URL once
+  // iOS / other: share sheet with text — choose Speaktor
   if (typeof navigator.share === "function") {
     try {
-      await navigator.share({ title, url: link, text: link });
-      flashCopyButton(btn, t("textShared"), restore);
-      return;
+      const data = { title, text };
+      if (typeof navigator.canShare !== "function" || navigator.canShare(data)) {
+        await navigator.share(data);
+        flashCopyButton(btn, t("speaktorOpened"), restore);
+        return;
+      }
     } catch (err) {
       if (err && err.name === "AbortError") return;
     }
   }
 
-  await copyTextToClipboard(link);
+  // Desktop: Speaktor web; text already copied
   window.open("https://app.speaktor.com/", "_blank", "noopener,noreferrer");
-  flashCopyButton(btn, t("speaktorPasteUrl"), restore);
+  flashCopyButton(btn, t("speaktorPasteText"), restore);
 }
 
 async function sharePageToReaderApp() {
-  const link = currentPageShareLink();
-  const page = state.pages[state.index];
-  const title = (
-    els.pageTitle?.textContent ||
-    page?.title ||
-    t("bookTitle")
-  ).trim();
+  const { title, text } = speaktorPayload();
   const btn = els.copyText;
   const restore = btn?.title || t("copyText");
   if (typeof navigator.share === "function") {
     try {
-      await navigator.share({ title, url: link, text: link });
-      flashCopyButton(btn, t("textShared"), restore);
-      return;
+      const data = { title, text };
+      if (typeof navigator.canShare !== "function" || navigator.canShare(data)) {
+        await navigator.share(data);
+        flashCopyButton(btn, t("textShared"), restore);
+        return;
+      }
     } catch (err) {
       if (err && err.name === "AbortError") return;
     }
   }
-  await copyTextToClipboard(link);
-  flashCopyButton(btn, t("linkCopied"), restore);
+  await copyTextToClipboard(text);
+  flashCopyButton(btn, t("textCopied"), restore);
 }
 
 function stopBrowserSpeech() {
