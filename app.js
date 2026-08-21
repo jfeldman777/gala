@@ -106,7 +106,13 @@ const I18N = {
     messagePlaceholder: "Замечание, вопрос, опечатка…",
     cancel: "Отмена",
     send: "Отправить",
-    changesIntro: "Новые свойства системы и страницы за выбранный срок.",
+    changesIntro: "Свойства системы и страницы, которые появились или изменились.",
+    changesFeatures: "Свойства",
+    changesPages: "Страницы",
+    featuresShort: "свойства",
+    pagesShort: "стр.",
+    noChanges: "нет изменений",
+    changesEmpty: "За этот срок ничего не появлялось.",
     period: "Период",
     periodSince: "с прошлого визита",
     period3: "3 дня",
@@ -133,10 +139,7 @@ const I18N = {
     kindNew: "новое",
     kindChanged: "изменено",
     kindFeature: "система",
-    changesEmpty: "За этот срок страницы не менялись.",
     firstVisitWeek: "первый визит — показана неделя",
-    pagesShort: "стр.",
-    noChanges: "нет изменений",
     downloadBook: "Скачать книгу одним файлом",
     downloadBookShort: "Скачать",
     downloadBookProgress: "Скачиваю…",
@@ -234,7 +237,13 @@ const I18N = {
     messagePlaceholder: "Note, question, typo…",
     cancel: "Cancel",
     send: "Send",
-    changesIntro: "New system features and pages in the selected period.",
+    changesIntro: "System features and pages that appeared or changed.",
+    changesFeatures: "Features",
+    changesPages: "Pages",
+    featuresShort: "features",
+    pagesShort: "pp.",
+    noChanges: "no changes",
+    changesEmpty: "Nothing appeared in this period.",
     period: "Period",
     periodSince: "since last visit",
     period3: "3 days",
@@ -261,10 +270,7 @@ const I18N = {
     kindNew: "new",
     kindChanged: "updated",
     kindFeature: "system",
-    changesEmpty: "No page changes in this period.",
     firstVisitWeek: "first visit — showing one week",
-    pagesShort: "pp.",
-    noChanges: "no changes",
     downloadBook: "Download the book as one file",
     downloadBookShort: "Download",
     downloadBookProgress: "Downloading…",
@@ -3094,6 +3100,17 @@ function entryTimestamp(entry) {
   return Number.isFinite(ms) ? ms : 0;
 }
 
+function isSystemChange(entry) {
+  if (!entry) return false;
+  if (entry.kind === "feature") return true;
+  const section = String(entry.section || "");
+  return (
+    section === "Система" ||
+    section === "Маршруты" ||
+    section === "Проекты"
+  );
+}
+
 function filteredChanges() {
   const cutoff = changesCutoff();
   const visibleIds = new Set(state.pages.map((p) => p.id));
@@ -3110,17 +3127,69 @@ function filteredChanges() {
     .sort((a, b) => entryTimestamp(b) - entryTimestamp(a) || String(b.id).localeCompare(String(a.id), "ru"));
 }
 
+function makeChangesItemButton(entry, titleById) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "changes-item";
+  if (isSystemChange(entry)) btn.classList.add("is-feature");
+  const title =
+    titleById.get(entry.id) ||
+    (state.lang === "en" && entry.title_en ? entry.title_en : entry.title);
+  const summary =
+    (state.lang === "en" ? entry.summary_en : entry.summary) ||
+    entry.summary ||
+    "";
+  btn.innerHTML = `
+    <span class="changes-item-meta">
+      <span>${escapeHtml(formatChangesDate(entry.date))}</span>
+      <span class="changes-kind">${escapeHtml(kindLabel(entry.kind))}</span>
+    </span>
+    <span class="changes-item-id">${escapeHtml(
+      isSystemChange(entry) ? entry.section || t("kindFeature") : entry.id,
+    )}</span>
+    <span class="changes-item-title">${escapeHtml(title)}</span>
+    ${summary ? `<span class="changes-item-summary">${escapeHtml(summary)}</span>` : ""}
+  `;
+  btn.addEventListener("click", () => {
+    if (entry.href) {
+      closeChangesModal();
+      const href =
+        state.lang === "en" && entry.href_en ? entry.href_en : entry.href;
+      location.href = href;
+      return;
+    }
+    openChangedPage(entry.id);
+  });
+  return btn;
+}
+
+function appendChangesSection(listEl, title, items, titleById) {
+  if (!items.length) return;
+  const heading = document.createElement("h4");
+  heading.className = "changes-section-title";
+  heading.textContent = title;
+  listEl.appendChild(heading);
+  items.forEach((entry) => {
+    listEl.appendChild(makeChangesItemButton(entry, titleById));
+  });
+}
+
 function renderChangesList() {
   if (!els.changesList) return;
   const items = filteredChanges();
+  const features = items.filter(isSystemChange);
+  const pages = items.filter((entry) => !isSystemChange(entry));
   const mode = els.changesPeriod?.value || "7";
   if (els.changesSummary) {
     if (mode === "since" && !state.prevVisitAt) {
       els.changesSummary.textContent = t("firstVisitWeek");
+    } else if (!items.length) {
+      els.changesSummary.textContent = t("noChanges");
     } else {
-      els.changesSummary.textContent = items.length
-        ? `${items.length} ${t("pagesShort")}`
-        : t("noChanges");
+      const parts = [];
+      if (features.length) parts.push(`${features.length} ${t("featuresShort")}`);
+      if (pages.length) parts.push(`${pages.length} ${t("pagesShort")}`);
+      els.changesSummary.textContent = parts.join(" · ");
     }
   }
 
@@ -3130,40 +3199,9 @@ function renderChangesList() {
   }
 
   els.changesList.innerHTML = "";
-  // changes.json stores Russian titles; prefer the current catalog's title
   const titleById = new Map(state.allPages.map((p) => [p.id, p.title]));
-  items.forEach((entry) => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "changes-item";
-    const title =
-      titleById.get(entry.id) ||
-      (state.lang === "en" && entry.title_en ? entry.title_en : entry.title);
-    const summary =
-      (state.lang === "en" ? entry.summary_en : entry.summary) ||
-      entry.summary ||
-      "";
-    btn.innerHTML = `
-      <span class="changes-item-meta">
-        <span>${escapeHtml(formatChangesDate(entry.date))}</span>
-        <span class="changes-kind">${escapeHtml(kindLabel(entry.kind))}</span>
-      </span>
-      <span class="changes-item-id">${escapeHtml(entry.id)}</span>
-      <span class="changes-item-title">${escapeHtml(title)}</span>
-      ${summary ? `<span class="changes-item-summary">${escapeHtml(summary)}</span>` : ""}
-    `;
-    btn.addEventListener("click", () => {
-      if (entry.href) {
-        closeChangesModal();
-        const href =
-          state.lang === "en" && entry.href_en ? entry.href_en : entry.href;
-        location.href = href;
-        return;
-      }
-      openChangedPage(entry.id);
-    });
-    els.changesList.appendChild(btn);
-  });
+  appendChangesSection(els.changesList, t("changesFeatures"), features, titleById);
+  appendChangesSection(els.changesList, t("changesPages"), pages, titleById);
 }
 
 function openChangesModal() {

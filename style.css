@@ -471,6 +471,24 @@ button:disabled {
   font-size: 0.95rem;
 }
 
+.changes-section-title {
+  margin: 0.85rem 0.35rem 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.changes-section-title:first-child {
+  margin-top: 0.35rem;
+}
+
+.changes-item.is-feature .changes-kind {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
 .changes-item {
   display: grid;
   grid-template-columns: auto 1fr;
