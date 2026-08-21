@@ -56,6 +56,12 @@ const I18N = {
     readAppSave: "Сохранить",
     readAppChange: "Настроить читалку",
     readAppInstall: "Сначала установите Speaktor",
+    readAppHow1: "В книге нажмите «Слушать» (если нет моей записи).",
+    readAppHow2: "Откроется Speaktor — текст уже отправлен (и лежит в буфере).",
+    readAppHow3: "Если поле пустое: Write / Написать → долгий тап → Вставить.",
+    readAppHow4: "Нажмите ▶ Play. Голос и скорость — в Speaktor.",
+    speaktorHelpTitle: "Как слушать в Speaktor",
+    speaktorHelpOk: "Понятно",
     speaktorOpened: "Открыл Speaktor с текстом",
     speaktorPasteText: "Текст скопирован — в Speaktor: вставка / Write",
     qrCover: "QR-код обложки",
@@ -172,6 +178,12 @@ const I18N = {
     readAppSave: "Save",
     readAppChange: "Configure reader",
     readAppInstall: "Install Speaktor first",
+    readAppHow1: "In the book tap Listen (when my recording is missing).",
+    readAppHow2: "Speaktor opens — the text is sent (and also on the clipboard).",
+    readAppHow3: "If the field is empty: Write → long-press → Paste.",
+    readAppHow4: "Tap ▶ Play. Voice and speed are in Speaktor.",
+    speaktorHelpTitle: "How to listen in Speaktor",
+    speaktorHelpOk: "Got it",
     speaktorOpened: "Opened Speaktor with text",
     speaktorPasteText: "Text copied — in Speaktor use Paste / Write",
     qrCover: "Cover QR code",
@@ -305,6 +317,7 @@ const els = {
   readAppModeClipboard: document.getElementById("read-app-mode-clipboard"),
   readAppModeSpeaktor: document.getElementById("read-app-mode-speaktor"),
   readAppModeShare: document.getElementById("read-app-mode-share"),
+  speaktorHelp: document.getElementById("speaktor-help"),
   statPages: document.getElementById("stat-pages"),
   statAudio: document.getElementById("stat-audio"),
   tocSearch: document.getElementById("toc-search"),
@@ -1158,6 +1171,7 @@ async function openInSpeaktor() {
     a.click();
     a.remove();
     flashCopyButton(btn, t("speaktorOpened"), restore);
+    openSpeaktorHelp();
     return;
   }
 
@@ -1168,6 +1182,7 @@ async function openInSpeaktor() {
       if (typeof navigator.canShare !== "function" || navigator.canShare(data)) {
         await navigator.share(data);
         flashCopyButton(btn, t("speaktorOpened"), restore);
+        openSpeaktorHelp();
         return;
       }
     } catch (err) {
@@ -1178,6 +1193,16 @@ async function openInSpeaktor() {
   // Desktop: Speaktor web; text already copied
   window.open("https://app.speaktor.com/", "_blank", "noopener,noreferrer");
   flashCopyButton(btn, t("speaktorPasteText"), restore);
+  openSpeaktorHelp();
+}
+
+function openSpeaktorHelp() {
+  if (!els.speaktorHelp) return;
+  els.speaktorHelp.hidden = false;
+}
+
+function closeSpeaktorHelp() {
+  if (els.speaktorHelp) els.speaktorHelp.hidden = true;
 }
 
 async function sharePageToReaderApp() {
@@ -2295,6 +2320,7 @@ function swipeBlocked() {
   if (els.changesModal && !els.changesModal.hidden) return true;
   if (els.qrModal && !els.qrModal.hidden) return true;
   if (els.readAppModal && !els.readAppModal.hidden) return true;
+  if (els.speaktorHelp && !els.speaktorHelp.hidden) return true;
   if (state.pageFind?.open) return true;
   return false;
 }
@@ -2421,6 +2447,9 @@ els.readAppForm?.addEventListener("submit", (e) => {
 els.readAppModal?.addEventListener("click", (e) => {
   if (e.target.matches("[data-close-read-app]")) closeReadAppModal();
 });
+els.speaktorHelp?.addEventListener("click", (e) => {
+  if (e.target.matches("[data-close-speaktor-help]")) closeSpeaktorHelp();
+});
 
 if (window.speechSynthesis) {
   window.speechSynthesis.addEventListener("voiceschanged", () => {
@@ -2472,6 +2501,10 @@ window.addEventListener("keydown", (e) => {
   }
   if (e.key === "Escape" && els.readAppModal && !els.readAppModal.hidden) {
     closeReadAppModal();
+    return;
+  }
+  if (e.key === "Escape" && els.speaktorHelp && !els.speaktorHelp.hidden) {
+    closeSpeaktorHelp();
     return;
   }
   if (e.key === "Escape" && document.body.classList.contains("toc-open")) {

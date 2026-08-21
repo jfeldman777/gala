@@ -8,7 +8,7 @@
   <meta property="og:locale" content="ru_RU">
   <meta name="twitter:title" content="Дискурс Фельдмана">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="style.css?v=58">
+  <link rel="stylesheet" href="style.css?v=59">
 </head>
 <body>
   <div id="cover-screen" class="cover-hidden" aria-hidden="true">
@@ -235,6 +235,12 @@
           ·
           <a href="https://apps.apple.com/app/text-reader-text-to-speech/id1632901543" target="_blank" rel="noopener noreferrer">iOS</a>
         </p>
+        <ol class="read-app-howto">
+          <li data-i18n="readAppHow1">В книге нажмите «Слушать» (если нет моей записи).</li>
+          <li data-i18n="readAppHow2">Откроется Speaktor — текст уже отправлен (и лежит в буфере).</li>
+          <li data-i18n="readAppHow3">Если поле пустое: Write / Написать → долгий тап → Вставить.</li>
+          <li data-i18n="readAppHow4">Нажмите ▶ Play. Голос и скорость — в Speaktor.</li>
+        </ol>
         <label class="read-app-option">
           <input id="read-app-mode-share" type="radio" name="read-mode" value="share">
           <span data-i18n="readAppShare">Другое приложение — меню «Поделиться»</span>
@@ -259,6 +265,23 @@
     </div>
   </div>
 
-  <script src="app.js?v=77"></script>
+  <div id="speaktor-help" class="modal" hidden>
+    <div class="modal-backdrop" data-close-speaktor-help></div>
+    <div class="modal-card" role="dialog" aria-labelledby="speaktor-help-title" aria-modal="true">
+      <button class="modal-close" type="button" data-close-speaktor-help aria-label="Закрыть" data-i18n-aria="close">×</button>
+      <h3 id="speaktor-help-title" data-i18n="speaktorHelpTitle">Как слушать в Speaktor</h3>
+      <ol class="read-app-howto">
+        <li data-i18n="readAppHow1">В книге нажмите «Слушать» (если нет моей записи).</li>
+        <li data-i18n="readAppHow2">Откроется Speaktor — текст уже отправлен (и лежит в буфере).</li>
+        <li data-i18n="readAppHow3">Если поле пустое: Write / Написать → долгий тап → Вставить.</li>
+        <li data-i18n="readAppHow4">Нажмите ▶ Play. Голос и скорость — в Speaktor.</li>
+      </ol>
+      <div class="modal-actions">
+        <button type="button" class="primary" data-close-speaktor-help data-i18n="speaktorHelpOk">Понятно</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=78"></script>
 </body>
 </html>

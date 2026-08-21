@@ -1028,8 +1028,20 @@ mark.page-find-hit.current {
   margin-top: 0.2rem;
 }
 
+.read-app-howto {
+  margin: 0.5rem 0 1rem 0;
+  padding-left: 1.35rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.read-app-howto li {
+  margin: 0.35rem 0;
+}
+
 .read-app-install {
-  margin: -0.15rem 0 0.75rem 1.7rem;
+  margin: -0.15rem 0 0.35rem 1.7rem;
   font-size: 0.88rem;
 }
 
