@@ -1895,7 +1895,7 @@ function pageHasRecording(page = state.pages[state.index]) {
 
 function updatePlayerUi() {
   const page = state.pages[state.index];
-  if (!page) return;
+  if (!page || !els.playBtn) return;
   const hasRecording = pageHasRecording(page);
   const canListen = !page.isCover && !page.isToc;
   const ttsSpeaking = Boolean(window.speechSynthesis?.speaking);
@@ -1906,10 +1906,11 @@ function updatePlayerUi() {
     : page.isToc
       ? t("toc")
       : `${page.id}`;
-  // Recording progress only when your voice file exists; Listen stays for TTS fallback
+
+  // Always show Listen on content pages: your voice if recorded, else reader
+  els.playBtn.hidden = !canListen;
   els.noAudio.hidden = !canListen || hasRecording;
   els.progressWrap.hidden = !hasRecording;
-  els.playBtn.hidden = !canListen;
   els.playerControls.hidden = false;
   if (els.autoAdvance?.closest("label")) {
     els.autoAdvance.closest("label").hidden = !hasRecording;
@@ -1918,7 +1919,7 @@ function updatePlayerUi() {
     ? t("pause")
     : hasRecording
       ? t("listenMyVoice")
-      : t("listenReader");
+      : t("listen");
   els.prevBtn.disabled = state.index === 0;
   els.nextBtn.disabled = state.index === state.pages.length - 1;
 }
@@ -2418,7 +2419,7 @@ function applyUiLang() {
         : hasRecording
           ? t("listenMyVoice")
           : page && !page.isCover && !page.isToc
-            ? t("listenReader")
+            ? t("listen")
             : t("listen");
   }
   updateDocumentTitle();
