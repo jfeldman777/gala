@@ -1801,8 +1801,8 @@ document.addEventListener(
     const absY = Math.abs(dy);
     // Need a clear horizontal swipe (not a vertical scroll)
     if (absX < 56 || absX < absY * 1.25) return;
-    // Swipe right → next (+1), swipe left → previous (-1)
-    if (dx > 0) goNext(false);
+    // Swipe left → next (forward); swipe right → previous
+    if (dx < 0) goNext(false);
     else goPrev();
   },
   { passive: true }
