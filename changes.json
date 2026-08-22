@@ -68,6 +68,18 @@
       "note": "Cover author Notion link + tooltip."
     },
     {
+      "id": "10.9.6",
+      "title": "Я и Будда",
+      "title_en": "Me and the Buddha",
+      "section": "10. Система",
+      "md": "10. Система/10.9. Примеры для подражания/10.9.6. Я и Будда.md",
+      "date": "2026-08-23T01:40:00+03:00",
+      "kind": "added",
+      "summary": "Сравнение педагогики уровней с Восьмеричным путём",
+      "summary_en": "Comparing level pedagogy with the Eightfold Path",
+      "note": "Add 10.9.6 Me and the Buddha with EN mirror to engineers and teachers routes."
+    },
+    {
       "id": "10.9.5",
       "title": "Безумный Левенгук",
       "section": "10. Система",
