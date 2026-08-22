@@ -68,6 +68,18 @@
       "note": "Cover author Notion link + tooltip."
     },
     {
+      "id": "4.3",
+      "title": "Какой партнёр вам нужен",
+      "title_en": "What partner do you need",
+      "section": "4. Кухня",
+      "md": "4. Кухня/4.3. Какой партнер вам нужен.md",
+      "date": "2026-08-23T01:58:00+03:00",
+      "kind": "changed",
+      "summary": "Вместо черновика про образование — партнёр и ум по уровням 1–8",
+      "summary_en": "Replaces the education stub with partner and mind by levels 1–8",
+      "note": "Replace 4.3 education stub with partner-by-level page; add EN mirror."
+    },
+    {
       "id": "10.9.6",
       "title": "Я и Будда",
       "title_en": "Me and the Buddha",
