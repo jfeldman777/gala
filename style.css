@@ -81,7 +81,7 @@ body {
 }
 
 /* EN title reads “Feldman's Discourse” (author line above title word). */
-body.lang-en .cover-text .cover-author {
+body.lang-en .cover-text #cover-author {
   order: -1;
 }
 

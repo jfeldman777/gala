@@ -2680,6 +2680,7 @@ function applyUiLang() {
   document.querySelectorAll(".lang-btn").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.lang === state.lang);
   });
+  syncCoverAuthorLink();
   const moreProjects = document.getElementById("more-projects");
   if (moreProjects) {
     moreProjects.href = state.lang === "en" ? "12345.en.htm?v=47" : "12345.htm?v=49";
@@ -2703,6 +2704,33 @@ function applyUiLang() {
   updateRouteBadge();
   updateCoverBookmarkBtn();
   updateCopyTextButtonTitle();
+}
+
+const ABOUT_AUTHOR_RU =
+  "https://aromatic-keyboard-369.notion.site/22522db3cb0880f1a1fffd512d49ceba";
+
+function syncCoverAuthorLink() {
+  const el = document.getElementById("cover-author");
+  if (!el) return;
+  if (state.lang === "en") {
+    if (el.tagName === "A") {
+      el.removeAttribute("href");
+      el.removeAttribute("target");
+      el.removeAttribute("rel");
+      el.removeAttribute("title");
+    }
+    el.classList.remove("cover-author");
+    el.removeAttribute("data-i18n-title");
+    return;
+  }
+  if (el.tagName === "A") {
+    el.href = ABOUT_AUTHOR_RU;
+    el.target = "_blank";
+    el.rel = "noopener noreferrer";
+    el.setAttribute("data-i18n-title", "aboutAuthor");
+    el.title = t("aboutAuthor");
+  }
+  el.classList.add("cover-author");
 }
 
 async function setLang(lang, { keepPage = true } = {}) {
@@ -2970,6 +2998,9 @@ els.coverEnter?.addEventListener("keydown", (e) => {
 els.coverAuthor = document.getElementById("cover-author");
 els.coverAuthor?.addEventListener("click", (e) => {
   e.stopPropagation();
+  if (state.lang === "en" || !(els.coverAuthor instanceof HTMLAnchorElement) || !els.coverAuthor.href) {
+    e.preventDefault();
+  }
 });
 els.coverToc?.addEventListener("click", (e) => {
   e.preventDefault();
