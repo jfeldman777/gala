@@ -21,7 +21,14 @@ const state = {
   },
   changes: [],
   prevVisitAt: null,
+  patreonConfig: null,
 };
+
+const PATREON_FORCE_SESSION = "discourse-patreon-force";
+
+function isSpecialPage(page) {
+  return Boolean(page?.isCover || page?.isToc || page?.isPatreon);
+}
 
 const I18N = {
   ru: {
@@ -145,6 +152,17 @@ const I18N = {
     downloadBookProgress: "Скачиваю…",
     downloadBookDone: "Готово",
     downloadBookFail: "Не удалось скачать",
+    patreonEarlyTitle: "Давайте не потеряем друг друга",
+    patreonEarlyBody:
+      "Книга бесплатна и останется здесь. На Patreon я публикую новые идеи и короткие заметки — подписка бесплатная, отписаться можно в любой момент.",
+    patreonMidTitle: "Если книга откликается",
+    patreonMidBody:
+      "На Patreon я делюсь свежими мыслями и обновлениями — это бесплатная подписка, без обязательств.",
+    patreonFinalTitle: "Спасибо, что дочитали",
+    patreonFinalBody:
+      "Если хотите оставаться на связи — подпишитесь на Patreon: там короткие заметки и новые материалы, бесплатно.",
+    patreonSubscribe: "Подписаться бесплатно",
+    patreonSkip: "Можно просто перелистнуть — книга останется здесь.",
     linkCopied: "Ссылка скопирована",
     loadError: "Не удалось загрузить текст страницы",
     refreshHint: "Обновите страницу (Ctrl+F5).",
@@ -276,6 +294,17 @@ const I18N = {
     downloadBookProgress: "Downloading…",
     downloadBookDone: "Done",
     downloadBookFail: "Download failed",
+    patreonEarlyTitle: "Let's stay in touch",
+    patreonEarlyBody:
+      "The book is free and stays here. On Patreon I share new ideas and short notes — following is free, unsubscribe anytime.",
+    patreonMidTitle: "If the book resonates",
+    patreonMidBody:
+      "On Patreon I post fresh notes and updates — free to follow, no obligation.",
+    patreonFinalTitle: "Thanks for reading",
+    patreonFinalBody:
+      "To stay connected — follow on Patreon for short notes and new material, free of charge.",
+    patreonSubscribe: "Follow for free",
+    patreonSkip: "You can just turn the page — the book stays here.",
     linkCopied: "Link copied",
     loadError: "Could not load page text",
     refreshHint: "Refresh the page (Ctrl+F5).",
@@ -592,7 +621,9 @@ function applyRouteFilter() {
 }
 
 function prependFrontPages(pages) {
-  const rest = (pages || []).filter((p) => !p.isToc && !p.isCover);
+  const rest = injectPatreonIntoRoute(
+    (pages || []).filter((p) => !p.isToc && !p.isCover && !p.isPatreon),
+  );
   return [
     {
       id: "cover",
@@ -610,6 +641,120 @@ function prependFrontPages(pages) {
     },
     ...rest,
   ];
+}
+
+function patreonRuntime() {
+  return {
+    subscribed: isPatreonSubscribed(),
+    isMobile: isPhoneSwipeNav(),
+    forceEnable: patreonForceEnabled(),
+  };
+}
+
+function injectPatreonIntoRoute(contentPages) {
+  if (!window.PatreonLogic) return contentPages || [];
+  const cfg = state.patreonConfig || PatreonLogic.normalizeConfig({});
+  return PatreonLogic.injectPatreonPages(
+    contentPages,
+    cfg,
+    isPatreonSubscribed(),
+    patreonRuntime(),
+  );
+}
+
+function isPatreonSubscribed() {
+  const key = state.patreonConfig?.storageKey || PatreonLogic?.DEFAULT_CONFIG?.storageKey;
+  if (!key) return false;
+  try {
+    return localStorage.getItem(key) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markPatreonSubscribed() {
+  const key = state.patreonConfig?.storageKey || PatreonLogic?.DEFAULT_CONFIG?.storageKey;
+  if (!key) return;
+  try {
+    localStorage.setItem(key, "1");
+  } catch {
+    /* ignore */
+  }
+}
+
+function initPatreonForceFromUrl() {
+  const param = state.patreonConfig?.enableQueryParam || "patreon";
+  if (PatreonLogic?.parseEnableQuery(location.search, param)) {
+    try {
+      sessionStorage.setItem(PATREON_FORCE_SESSION, "1");
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
+function patreonForceEnabled() {
+  try {
+    if (sessionStorage.getItem(PATREON_FORCE_SESSION) === "1") return true;
+  } catch {
+    /* ignore */
+  }
+  const param = state.patreonConfig?.enableQueryParam || "patreon";
+  return Boolean(PatreonLogic?.parseEnableQuery(location.search, param));
+}
+
+async function loadPatreonConfig() {
+  try {
+    const data = await fetch(`patreon.json?v=${Date.now()}`, {
+      cache: "no-store",
+    }).then((r) => {
+      if (!r.ok) throw new Error(String(r.status));
+      return r.json();
+    });
+    state.patreonConfig = PatreonLogic.normalizeConfig(data);
+  } catch (err) {
+    console.warn("patreon.json unavailable", err);
+    state.patreonConfig = PatreonLogic.normalizeConfig({});
+  }
+}
+
+function patreonCopyKey(slot) {
+  const cap = String(slot || "early").replace(/^./, (c) => c.toUpperCase());
+  return `patreon${cap}`;
+}
+
+function renderPatreonPage(slot) {
+  const prefix = patreonCopyKey(slot);
+  const title = t(`${prefix}Title`);
+  const body = t(`${prefix}Body`);
+  const url = state.patreonConfig?.url || PatreonLogic.DEFAULT_CONFIG.url;
+  return `<div class="patreon-page" data-slot="${escapeHtml(slot)}">
+    <h2 class="patreon-page-title">${escapeHtml(title)}</h2>
+    <p class="patreon-page-body">${escapeHtml(body)}</p>
+    <p class="patreon-page-actions">
+      <a class="patreon-subscribe-btn" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("patreonSubscribe"))}</a>
+    </p>
+    <p class="patreon-page-hint">${escapeHtml(t("patreonSkip"))}</p>
+  </div>`;
+}
+
+function bindPatreonPageClicks() {
+  els.content.querySelector(".patreon-subscribe-btn")?.addEventListener("click", () => {
+    markPatreonSubscribed();
+    void rebuildPagesAfterPatreonSubscribe();
+  });
+}
+
+async function rebuildPagesAfterPatreonSubscribe() {
+  const oldPages = state.pages.slice();
+  const oldIndex = state.index;
+  applyRouteFilter();
+  const newIndex = PatreonLogic.remapIndexAfterPatreonRemoval(
+    oldPages,
+    oldIndex,
+    state.pages,
+  );
+  await loadPage(newIndex, false);
 }
 
 function detectRouteId() {
@@ -1052,7 +1197,7 @@ function setDownloadBusy(busy, label) {
 }
 
 async function downloadBookAsFile() {
-  const pages = state.pages.filter((p) => !p.isCover && !p.isToc);
+  const pages = state.pages.filter((p) => !isSpecialPage(p));
   if (!pages.length) return;
   if (downloadBookAsFile.busy) return;
   downloadBookAsFile.busy = true;
@@ -1524,7 +1669,7 @@ function saveCollapsedSections() {
 }
 
 function updateStats() {
-  const contentPages = state.pages.filter((p) => !p.isToc && !p.isCover);
+  const contentPages = state.pages.filter((p) => !isSpecialPage(p));
   els.statPages.textContent = String(contentPages.length);
   const visible = new Set(contentPages.map((p) => p.id));
   let audioCount = 0;
@@ -1603,7 +1748,7 @@ function buildToc() {
   let current = null;
 
   state.pages.forEach((page, index) => {
-    if (page.isToc || page.isCover) return;
+    if (isSpecialPage(page)) return;
     if (!current || current.section !== page.section) {
       current = { section: page.section, items: [] };
       groups.push(current);
@@ -1900,7 +2045,7 @@ function setStoredVote(pageId, vote) {
 function updateVoteUi() {
   const page = state.pages[state.index];
   if (!page || !els.voteLike) return;
-  if (page.isToc || page.isCover) {
+  if (isSpecialPage(page)) {
     els.voteLike.disabled = true;
     els.voteDislike.disabled = true;
     els.voteLike.classList.remove("selected");
@@ -2150,8 +2295,7 @@ async function submitFeedback(event) {
 function pageHasRecording(page = state.pages[state.index]) {
   return Boolean(
     page &&
-      !page.isCover &&
-      !page.isToc &&
+      !isSpecialPage(page) &&
       state.lang !== "en" &&
       state.audioAvailable.has(page.id),
   );
@@ -2161,7 +2305,7 @@ function updatePlayerUi() {
   const page = state.pages[state.index];
   if (!page || !els.playBtn) return;
   const hasRecording = pageHasRecording(page);
-  const canListen = !page.isCover && !page.isToc;
+  const canListen = !isSpecialPage(page);
   const ttsSpeaking = Boolean(window.speechSynthesis?.speaking);
   const recordingPlaying = hasRecording && !audio.paused;
 
@@ -2169,7 +2313,9 @@ function updatePlayerUi() {
     ? t("bookTitle")
     : page.isToc
       ? t("toc")
-      : `${page.id}`;
+      : page.isPatreon
+        ? t("patreonSubscribe")
+        : `${page.id}`;
 
   // Always show Listen on content pages: your voice if recorded, else reader
   els.playBtn.hidden = !canListen;
@@ -2198,13 +2344,18 @@ function updateDocumentTitle(page = state.pages[state.index]) {
     document.title = `${t("toc")} — ${t("bookTitle")}`;
     return;
   }
+  if (page.isPatreon) {
+    const slot = page.patreonSlot || "early";
+    document.title = `${t(`${patreonCopyKey(slot)}Title`)} — ${t("bookTitle")}`;
+    return;
+  }
   document.title = `${page.id} — ${page.title}`;
 }
 
 function renderTocContentPage() {
   const items = state.pages
     .map((page, index) => ({ page, index }))
-    .filter(({ page }) => !page.isToc && !page.isCover);
+    .filter(({ page }) => !isSpecialPage(page));
   const coverIdx = state.pages.findIndex((p) => p.isCover);
   let html = `<div class="toc-page">`;
   if (coverIdx >= 0) {
@@ -2275,6 +2426,27 @@ async function loadPage(index, autoplay = false) {
     updateVoteUi();
     syncUrl(page);
     updateDocumentTitle(page);
+    document.getElementById("reader").scrollTop = 0;
+    return;
+  }
+
+  if (page.isPatreon) {
+    const slot = page.patreonSlot || "early";
+    const title = t(`${patreonCopyKey(slot)}Title`);
+    els.pageMeta.textContent = "";
+    els.pageTitle.textContent = title;
+    updateDocumentTitle(page);
+    els.content.innerHTML = renderPatreonPage(slot);
+    resetPageFindForLoad(els.content.innerHTML);
+    bindPatreonPageClicks();
+    audio.pause();
+    audio.currentTime = 0;
+    audio.removeAttribute("src");
+    audio.load();
+    buildToc();
+    updatePlayerUi();
+    updateVoteUi();
+    syncUrl(page);
     document.getElementById("reader").scrollTop = 0;
     return;
   }
@@ -2372,7 +2544,7 @@ function goPrev() {
 
 function togglePlay() {
   const page = state.pages[state.index];
-  if (!page || page.isCover || page.isToc) return;
+  if (!page || isSpecialPage(page)) return;
 
   // Priority: your recorded voice when available
   if (pageHasRecording(page)) {
@@ -2695,7 +2867,7 @@ function applyUiLang() {
         ? t("pause")
         : hasRecording
           ? t("listenMyVoice")
-          : page && !page.isCover && !page.isToc
+          : page && !isSpecialPage(page)
             ? t("listen")
             : t("listen");
   }
@@ -2790,6 +2962,9 @@ async function init() {
   }
   applyUiLang();
 
+  await loadPatreonConfig();
+  initPatreonForceFromUrl();
+
   await loadRoutes();
   state.routeId = detectRouteId();
   await Promise.all([loadCatalog(), loadChangesIndex()]);
@@ -2838,7 +3013,7 @@ function readReadingBookmark() {
 }
 
 function saveReadingBookmark(page) {
-  if (!page?.id || page.isToc || page.isCover || document.body.classList.contains("cover-open")) return;
+  if (!page?.id || isSpecialPage(page) || document.body.classList.contains("cover-open")) return;
   try {
     localStorage.setItem(
       BOOKMARK_KEY,
@@ -3258,17 +3433,23 @@ const CANONICAL_COVER = {
   en: "https://jfeldman777.github.io/gala/en.html",
 };
 
+/** QR codes: ?patreon=1 enables invite pages on phone (see patreon.json). */
+const QR_COVER = {
+  ru: "https://jfeldman777.github.io/gala/index.html?patreon=1",
+  en: "https://jfeldman777.github.io/gala/en.html?patreon=1",
+};
+
 function openQrModal() {
   if (!els.qrModal) return;
   const ru = document.getElementById("qr-link-ru");
   const en = document.getElementById("qr-link-en");
   if (ru) {
-    ru.href = CANONICAL_COVER.ru;
-    ru.textContent = "jfeldman777.github.io/gala";
+    ru.href = QR_COVER.ru;
+    ru.textContent = "jfeldman777.github.io/gala/?patreon=1";
   }
   if (en) {
-    en.href = CANONICAL_COVER.en;
-    en.textContent = "jfeldman777.github.io/gala/en.html";
+    en.href = QR_COVER.en;
+    en.textContent = "jfeldman777.github.io/gala/en.html?patreon=1";
   }
   els.qrModal.hidden = false;
 }

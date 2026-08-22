@@ -2,7 +2,9 @@
   "enabled": false,
   "url": "https://www.patreon.com/cw/jacobfeldman",
   "storageKey": "discourse-patreon-subscribed",
-  "hideEarlyAndMidAfterSubscribe": true,
+  "disableOnMobile": true,
+  "enableQueryParam": "patreon",
+  "hideAllAfterSubscribe": true,
   "placements": [
     {
       "slot": "early",

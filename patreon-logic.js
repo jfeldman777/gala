@@ -14,7 +14,9 @@
     enabled: false,
     url: "https://www.patreon.com/cw/jacobfeldman",
     storageKey: "discourse-patreon-subscribed",
-    hideEarlyAndMidAfterSubscribe: true,
+    disableOnMobile: true,
+    enableQueryParam: "patreon",
+    hideAllAfterSubscribe: true,
     placements: [
       { slot: "early", afterPageId: "1" },
       { slot: "mid", atFraction: 0.5 },
@@ -29,10 +31,41 @@
       enabled: src.enabled === true,
       url: String(src.url || DEFAULT_CONFIG.url).trim(),
       storageKey: String(src.storageKey || DEFAULT_CONFIG.storageKey).trim(),
-      hideEarlyAndMidAfterSubscribe:
-        src.hideEarlyAndMidAfterSubscribe !== false,
+      disableOnMobile: src.disableOnMobile !== false,
+      enableQueryParam: String(src.enableQueryParam || DEFAULT_CONFIG.enableQueryParam).trim(),
+      hideAllAfterSubscribe: src.hideAllAfterSubscribe !== false,
       placements: placements.map((p) => ({ ...p })),
     };
+  }
+
+  function isTruthyParam(value) {
+    if (value == null || value === "") return false;
+    const v = String(value).trim().toLowerCase();
+    return v === "1" || v === "true" || v === "yes";
+  }
+
+  /** URL / session flag: QR links use ?patreon=1 to enable invites on phone. */
+  function parseEnableQuery(search, paramName) {
+    if (!paramName) return false;
+    try {
+      return isTruthyParam(new URLSearchParams(search || "").get(paramName));
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Whether Patreon invite pages should appear.
+   * - subscribed → off (even via QR)
+   * - mobile + disableOnMobile → off unless forceEnable (QR / preview param)
+   */
+  function isPatreonActive(config, runtime = {}) {
+    const cfg = normalizeConfig(config);
+    const { subscribed = false, isMobile = false, forceEnable = false } = runtime;
+    if (!cfg.enabled) return false;
+    if (subscribed && cfg.hideAllAfterSubscribe) return false;
+    if (cfg.disableOnMobile && isMobile && !forceEnable) return false;
+    return true;
   }
 
   function makePatreonPage(slot) {
@@ -61,19 +94,16 @@
     return null;
   }
 
-  function shouldHidePlacement(placement, config, subscribed) {
-    if (!subscribed || !config.hideEarlyAndMidAfterSubscribe) return false;
-    return placement.slot === "early" || placement.slot === "mid";
-  }
-
-  function injectPatreonPages(contentPages, config, subscribed) {
+  function injectPatreonPages(contentPages, config, subscribed, runtime = {}) {
     const cfg = normalizeConfig(config);
-    if (!cfg.enabled) return (contentPages || []).filter((p) => !p.isPatreon);
+    const rt = { subscribed, isMobile: false, forceEnable: false, ...runtime };
+    if (!isPatreonActive(cfg, rt)) {
+      return (contentPages || []).filter((p) => !p.isPatreon);
+    }
     const base = (contentPages || []).filter((p) => !p.isPatreon);
     const inserts = [];
 
     for (const placement of cfg.placements) {
-      if (shouldHidePlacement(placement, cfg, subscribed)) continue;
       const at = findInsertIndex(base, placement);
       if (at == null) continue;
       inserts.push({ at, page: makePatreonPage(placement.slot) });
@@ -90,18 +120,17 @@
   function isHiddenPatreonPageId(pageId, config, subscribed) {
     if (!pageId || !String(pageId).startsWith("patreon-")) return false;
     const cfg = normalizeConfig(config);
-    if (!subscribed || !cfg.hideEarlyAndMidAfterSubscribe) return false;
-    return pageId === "patreon-early" || pageId === "patreon-mid";
+    if (subscribed && cfg.hideAllAfterSubscribe) return true;
+    return false;
   }
 
   function remapIndexAfterPatreonRemoval(oldPages, oldIndex, newPages) {
     const cur = oldPages[oldIndex];
     let removedBefore = 0;
     for (let i = 0; i < oldIndex; i += 1) {
-      const p = oldPages[i];
-      if (p?.isPatreon && p.patreonSlot !== "final") removedBefore += 1;
+      if (oldPages[i]?.isPatreon) removedBefore += 1;
     }
-    if (cur?.isPatreon && cur.patreonSlot !== "final") {
+    if (cur?.isPatreon) {
       return Math.max(0, Math.min(newPages.length - 1, oldIndex - removedBefore));
     }
     const id = cur?.id;
@@ -115,10 +144,11 @@
   return {
     DEFAULT_CONFIG,
     normalizeConfig,
+    isPatreonActive,
+    parseEnableQuery,
     makePatreonPage,
     findInsertIndex,
     injectPatreonPages,
-    shouldHidePlacement,
     isHiddenPatreonPageId,
     remapIndexAfterPatreonRemoval,
   };

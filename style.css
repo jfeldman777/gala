@@ -1186,6 +1186,54 @@ mark.page-find-hit.current {
   flex: 1;
 }
 
+.patreon-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 36rem;
+  padding-bottom: 2rem;
+}
+
+.patreon-page-title {
+  margin: 0;
+  font-size: 1.55rem;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.patreon-page-body {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.patreon-page-actions {
+  margin: 0.5rem 0 0;
+}
+
+.patreon-subscribe-btn {
+  display: inline-block;
+  padding: 0.65rem 1.25rem;
+  border-radius: 0.35rem;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.patreon-subscribe-btn:hover,
+.patreon-subscribe-btn:focus-visible {
+  filter: brightness(1.05);
+  outline: 2px solid var(--accent-soft);
+  outline-offset: 2px;
+}
+
+.patreon-page-hint {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
 #prev-btn,
 #next-btn {
   font-size: 2.4rem;
