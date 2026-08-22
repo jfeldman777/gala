@@ -1,0 +1,23 @@
+{
+  "enabled": false,
+  "url": "https://www.patreon.com/cw/jacobfeldman",
+  "storageKey": "discourse-patreon-subscribed",
+  "hideEarlyAndMidAfterSubscribe": true,
+  "placements": [
+    {
+      "slot": "early",
+      "afterPageId": "1",
+      "_comment": "После первой главы (id «1»). Для второй главы укажите «1.1»."
+    },
+    {
+      "slot": "mid",
+      "atFraction": 0.5,
+      "_comment": "Примерно середина книги (доля от числа страниц маршрута)."
+    },
+    {
+      "slot": "final",
+      "atEnd": true,
+      "_comment": "После последней главы."
+    }
+  ]
+}
