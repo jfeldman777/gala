@@ -68,6 +68,18 @@
       "note": "Cover author Notion link + tooltip."
     },
     {
+      "id": "4.5",
+      "title": "Письмо Хану",
+      "title_en": "Letter to Khan",
+      "section": "4. Кухня",
+      "md": "4. Кухня/4.5. Письмо Хану.md",
+      "date": "2026-08-24T00:02:00+03:00",
+      "kind": "changed",
+      "summary": "Вместо черновика «Категории» — письмо Салману Хану о симуляциях профессий",
+      "summary_en": "Replaces the Categories stub with a letter to Salman Khan on profession simulations",
+      "note": "Replace draft 4.5 Categories@ with Letter to Khan; add EN mirror."
+    },
+    {
       "id": "4.1.1.1",
       "title": "Кодировки и трудоёмкости",
       "title_en": "Codings and labor intensity",
