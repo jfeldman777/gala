@@ -496,11 +496,41 @@ button:disabled {
   color: var(--muted);
 }
 
+.changes-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0 0 0.35rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.changes-tab {
+  flex: 1;
+  margin: 0;
+  padding: 0.55rem 0.75rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.changes-tab:hover {
+  color: var(--ink);
+  background: var(--accent-soft);
+}
+
+.changes-tab.is-active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
 .changes-list {
   overflow-y: auto;
   flex: 1;
   min-height: 8rem;
-  border-top: 1px solid var(--border);
   margin: 0 -0.15rem;
   padding: 0.35rem 0.15rem 0;
 }

@@ -22,6 +22,7 @@ const state = {
   changes: [],
   prevVisitAt: null,
   patreonConfig: null,
+  changesTab: "pages",
 };
 
 const PATREON_FORCE_SESSION = "discourse-patreon-force";
@@ -2876,6 +2877,7 @@ function applyUiLang() {
   updateRouteBadge();
   updateCoverBookmarkBtn();
   updateCopyTextButtonTitle();
+  if (els.changesModal && !els.changesModal.hidden) renderChangesList();
 }
 
 const ABOUT_AUTHOR_RU =
@@ -3232,6 +3234,12 @@ els.sidebarChanges?.addEventListener("click", (e) => {
 els.changesPeriod?.addEventListener("change", () => {
   renderChangesList();
 });
+
+document.querySelectorAll("[data-changes-tab]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    setChangesTab(btn.dataset.changesTab);
+  });
+});
 els.changesModal?.addEventListener("click", (e) => {
   if (e.target.matches("[data-close-changes]")) closeChangesModal();
 });
@@ -3374,15 +3382,24 @@ function makeChangesItemButton(entry, titleById) {
   return btn;
 }
 
-function appendChangesSection(listEl, title, items, titleById) {
-  if (!items.length) return;
-  const heading = document.createElement("h4");
-  heading.className = "changes-section-title";
-  heading.textContent = title;
-  listEl.appendChild(heading);
+function appendChangesItems(listEl, items, titleById) {
   items.forEach((entry) => {
     listEl.appendChild(makeChangesItemButton(entry, titleById));
   });
+}
+
+function syncChangesTabs() {
+  document.querySelectorAll("[data-changes-tab]").forEach((btn) => {
+    const active = btn.dataset.changesTab === state.changesTab;
+    btn.classList.toggle("is-active", active);
+    btn.setAttribute("aria-selected", active ? "true" : "false");
+  });
+}
+
+function setChangesTab(tab) {
+  state.changesTab = tab === "features" ? "features" : "pages";
+  syncChangesTabs();
+  renderChangesList();
 }
 
 function renderChangesList() {
@@ -3391,6 +3408,17 @@ function renderChangesList() {
   const features = items.filter(isSystemChange);
   const pages = items.filter((entry) => !isSystemChange(entry));
   const mode = els.changesPeriod?.value || "7";
+  const tab = state.changesTab === "features" ? "features" : "pages";
+  const tabItems = tab === "features" ? features : pages;
+
+  document.querySelectorAll("[data-changes-tab]").forEach((btn) => {
+    const key = btn.dataset.changesTab;
+    const count = key === "features" ? features.length : pages.length;
+    const label = key === "features" ? t("changesFeatures") : t("changesPages");
+    btn.textContent = count ? `${label} (${count})` : label;
+  });
+  syncChangesTabs();
+
   if (els.changesSummary) {
     if (mode === "since" && !state.prevVisitAt) {
       els.changesSummary.textContent = t("firstVisitWeek");
@@ -3404,15 +3432,14 @@ function renderChangesList() {
     }
   }
 
-  if (!items.length) {
+  els.changesList.innerHTML = "";
+  if (!tabItems.length) {
     els.changesList.innerHTML = `<p class="changes-empty">${t("changesEmpty")}</p>`;
     return;
   }
 
-  els.changesList.innerHTML = "";
   const titleById = new Map(state.allPages.map((p) => [p.id, p.title]));
-  appendChangesSection(els.changesList, t("changesFeatures"), features, titleById);
-  appendChangesSection(els.changesList, t("changesPages"), pages, titleById);
+  appendChangesItems(els.changesList, tabItems, titleById);
 }
 
 function openChangesModal() {
@@ -3420,6 +3447,7 @@ function openChangesModal() {
   if (els.changesPeriod) {
     els.changesPeriod.value = state.prevVisitAt ? "since" : "7";
   }
+  state.changesTab = "pages";
   renderChangesList();
   els.changesModal.hidden = false;
 }
