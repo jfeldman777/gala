@@ -3,6 +3,66 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "3.7.5",
+      "title": "Деды и внуки",
+      "title_en": "Grandfathers and grandchildren",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.7.5. Деды и внуки.md",
+      "date": "2026-08-24T19:00:00+03:00",
+      "kind": "added",
+      "summary": "Серьёзная игра деда и внука без конкуренции за статус",
+      "summary_en": "A serious game of grandfather and grandson without status rivalry",
+      "note": "Add 3.7.5 Grandfathers and grandchildren with EN mirror."
+    },
+    {
+      "id": "3.7.1.1",
+      "title": "Игра на выживание",
+      "title_en": "Survival game",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.7.1.1. Игра на выживание.md",
+      "date": "2026-08-24T18:55:00+03:00",
+      "kind": "changed",
+      "summary": "Три стратегии умного выживания: цепочка, бегство, ответ X±1",
+      "summary_en": "Three smart-survival strategies: chain, flight, reply with X±1",
+      "note": "Extend 3.7.1.1 with survival strategies; update EN."
+    },
+    {
+      "id": "10.5.3.1",
+      "title": "Вписанность",
+      "title_en": "Fit",
+      "section": "10. Система",
+      "md": "10. Система/10.5. Виртуальный мир/10.5.3.1. Вписанность.md",
+      "date": "2026-08-24T18:21:00+03:00",
+      "kind": "added",
+      "summary": "Любимые уровни и обязательные на работе: пять степеней совпадения",
+      "summary_en": "Favorite levels vs required ones at work: five degrees of match",
+      "note": "Add 10.5.3.1 Fit with EN mirror."
+    },
+    {
+      "id": "3.7.4",
+      "title": "Опасный возраст",
+      "title_en": "The dangerous age",
+      "section": "3. Сэндвичи",
+      "md": "3. Сэндвичи/3.7.4. Опасный возраст.md",
+      "date": "2026-08-24T18:20:00+03:00",
+      "kind": "added",
+      "summary": "12+: самостоятельный выбор 5-го уровня и конфликт со взрослыми",
+      "summary_en": "12+: Level-5 independent choice and conflict with adults",
+      "note": "Add 3.7.4 Dangerous age with EN mirror."
+    },
+    {
+      "id": "2.5",
+      "title": "Задача о воспитателе",
+      "title_en": "The problem of the caregiver",
+      "section": "2. Ломтики",
+      "md": "2. Ломтики/2.5. Задача о воспитателе.md",
+      "date": "2026-08-24T17:55:00+03:00",
+      "kind": "changed",
+      "summary": "Опыт трудных побед и эффект бабушки",
+      "summary_en": "The Experience of Difficult Victories and the grandmother effect",
+      "note": "Extend 2.5 with difficult victories and grandmother effect; update EN."
+    },
+    {
       "id": "6.5",
       "title": "Развивающая среда",
       "title_en": "A developing environment",

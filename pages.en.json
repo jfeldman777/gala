@@ -243,6 +243,16 @@
       "md": "en/3. Sandwiches/3.7.3. Maneuvers, expanded.md"
     },
     {
+      "id": "3.7.4",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.7.4. The dangerous age.md"
+    },
+    {
+      "id": "3.7.5",
+      "section": "3. Sandwiches",
+      "md": "en/3. Sandwiches/3.7.5. Grandfathers and grandchildren.md"
+    },
+    {
       "id": "3.8",
       "section": "3. Sandwiches",
       "md": "en/3. Sandwiches/3.8. Rutherford's method.md"
@@ -616,6 +626,11 @@
       "id": "10.5.3",
       "section": "10. System",
       "md": "en/10. System/10.5. Virtual world/10.5.3. Contexts.md"
+    },
+    {
+      "id": "10.5.3.1",
+      "section": "10. System",
+      "md": "en/10. System/10.5. Virtual world/10.5.3.1. Fit.md"
     },
     {
       "id": "10.5.4",
