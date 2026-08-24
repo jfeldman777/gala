@@ -3,6 +3,19 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "система-имя-стр1",
+      "title": "Имя и почта на первой странице",
+      "title_en": "Name and email on the first page",
+      "section": "Система",
+      "date": "2026-08-24T19:35:00+03:00",
+      "kind": "feature",
+      "summary": "Представиться на странице 1 («Зачем здесь крошки»), а не на обложке",
+      "summary_en": "Introduce yourself on page 1 (“Why crumbs are here”), not on the cover",
+      "href": "index.html?p=1",
+      "href_en": "en.html?p=1",
+      "note": "Move one-time identity from cover to page 1."
+    },
+    {
       "id": "3.7.5",
       "title": "Деды и внуки",
       "title_en": "Grandfathers and grandchildren",

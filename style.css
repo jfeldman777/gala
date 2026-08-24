@@ -179,14 +179,11 @@ a.cover-author:focus-visible::after {
   max-width: min(22rem, 100%);
 }
 
-.cover-identity {
-  width: min(22rem, 100%);
-  background: rgba(255, 253, 248, 0.9);
-  border-radius: 0.55rem;
-  padding: 0.85rem 1rem 1rem;
-  color: var(--ink);
-  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  box-shadow: 0 8px 24px rgba(44, 36, 22, 0.18);
+.page-identity {
+  max-width: 42rem;
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
 }
 
 .identity-form {

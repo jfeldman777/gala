@@ -129,16 +129,16 @@ const I18N = {
     period14: "14 дней",
     period30: "30 дней",
     period90: "90 дней",
-    needName: "Сначала укажите имя и почту на обложке",
+    needName: "Сначала укажите имя и почту на первой странице",
     identityTitle: "Кто вы",
-    identityIntro: "Имя и почта — один раз. На страницах больше не спрашиваю.",
+    identityIntro: "Имя и почта — один раз на первой странице.",
     identitySave: "Запомнить",
     identityChange: "Сменить имя и почту",
     identityHello: "Здравствуй, {name}",
     identityYes: "Да, это {name}",
     yourEmail: "Почта",
     identityConfirmMail: "Прислать копию на эту почту — так подтверждается адрес",
-    identityThanks: "Запомнил. Можно открывать книгу.",
+    identityThanks: "Запомнил.",
     identityEmailInvalid: "Проверьте адрес почты",
     identityNotified: "Автору ушло письмо. Если отметили копию — проверьте почту.",
     mailSubjectRegister: "Дискурс: читатель",
@@ -284,16 +284,16 @@ const I18N = {
     period14: "14 days",
     period30: "30 days",
     period90: "90 days",
-    needName: "Please give your name and email on the cover first",
+    needName: "Please introduce yourself with name and email on the first page",
     identityTitle: "Who you are",
-    identityIntro: "Name and email — once. I will not ask again on the pages.",
+    identityIntro: "Name and email — once, on the first page.",
     identitySave: "Remember me",
     identityChange: "Change name and email",
     identityHello: "Hello, {name}",
     identityYes: "Yes, this is {name}",
     yourEmail: "Email",
     identityConfirmMail: "Send a copy to this address — that confirms the email",
-    identityThanks: "Saved. You can open the book.",
+    identityThanks: "Saved.",
     identityEmailInvalid: "Please check the email address",
     identityNotified: "A note went to the author. If you asked for a copy — check your mail.",
     mailSubjectRegister: "Discourse: reader",
@@ -416,11 +416,12 @@ const els = {
   sidebarDownload: document.getElementById("sidebar-download"),
   coverRoutes: document.getElementById("cover-routes"),
   coverRouteSelect: document.getElementById("cover-route-select"),
-  coverIdentityForm: document.getElementById("cover-identity-form"),
-  coverIdentityHello: document.getElementById("cover-identity-hello"),
-  coverIdentityHelloText: document.getElementById("cover-identity-hello-text"),
-  coverIdentityCompact: document.getElementById("cover-identity-compact"),
-  coverIdentityCompactName: document.getElementById("cover-identity-compact-name"),
+  pageIdentity: document.getElementById("page-identity"),
+  pageIdentityForm: document.getElementById("page-identity-form"),
+  pageIdentityHello: document.getElementById("page-identity-hello"),
+  pageIdentityHelloText: document.getElementById("page-identity-hello-text"),
+  pageIdentityCompact: document.getElementById("page-identity-compact"),
+  pageIdentityCompactName: document.getElementById("page-identity-compact-name"),
   identityConfirm: document.getElementById("identity-confirm"),
   identityChange: document.getElementById("identity-change"),
   identityCompactChange: document.getElementById("identity-compact-change"),
@@ -2021,9 +2022,14 @@ function voteStorageKey(pageId) {
 const READER_NAME_KEY = "discourse-reader-name";
 const IDENTITY_KEY = "discourse-reader-identity";
 const IDENTITY_GREETED_KEY = "discourse-identity-greeted";
+const IDENTITY_PAGE_ID = "1";
 
 function namedText(key, name) {
   return t(key).replace(/\{name\}/g, name);
+}
+
+function isIdentityPage(page) {
+  return Boolean(page && page.id === IDENTITY_PAGE_ID && !page.isCover && !page.isToc && !page.isPatreon);
 }
 
 function isValidEmail(email) {
@@ -2116,29 +2122,42 @@ function setIdentityStatus(form, text, kind) {
   status.className = `identity-status${kind ? ` ${kind}` : ""}`;
 }
 
-function updateCoverIdentity() {
+function updatePageIdentity() {
+  const page = state.pages[state.index];
+  const onPage = isIdentityPage(page);
   const id = readIdentity();
   const complete = identityComplete();
   const editing = state.identityEditing || !complete;
   const greeted = identityGreetedThisSession();
-  const form = els.coverIdentityForm;
-  const hello = els.coverIdentityHello;
-  const compact = els.coverIdentityCompact;
+  const wrap = els.pageIdentity;
+  const form = els.pageIdentityForm;
+  const hello = els.pageIdentityHello;
+  const compact = els.pageIdentityCompact;
+
+  if (wrap) wrap.hidden = !onPage;
 
   fillIdentityForms(id);
+
+  if (!onPage) {
+    if (form) form.hidden = true;
+    if (hello) hello.hidden = true;
+    if (compact) compact.hidden = true;
+    syncFeedbackIdentityFields();
+    return;
+  }
 
   if (form) form.hidden = !(editing || !id);
   if (hello) hello.hidden = !complete || editing || greeted;
   if (compact) compact.hidden = !complete || editing || !greeted;
 
-  if (complete && id && els.coverIdentityHelloText) {
-    els.coverIdentityHelloText.textContent = namedText("identityHello", id.name);
+  if (complete && id && els.pageIdentityHelloText) {
+    els.pageIdentityHelloText.textContent = namedText("identityHello", id.name);
   }
   if (complete && id && els.identityConfirm) {
     els.identityConfirm.textContent = namedText("identityYes", id.name);
   }
-  if (complete && id && els.coverIdentityCompactName) {
-    els.coverIdentityCompactName.textContent = namedText("identityHello", id.name);
+  if (complete && id && els.pageIdentityCompactName) {
+    els.pageIdentityCompactName.textContent = namedText("identityHello", id.name);
   }
   syncFeedbackIdentityFields();
 }
@@ -2172,11 +2191,11 @@ function closeIdentityModal() {
 
 function startIdentityEdit() {
   state.identityEditing = true;
-  updateCoverIdentity();
-  if (!document.body.classList.contains("cover-open")) {
-    openIdentityModal();
+  updatePageIdentity();
+  if (isIdentityPage(state.pages[state.index])) {
+    els.pageIdentityForm?.elements?.name?.focus();
   } else {
-    els.coverIdentityForm?.elements?.name?.focus();
+    openIdentityModal();
   }
 }
 
@@ -2204,7 +2223,7 @@ async function submitIdentityForm(event) {
   markIdentityGreeted();
   fillIdentityForms({ name, email });
   syncFeedbackIdentityFields();
-  updateCoverIdentity();
+  updatePageIdentity();
 
   const submitBtn = form.querySelector('button[type="submit"]');
   if (submitBtn) submitBtn.disabled = true;
@@ -2235,7 +2254,7 @@ async function submitIdentityForm(event) {
     setIdentityStatus(form, t("sendFail"), "error");
   } finally {
     if (submitBtn) submitBtn.disabled = false;
-    updateCoverIdentity();
+    updatePageIdentity();
   }
 }
 
@@ -2638,6 +2657,7 @@ async function loadPage(index, autoplay = false) {
     updatePlayerUi();
     updateVoteUi();
     updateDocumentTitle(page);
+    updatePageIdentity();
     return;
   }
 
@@ -2661,6 +2681,7 @@ async function loadPage(index, autoplay = false) {
     syncUrl(page);
     updateDocumentTitle(page);
     document.getElementById("reader").scrollTop = 0;
+    updatePageIdentity();
     return;
   }
 
@@ -2682,6 +2703,7 @@ async function loadPage(index, autoplay = false) {
     updateVoteUi();
     syncUrl(page);
     document.getElementById("reader").scrollTop = 0;
+    updatePageIdentity();
     return;
   }
 
@@ -2709,6 +2731,7 @@ async function loadPage(index, autoplay = false) {
       updateDocumentTitle(page);
       saveReadingBookmark(page);
       document.getElementById("reader").scrollTop = 0;
+      updatePageIdentity();
       return;
     }
     mdPath = page.sourcePage.md;
@@ -2761,6 +2784,7 @@ async function loadPage(index, autoplay = false) {
   updateDocumentTitle(page);
   saveReadingBookmark(page);
   document.getElementById("reader").scrollTop = 0;
+  updatePageIdentity();
 }
 
 function goToPage(index, autoplay) {
@@ -2890,12 +2914,12 @@ els.feedbackOpenPage.addEventListener("click", openFeedbackModal);
 els.feedbackForm.addEventListener("submit", submitFeedback);
 els.voteLike.addEventListener("click", () => submitVote("like"));
 els.voteDislike.addEventListener("click", () => submitVote("dislike"));
-els.coverIdentityForm?.addEventListener("submit", submitIdentityForm);
+els.pageIdentityForm?.addEventListener("submit", submitIdentityForm);
 els.identityModalForm?.addEventListener("submit", submitIdentityForm);
 els.identityConfirm?.addEventListener("click", () => {
   markIdentityGreeted();
   state.identityEditing = false;
-  updateCoverIdentity();
+  updatePageIdentity();
 });
 els.identityChange?.addEventListener("click", startIdentityEdit);
 els.identityCompactChange?.addEventListener("click", startIdentityEdit);
@@ -3123,7 +3147,7 @@ function applyUiLang() {
   updateRouteBadge();
   updateCoverBookmarkBtn();
   updateCopyTextButtonTitle();
-  updateCoverIdentity();
+  updatePageIdentity();
   if (els.changesModal && !els.changesModal.hidden) renderChangesList();
 }
 
@@ -3343,7 +3367,6 @@ function showCoverScreen() {
   updateDocumentTitle();
   applyUiLang();
   updateCoverBookmarkBtn();
-  updateCoverIdentity();
 }
 
 function hideCoverScreen() {
