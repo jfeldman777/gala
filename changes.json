@@ -3,6 +3,19 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "система-имя",
+      "title": "Имя и почта один раз на обложке",
+      "title_en": "Name and email once on the cover",
+      "section": "Система",
+      "date": "2026-08-24T12:24:00+03:00",
+      "kind": "feature",
+      "summary": "Представиться на обложке; при следующем заходе — «Здравствуй…». На страницах имя больше не спрашиваю",
+      "summary_en": "Introduce yourself on the cover; next visit greets you by name. Pages no longer ask for a name",
+      "href": "index.html",
+      "href_en": "en.html",
+      "note": "One-time identity on cover with greeting and author notification."
+    },
+    {
       "id": "система-скачать",
       "title": "Скачать всю книгу одним файлом",
       "title_en": "Download the whole book as one file",

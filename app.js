@@ -23,6 +23,7 @@ const state = {
   prevVisitAt: null,
   patreonConfig: null,
   changesTab: "pages",
+  identityEditing: false,
 };
 
 const PATREON_FORCE_SESSION = "discourse-patreon-force";
@@ -128,7 +129,20 @@ const I18N = {
     period14: "14 дней",
     period30: "30 дней",
     period90: "90 дней",
-    needName: "Сначала укажите имя",
+    needName: "Сначала укажите имя и почту на обложке",
+    identityTitle: "Кто вы",
+    identityIntro: "Имя и почта — один раз. На страницах больше не спрашиваю.",
+    identitySave: "Запомнить",
+    identityChange: "Сменить имя и почту",
+    identityHello: "Здравствуй, {name}",
+    identityYes: "Да, это {name}",
+    yourEmail: "Почта",
+    identityConfirmMail: "Прислать копию на эту почту — так подтверждается адрес",
+    identityThanks: "Запомнил. Можно открывать книгу.",
+    identityEmailInvalid: "Проверьте адрес почты",
+    identityNotified: "Автору ушло письмо. Если отметили копию — проверьте почту.",
+    mailSubjectRegister: "Дискурс: читатель",
+    mailSubjectIdentityChange: "Дискурс: смена имени",
     routeAll: "Вся книга",
     routeActive: "маршрут",
     routeSelect: "Маршрут",
@@ -270,7 +284,20 @@ const I18N = {
     period14: "14 days",
     period30: "30 days",
     period90: "90 days",
-    needName: "Please enter your name first",
+    needName: "Please give your name and email on the cover first",
+    identityTitle: "Who you are",
+    identityIntro: "Name and email — once. I will not ask again on the pages.",
+    identitySave: "Remember me",
+    identityChange: "Change name and email",
+    identityHello: "Hello, {name}",
+    identityYes: "Yes, this is {name}",
+    yourEmail: "Email",
+    identityConfirmMail: "Send a copy to this address — that confirms the email",
+    identityThanks: "Saved. You can open the book.",
+    identityEmailInvalid: "Please check the email address",
+    identityNotified: "A note went to the author. If you asked for a copy — check your mail.",
+    mailSubjectRegister: "Discourse: reader",
+    mailSubjectIdentityChange: "Discourse: name change",
     routeAll: "Whole book",
     routeActive: "route",
     routeSelect: "Route",
@@ -351,7 +378,6 @@ const els = {
   voteLike: document.getElementById("vote-like"),
   voteDislike: document.getElementById("vote-dislike"),
   voteStatus: document.getElementById("vote-status"),
-  readerName: document.getElementById("reader-name"),
   tocOpen: document.getElementById("toc-open"),
   tocClose: document.getElementById("toc-close"),
   tocBackdrop: document.getElementById("toc-backdrop"),
@@ -390,6 +416,16 @@ const els = {
   sidebarDownload: document.getElementById("sidebar-download"),
   coverRoutes: document.getElementById("cover-routes"),
   coverRouteSelect: document.getElementById("cover-route-select"),
+  coverIdentityForm: document.getElementById("cover-identity-form"),
+  coverIdentityHello: document.getElementById("cover-identity-hello"),
+  coverIdentityHelloText: document.getElementById("cover-identity-hello-text"),
+  coverIdentityCompact: document.getElementById("cover-identity-compact"),
+  coverIdentityCompactName: document.getElementById("cover-identity-compact-name"),
+  identityConfirm: document.getElementById("identity-confirm"),
+  identityChange: document.getElementById("identity-change"),
+  identityCompactChange: document.getElementById("identity-compact-change"),
+  identityModal: document.getElementById("identity-modal"),
+  identityModalForm: document.getElementById("identity-modal-form"),
   sidebarRoutes: document.getElementById("sidebar-routes"),
   sidebarRouteSelect: document.getElementById("sidebar-route-select"),
   routeBadge: document.getElementById("route-badge"),
@@ -1983,47 +2019,238 @@ function voteStorageKey(pageId) {
 }
 
 const READER_NAME_KEY = "discourse-reader-name";
+const IDENTITY_KEY = "discourse-reader-identity";
+const IDENTITY_GREETED_KEY = "discourse-identity-greeted";
 
-function getReaderName() {
-  try {
-    return String(localStorage.getItem(READER_NAME_KEY) || "").trim();
-  } catch {
-    return "";
-  }
+function namedText(key, name) {
+  return t(key).replace(/\{name\}/g, name);
 }
 
-function setReaderName(name) {
-  const clean = String(name || "").trim().slice(0, 80);
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
+}
+
+function readIdentity() {
   try {
-    if (clean) localStorage.setItem(READER_NAME_KEY, clean);
+    const raw = localStorage.getItem(IDENTITY_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      const name = String(data?.name || "").trim().slice(0, 80);
+      const email = String(data?.email || "").trim().slice(0, 120);
+      if (name) return { name, email };
+    }
+  } catch {
+    /* ignore */
+  }
+  try {
+    const legacy = String(localStorage.getItem(READER_NAME_KEY) || "").trim();
+    if (legacy) return { name: legacy, email: "" };
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
+function identityComplete() {
+  const id = readIdentity();
+  return Boolean(id?.name && isValidEmail(id.email));
+}
+
+function saveIdentity(name, email) {
+  const clean = {
+    name: String(name || "").trim().slice(0, 80),
+    email: String(email || "").trim().slice(0, 120),
+    at: Date.now(),
+  };
+  try {
+    localStorage.setItem(IDENTITY_KEY, JSON.stringify(clean));
+    if (clean.name) localStorage.setItem(READER_NAME_KEY, clean.name);
     else localStorage.removeItem(READER_NAME_KEY);
   } catch {
-    // ignore
-  }
-  if (els.readerName && els.readerName.value.trim() !== clean) {
-    els.readerName.value = clean;
-  }
-  const formName = els.feedbackForm?.elements?.name;
-  if (formName && formName.value.trim() !== clean) {
-    formName.value = clean;
+    /* ignore */
   }
   return clean;
 }
 
-function syncReaderNameFromUi(source) {
-  const raw =
-    source === "form"
-      ? els.feedbackForm?.elements?.name?.value
-      : els.readerName?.value;
-  return setReaderName(raw);
+function getReaderName() {
+  return readIdentity()?.name || "";
+}
+
+function getReaderEmail() {
+  return readIdentity()?.email || "";
+}
+
+function identityGreetedThisSession() {
+  try {
+    return sessionStorage.getItem(IDENTITY_GREETED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markIdentityGreeted() {
+  try {
+    sessionStorage.setItem(IDENTITY_GREETED_KEY, "1");
+  } catch {
+    /* ignore */
+  }
+}
+
+function fillIdentityForms(id) {
+  document.querySelectorAll(".identity-form").forEach((form) => {
+    if (form.elements.name) form.elements.name.value = id?.name || "";
+    if (form.elements.email) form.elements.email.value = id?.email || "";
+  });
+}
+
+function setIdentityStatus(form, text, kind) {
+  const status = form?.querySelector(".identity-status");
+  if (!status) return;
+  if (!text) {
+    status.hidden = true;
+    status.textContent = "";
+    return;
+  }
+  status.hidden = false;
+  status.textContent = text;
+  status.className = `identity-status${kind ? ` ${kind}` : ""}`;
+}
+
+function updateCoverIdentity() {
+  const id = readIdentity();
+  const complete = identityComplete();
+  const editing = state.identityEditing || !complete;
+  const greeted = identityGreetedThisSession();
+  const form = els.coverIdentityForm;
+  const hello = els.coverIdentityHello;
+  const compact = els.coverIdentityCompact;
+
+  fillIdentityForms(id);
+
+  if (form) form.hidden = !(editing || !id);
+  if (hello) hello.hidden = !complete || editing || greeted;
+  if (compact) compact.hidden = !complete || editing || !greeted;
+
+  if (complete && id && els.coverIdentityHelloText) {
+    els.coverIdentityHelloText.textContent = namedText("identityHello", id.name);
+  }
+  if (complete && id && els.identityConfirm) {
+    els.identityConfirm.textContent = namedText("identityYes", id.name);
+  }
+  if (complete && id && els.coverIdentityCompactName) {
+    els.coverIdentityCompactName.textContent = namedText("identityHello", id.name);
+  }
+  syncFeedbackIdentityFields();
+}
+
+function syncFeedbackIdentityFields() {
+  const complete = identityComplete();
+  const nameWrap = document.getElementById("feedback-name-wrap");
+  const emailWrap = document.getElementById("feedback-email-wrap");
+  if (nameWrap) nameWrap.hidden = complete;
+  if (emailWrap) emailWrap.hidden = complete;
+  const form = els.feedbackForm;
+  if (!form) return;
+  const id = readIdentity();
+  if (form.elements.name && id?.name) form.elements.name.value = id.name;
+  if (form.elements.reply_email && id?.email) form.elements.reply_email.value = id.email;
+  if (form.elements.name) form.elements.name.required = !complete;
+}
+
+function openIdentityModal() {
+  if (!els.identityModal) return;
+  fillIdentityForms(readIdentity());
+  els.identityModal.hidden = false;
+  const form = els.identityModalForm;
+  const focusEl = form?.elements.name;
+  focusEl?.focus();
+}
+
+function closeIdentityModal() {
+  if (els.identityModal) els.identityModal.hidden = true;
+}
+
+function startIdentityEdit() {
+  state.identityEditing = true;
+  updateCoverIdentity();
+  if (!document.body.classList.contains("cover-open")) {
+    openIdentityModal();
+  } else {
+    els.coverIdentityForm?.elements?.name?.focus();
+  }
+}
+
+async function submitIdentityForm(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const name = String(form.elements.name?.value || "").trim();
+  const email = String(form.elements.email?.value || "").trim();
+  const sendCopy = Boolean(form.elements.send_copy?.checked);
+  if (!name) {
+    setIdentityStatus(form, t("enterName"), "error");
+    form.elements.name?.focus();
+    return;
+  }
+  if (!isValidEmail(email)) {
+    setIdentityStatus(form, t("identityEmailInvalid"), "error");
+    form.elements.email?.focus();
+    return;
+  }
+
+  const prev = readIdentity();
+  const changed = !prev || prev.name !== name || prev.email !== email;
+  saveIdentity(name, email);
+  state.identityEditing = false;
+  markIdentityGreeted();
+  fillIdentityForms({ name, email });
+  syncFeedbackIdentityFields();
+  updateCoverIdentity();
+
+  const submitBtn = form.querySelector('button[type="submit"]');
+  if (submitBtn) submitBtn.disabled = true;
+  setIdentityStatus(form, t("sending"));
+
+  try {
+    if (changed) {
+      const isNew = !prev?.name;
+      const subject = isNew
+        ? `${t("mailSubjectRegister")}: ${name}`
+        : `${t("mailSubjectIdentityChange")}: ${prev.name} → ${name}`;
+      const fields = {
+        name,
+        email,
+        event: isNew ? "register" : "identity-change",
+        previous_name: prev?.name || "—",
+        previous_email: prev?.email || "—",
+        lang: state.lang,
+      };
+      if (sendCopy) fields._cc = email;
+      await sendToAuthor({ subject, fields });
+      setIdentityStatus(form, t("identityNotified"), "success");
+    } else {
+      setIdentityStatus(form, t("identityThanks"), "success");
+    }
+    closeIdentityModal();
+  } catch {
+    setIdentityStatus(form, t("sendFail"), "error");
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+    updateCoverIdentity();
+  }
+}
+
+function setReaderName(name) {
+  const id = readIdentity() || { name: "", email: "" };
+  saveIdentity(name, id.email);
+  fillIdentityForms(readIdentity());
+  return String(name || "").trim().slice(0, 80);
 }
 
 function requireReaderName() {
-  const name = syncReaderNameFromUi("page") || getReaderName();
-  if (name) return name;
+  if (identityComplete()) return getReaderName();
   els.voteStatus.hidden = false;
   els.voteStatus.textContent = t("needName");
-  els.readerName?.focus();
+  openIdentityModal();
   return "";
 }
 
@@ -2226,12 +2453,9 @@ function openFeedbackModal() {
   els.feedbackContext.textContent = `${t("pageLabel")}: ${currentPageLabel()}`;
   els.feedbackStatus.hidden = true;
   els.feedbackStatus.className = "feedback-status";
-  const saved = getReaderName();
-  if (els.feedbackForm?.name) {
-    els.feedbackForm.name.value = saved;
-  }
+  syncFeedbackIdentityFields();
   els.feedbackModal.hidden = false;
-  if (saved) els.feedbackForm.message.focus();
+  if (identityComplete()) els.feedbackForm.message.focus();
   else els.feedbackForm.name.focus();
 }
 
@@ -2249,13 +2473,22 @@ async function submitFeedback(event) {
 
   if (data.get("_honey")) return;
 
-  const readerName = setReaderName(data.get("name"));
+  const readerName = setReaderName(data.get("name") || getReaderName());
   if (!readerName) {
     els.feedbackStatus.hidden = false;
     els.feedbackStatus.className = "feedback-status error";
     els.feedbackStatus.textContent = t("enterName");
-    form.name.focus();
+    if (!identityComplete()) {
+      closeFeedbackModal();
+      openIdentityModal();
+    } else {
+      form.name.focus();
+    }
     return;
+  }
+  const replyEmail = String(data.get("reply_email") || getReaderEmail() || "").trim();
+  if (replyEmail && isValidEmail(replyEmail) && !getReaderEmail()) {
+    saveIdentity(readerName, replyEmail);
   }
 
   submitBtn.disabled = true;
@@ -2265,7 +2498,7 @@ async function submitFeedback(event) {
   const fields = {
     page: currentPageLabel(),
     name: readerName,
-    reply_email: data.get("reply_email") || "—",
+    reply_email: replyEmail || "—",
     message: data.get("message"),
     lang: state.lang,
   };
@@ -2592,7 +2825,9 @@ function isPhoneSwipeNav() {
 }
 
 function swipeBlocked() {
+  if (document.body.classList.contains("cover-open")) return true;
   if (document.body.classList.contains("toc-open")) return true;
+  if (els.identityModal && !els.identityModal.hidden) return true;
   if (els.feedbackModal && !els.feedbackModal.hidden) return true;
   if (els.changesModal && !els.changesModal.hidden) return true;
   if (els.qrModal && !els.qrModal.hidden) return true;
@@ -2655,11 +2890,18 @@ els.feedbackOpenPage.addEventListener("click", openFeedbackModal);
 els.feedbackForm.addEventListener("submit", submitFeedback);
 els.voteLike.addEventListener("click", () => submitVote("like"));
 els.voteDislike.addEventListener("click", () => submitVote("dislike"));
-els.readerName?.addEventListener("change", () => syncReaderNameFromUi("page"));
-els.readerName?.addEventListener("blur", () => syncReaderNameFromUi("page"));
-const feedbackNameInput = els.feedbackForm?.elements?.name;
-feedbackNameInput?.addEventListener?.("change", () => syncReaderNameFromUi("form"));
-feedbackNameInput?.addEventListener?.("blur", () => syncReaderNameFromUi("form"));
+els.coverIdentityForm?.addEventListener("submit", submitIdentityForm);
+els.identityModalForm?.addEventListener("submit", submitIdentityForm);
+els.identityConfirm?.addEventListener("click", () => {
+  markIdentityGreeted();
+  state.identityEditing = false;
+  updateCoverIdentity();
+});
+els.identityChange?.addEventListener("click", startIdentityEdit);
+els.identityCompactChange?.addEventListener("click", startIdentityEdit);
+els.identityModal?.addEventListener("click", (e) => {
+  if (e.target.matches("[data-close-identity]")) closeIdentityModal();
+});
 els.feedbackModal.addEventListener("click", (e) => {
   if (e.target.matches("[data-close]")) closeFeedbackModal();
 });
@@ -2788,6 +3030,10 @@ window.addEventListener("keydown", (e) => {
     closeToc();
     return;
   }
+  if (e.key === "Escape" && els.identityModal && !els.identityModal.hidden) {
+    closeIdentityModal();
+    return;
+  }
   if (e.key === "Escape" && !els.feedbackModal.hidden) {
     closeFeedbackModal();
     return;
@@ -2877,6 +3123,7 @@ function applyUiLang() {
   updateRouteBadge();
   updateCoverBookmarkBtn();
   updateCopyTextButtonTitle();
+  updateCoverIdentity();
   if (els.changesModal && !els.changesModal.hidden) renderChangesList();
 }
 
@@ -2945,7 +3192,6 @@ async function setLang(lang, { keepPage = true } = {}) {
 
 async function init() {
   rememberVisit();
-  setReaderName(getReaderName());
   state.lang = detectLang();
   // Migrate ?lang=en on index.html → en.html (correct link preview title)
   const pathLast = location.pathname.split("/").pop() || "";
@@ -3097,6 +3343,7 @@ function showCoverScreen() {
   updateDocumentTitle();
   applyUiLang();
   updateCoverBookmarkBtn();
+  updateCoverIdentity();
 }
 
 function hideCoverScreen() {

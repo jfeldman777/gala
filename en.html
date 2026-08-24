@@ -8,7 +8,7 @@
   <meta property="og:locale" content="en_US">
   <meta name="twitter:title" content="Feldman's Discourse">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="style.css?v=69">
+  <link rel="stylesheet" href="style.css?v=70">
 </head>
 <body class="lang-en">
   <div id="cover-screen" class="cover-hidden" aria-hidden="true">
@@ -37,6 +37,36 @@
     </div>
     <div id="cover-routes" class="cover-routes" hidden>
       <select id="cover-route-select" class="route-select" aria-label="Route"></select>
+    </div>
+    <div id="cover-identity" class="cover-identity">
+      <form id="cover-identity-form" class="identity-form" hidden>
+        <p class="identity-intro" data-i18n="identityIntro">Name and email — once. I will not ask again on the pages.</p>
+        <label>
+          <span data-i18n="yourName">Your name</span>
+          <input name="name" type="text" autocomplete="name" required maxlength="80">
+        </label>
+        <label>
+          <span data-i18n="yourEmail">Email</span>
+          <input name="email" type="email" autocomplete="email" required>
+        </label>
+        <label class="identity-copy">
+          <input name="send_copy" type="checkbox" checked>
+          <span data-i18n="identityConfirmMail">Send a copy to this address — that confirms the email</span>
+        </label>
+        <p class="identity-status" hidden></p>
+        <button type="submit" class="primary" data-i18n="identitySave">Remember me</button>
+      </form>
+      <div id="cover-identity-hello" class="identity-hello" hidden>
+        <p id="cover-identity-hello-text" class="identity-hello-text"></p>
+        <div class="identity-hello-actions">
+          <button type="button" id="identity-confirm" class="primary"></button>
+          <button type="button" id="identity-change" data-i18n="identityChange">Change name and email</button>
+        </div>
+      </div>
+      <p id="cover-identity-compact" class="identity-compact" hidden>
+        <span id="cover-identity-compact-name"></span>
+        <button type="button" id="identity-compact-change" data-i18n="identityChange">Change name and email</button>
+      </p>
     </div>
   </div>
 
@@ -105,10 +135,6 @@
       <h2 id="page-title"></h2>
       <div id="content"></div>
       <section id="feedback-block" aria-label="Feedback" data-i18n-aria="feedback">
-        <label class="reader-name-wrap">
-          <span data-i18n="yourName">Your name</span>
-          <input id="reader-name" type="text" name="reader_name" autocomplete="name" placeholder="for likes and mail to the author" maxlength="80" data-i18n-placeholder="namePlaceholder">
-        </label>
         <div id="vote-block">
           <p class="vote-prompt" data-i18n="pageUseful">Is this page useful?</p>
           <div class="vote-actions">
@@ -148,6 +174,34 @@
     </div>
   </footer>
 
+  <div id="identity-modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close-identity></div>
+    <div class="modal-card" role="dialog" aria-labelledby="identity-title" aria-modal="true">
+      <button class="modal-close" type="button" data-close-identity aria-label="Close" data-i18n-aria="close">×</button>
+      <h3 id="identity-title" data-i18n="identityTitle">Who you are</h3>
+      <form id="identity-modal-form" class="identity-form">
+        <p class="identity-intro" data-i18n="identityIntro">Name and email — once. I will not ask again on the pages.</p>
+        <label>
+          <span data-i18n="yourName">Your name</span>
+          <input name="name" type="text" autocomplete="name" required maxlength="80">
+        </label>
+        <label>
+          <span data-i18n="yourEmail">Email</span>
+          <input name="email" type="email" autocomplete="email" required>
+        </label>
+        <label class="identity-copy">
+          <input name="send_copy" type="checkbox" checked>
+          <span data-i18n="identityConfirmMail">Send a copy to this address — that confirms the email</span>
+        </label>
+        <p class="identity-status" hidden></p>
+        <div class="modal-actions">
+          <button type="button" data-close-identity data-i18n="cancel">Cancel</button>
+          <button type="submit" class="primary" data-i18n="identitySave">Remember me</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div id="feedback-modal" class="modal" hidden>
     <div class="modal-backdrop" data-close></div>
     <div class="modal-card" role="dialog" aria-labelledby="feedback-title" aria-modal="true">
@@ -155,11 +209,11 @@
       <h3 id="feedback-title" data-i18n="feedback">Feedback</h3>
       <p id="feedback-context" class="modal-context"></p>
       <form id="feedback-form">
-        <label>
+        <label id="feedback-name-wrap">
           <span data-i18n="yourName">Your name</span>
           <input name="name" type="text" autocomplete="name" required maxlength="80">
         </label>
-        <label>
+        <label id="feedback-email-wrap">
           <span data-i18n="replyEmail">Email for a reply</span> <span class="optional" data-i18n="optional">(optional)</span>
           <input name="reply_email" type="email" autocomplete="email">
         </label>
@@ -294,6 +348,6 @@
   </div>
 
   <script src="patreon-logic.js?v=1"></script>
-  <script src="app.js?v=89"></script>
+  <script src="app.js?v=90"></script>
 </body>
 </html>
