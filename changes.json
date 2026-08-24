@@ -3,6 +3,18 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "6.5",
+      "title": "Развивающая среда",
+      "title_en": "A developing environment",
+      "section": "6. Психология",
+      "md": "6. Психология/6.5. Развивающая среда.md",
+      "date": "2026-08-24T17:29:00+03:00",
+      "kind": "added",
+      "summary": "Как устроить учебную среду: Кодировки, Разогрев, Уровни, неудача и вход",
+      "summary_en": "How to build a learning environment: Codings, Warm-up, Levels, failure and entry",
+      "note": "Add 6.5 Developing environment with EN mirror to psychologists and teachers routes."
+    },
+    {
       "id": "система-имя",
       "title": "Имя и почта один раз на обложке",
       "title_en": "Name and email once on the cover",
