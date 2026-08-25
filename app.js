@@ -2877,7 +2877,10 @@ function isPhoneSwipeNav() {
 }
 
 function coverTipsNeeded() {
-  return window.matchMedia("(hover: none), (pointer: coarse)").matches;
+  // Phones/tablets and narrow windows: no reliable hover tooltips.
+  return window.matchMedia(
+    "(hover: none), (pointer: coarse), (max-width: 820px)"
+  ).matches;
 }
 
 const COVER_TIP_STEPS = [
@@ -2962,6 +2965,7 @@ function stopCoverTips() {
     coverTipsState.timer = null;
   }
   coverTipsState.fading = false;
+  document.body.classList.remove("cover-tips-on");
   clearCoverTipHighlight();
   if (els.coverTips) {
     els.coverTips.hidden = true;
@@ -2974,6 +2978,7 @@ function startCoverTips() {
   stopCoverTips();
   if (!coverTipsNeeded() || !els.coverTips) return;
   if (!document.body.classList.contains("cover-open")) return;
+  document.body.classList.add("cover-tips-on");
   coverTipsState.index = 0;
   showCoverTipAt(0);
   coverTipsState.timer = window.setInterval(advanceCoverTip, COVER_TIP_MS);
