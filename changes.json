@@ -3,6 +3,19 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "система-линия-жизни",
+      "title": "Маршрут «Линия жизни»",
+      "title_en": "Route “Life line”",
+      "section": "Система",
+      "date": "2026-08-25T16:10:00+03:00",
+      "kind": "feature",
+      "summary": "От воспитания к партнёрству и дедам: 15 шагов, с возвратом к 2.5 и 1.1",
+      "summary_en": "From caregiving to partnership and grandparents: 15 steps, looping back to 2.5 and 1.1",
+      "href": "index.html?route=lifeline",
+      "href_en": "en.html?route=lifeline",
+      "note": "Add Life line route from table export; allow one page revisit in routes, no further looping."
+    },
+    {
       "id": "3.7.1.1",
       "title": "Игра на выживание",
       "title_en": "Survival game",

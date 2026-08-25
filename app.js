@@ -616,14 +616,21 @@ function pagesForRoute(route) {
   const byId = new Map(state.allPages.map((p) => [p.id, p]));
   const ordered = [];
   const seen = new Set();
+  const visitCount = new Map();
 
-  function addPage(page) {
-    if (!page || seen.has(page.id)) return;
+  function addPage(page, { allowRepeat = false } = {}) {
+    if (!page) return;
+    const count = visitCount.get(page.id) || 0;
+    // At most one revisit: original + one return (e.g. Life line → 2.5, 1.1).
+    if (count >= 1 && (!allowRepeat || count >= 2)) return;
+    if (!allowRepeat && seen.has(page.id)) return;
     ordered.push(page);
     seen.add(page.id);
+    visitCount.set(page.id, count + 1);
   }
 
-  // Explicit tokens keep the author's order; folder numbers expand in place
+  // Explicit tokens keep the author's order; folder numbers expand in place.
+  // Page ids may appear twice (one return), but not loop further.
   for (const token of route.ids || []) {
     const parsed = parseRouteToken(token, byId);
     if (!parsed) continue;
@@ -631,7 +638,7 @@ function pagesForRoute(route) {
       for (const page of pagesInFolder(parsed.id)) addPage(page);
       continue;
     }
-    addPage(byId.get(parsed.id));
+    addPage(byId.get(parsed.id), { allowRepeat: true });
   }
 
   // Legacy route.sections: append remaining matching pages in catalog order
