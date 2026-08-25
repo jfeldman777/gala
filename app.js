@@ -39,14 +39,15 @@ const I18N = {
     coverLine2: "Фельдмана",
     coverAuthor: "Фельдмана",
     aboutAuthor: "Об авторе",
-    bookmark: "Закладка",
+    bookmark: "Закладка в браузере",
     bookmarkGo: "К закладке",
     bookmarkEmpty: "Пока нет закладки — откройте любую страницу",
+    bookmarkBrowser: "Добавьте в закладки браузера: Ctrl+D (на телефоне — меню → Добавить в закладки)",
     coverHint: "обложка",
     coverEnter: "Открыть книгу",
     coverTipEnter: "Нажмите на обложку — открыть книгу",
     coverTipAuthor: "Нажмите на имя — узнать об авторе",
-    coverTipBookmark: "Закладка в браузере — Ctrl+D (на телефоне: меню → Добавить в закладки)",
+    coverTipBookmark: "🔖 — добавить обложку в закладки браузера (Ctrl+D)",
     coverTipLink: "Ссылка — скопировать адрес обложки",
     coverTipDownload: "Скачать — вся книга одним файлом",
     coverTipQr: "QR — открыть обложку с телефона",
@@ -204,14 +205,15 @@ const I18N = {
     coverLine2: "Feldman's",
     coverAuthor: "Feldman's",
     aboutAuthor: "About the author",
-    bookmark: "Bookmark",
+    bookmark: "Browser bookmark",
     bookmarkGo: "Go to bookmark",
     bookmarkEmpty: "No bookmark yet — open any page",
+    bookmarkBrowser: "Add to browser bookmarks: Ctrl+D (on phone — menu → Add bookmark)",
     coverHint: "cover",
     coverEnter: "Open the book",
     coverTipEnter: "Tap the cover to open the book",
     coverTipAuthor: "Tap the name to learn about the author",
-    coverTipBookmark: "Browser bookmark — Ctrl+D (on phone: menu → Add bookmark)",
+    coverTipBookmark: "🔖 — bookmark this cover in your browser (Ctrl+D)",
     coverTipLink: "Link — copy the cover address",
     coverTipDownload: "Download — the whole book as one file",
     coverTipQr: "QR — open the cover on a phone",
@@ -3514,36 +3516,35 @@ function saveReadingBookmark(page) {
 function updateCoverBookmarkBtn() {
   const btn = els.coverBookmark;
   if (!btn) return;
-  const bm = readReadingBookmark();
-  const has = Boolean(bm?.pageId);
   btn.hidden = false;
-  btn.classList.toggle("has-bookmark", has);
-  if (!has) {
-    btn.title = t("bookmark");
-    btn.setAttribute("aria-label", t("bookmark"));
-    return;
+  btn.classList.remove("has-bookmark");
+  btn.title = t("bookmark");
+  btn.setAttribute("aria-label", t("bookmark"));
+}
+
+function flashBrowserBookmarkHint() {
+  const btn = els.coverBookmark;
+  const msg = t("bookmarkBrowser");
+  if (btn) {
+    btn.classList.add("is-flash");
+    btn.title = msg;
+    btn.setAttribute("aria-label", msg);
+    window.setTimeout(() => {
+      btn.classList.remove("is-flash");
+      updateCoverBookmarkBtn();
+    }, 3200);
   }
-  const label = bm.title
-    ? `${t("bookmarkGo")}: ${bm.pageId} — ${bm.title}`
-    : `${t("bookmarkGo")}: ${bm.pageId}`;
-  btn.title = label;
-  btn.setAttribute("aria-label", label);
+  // Also park the rotating tip on the bookmark callout, if tips are running.
+  if (document.body.classList.contains("cover-tips-on") && els.coverTips) {
+    const steps = activeCoverTipSteps();
+    const idx = steps.findIndex((s) => s.key === "coverTipBookmark");
+    if (idx >= 0) showCoverTipAt(idx);
+  }
 }
 
 async function openReadingBookmark() {
   const bm = readReadingBookmark();
-  const btn = els.coverBookmark;
-  if (!bm?.pageId) {
-    if (btn) {
-      btn.classList.add("is-flash");
-      btn.title = t("bookmarkEmpty");
-      setTimeout(() => {
-        btn.classList.remove("is-flash");
-        updateCoverBookmarkBtn();
-      }, 1600);
-    }
-    return;
-  }
+  if (!bm?.pageId) return;
 
   if (bm.routeId && findRoute(bm.routeId)) {
     setRoute(bm.routeId);
@@ -3667,7 +3668,7 @@ els.coverToc?.addEventListener("click", (e) => {
 els.coverBookmark?.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  openReadingBookmark();
+  flashBrowserBookmarkHint();
 });
 els.coverLink?.addEventListener("click", (e) => {
   e.preventDefault();
