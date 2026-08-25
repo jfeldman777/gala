@@ -46,7 +46,7 @@ const I18N = {
     coverEnter: "Открыть книгу",
     coverTipEnter: "Нажмите на обложку — открыть книгу",
     coverTipAuthor: "Нажмите на имя — узнать об авторе",
-    coverTipBookmark: "Закладка — вернуться к месту чтения",
+    coverTipBookmark: "Закладка в браузере — Ctrl+D (на телефоне: меню → Добавить в закладки)",
     coverTipLink: "Ссылка — скопировать адрес обложки",
     coverTipDownload: "Скачать — вся книга одним файлом",
     coverTipQr: "QR — открыть обложку с телефона",
@@ -211,7 +211,7 @@ const I18N = {
     coverEnter: "Open the book",
     coverTipEnter: "Tap the cover to open the book",
     coverTipAuthor: "Tap the name to learn about the author",
-    coverTipBookmark: "Bookmark — return to where you left off",
+    coverTipBookmark: "Browser bookmark — Ctrl+D (on phone: menu → Add bookmark)",
     coverTipLink: "Link — copy the cover address",
     coverTipDownload: "Download — the whole book as one file",
     coverTipQr: "QR — open the cover on a phone",
@@ -2897,7 +2897,7 @@ const COVER_TIP_STEPS = [
 ];
 
 const COVER_TIP_MS = 4500;
-const coverTipsState = { timer: null, index: 0, fading: false };
+const coverTipsState = { timer: null, index: 0, fading: false, targets: [] };
 
 function coverTipTargets(selector) {
   if (!selector) return [];
@@ -2928,6 +2928,52 @@ function activeCoverTipSteps() {
   });
 }
 
+function coverTipAnchorRect(targets) {
+  let left = Infinity;
+  let top = Infinity;
+  let right = -Infinity;
+  let bottom = -Infinity;
+  for (const el of targets) {
+    const r = el.getBoundingClientRect();
+    left = Math.min(left, r.left);
+    top = Math.min(top, r.top);
+    right = Math.max(right, r.right);
+    bottom = Math.max(bottom, r.bottom);
+  }
+  if (!Number.isFinite(left)) return null;
+  return { left, top, right, bottom, cx: (left + right) / 2, cy: (top + bottom) / 2 };
+}
+
+function positionCoverTip(targets) {
+  const tipEl = els.coverTips;
+  if (!tipEl || tipEl.hidden || !targets?.length) return;
+  const box = coverTipAnchorRect(targets);
+  if (!box) return;
+
+  const gap = 12;
+  const margin = 8;
+  const tipW = tipEl.offsetWidth || 200;
+  const tipH = tipEl.offsetHeight || 48;
+  const spaceAbove = box.top - margin;
+  const spaceBelow = window.innerHeight - box.bottom - margin;
+  let place = "top";
+  let y = box.top - tipH - gap;
+  if (spaceAbove < tipH + gap && spaceBelow > spaceAbove) {
+    place = "bottom";
+    y = box.bottom + gap;
+  }
+  y = Math.min(Math.max(margin, y), window.innerHeight - tipH - margin);
+
+  let x = box.cx - tipW / 2;
+  x = Math.min(Math.max(margin, x), window.innerWidth - tipW - margin);
+  const arrowX = Math.min(Math.max(16, box.cx - x), tipW - 16);
+
+  tipEl.dataset.place = place;
+  tipEl.style.setProperty("--arrow-x", `${arrowX}px`);
+  tipEl.style.left = `${Math.round(x)}px`;
+  tipEl.style.top = `${Math.round(y)}px`;
+}
+
 function showCoverTipAt(index) {
   const tipEl = els.coverTips;
   if (!tipEl) return;
@@ -2936,15 +2982,22 @@ function showCoverTipAt(index) {
     tipEl.hidden = true;
     tipEl.classList.remove("is-visible");
     clearCoverTipHighlight();
+    coverTipsState.targets = [];
     return;
   }
   const step = steps[((index % steps.length) + steps.length) % steps.length];
   coverTipsState.index = index % steps.length;
+  const targets = coverTipTargets(step.selector);
+  coverTipsState.targets = targets;
   tipEl.hidden = false;
   tipEl.textContent = t(step.key);
-  tipEl.classList.add("is-visible");
   clearCoverTipHighlight();
-  coverTipTargets(step.selector).forEach((el) => el.classList.add("cover-hint-pulse"));
+  targets.forEach((el) => el.classList.add("cover-hint-pulse"));
+  // Measure after text is set, then place the callout by the control.
+  requestAnimationFrame(() => {
+    positionCoverTip(targets);
+    tipEl.classList.add("is-visible");
+  });
 }
 
 function advanceCoverTip() {
@@ -2956,7 +3009,7 @@ function advanceCoverTip() {
     coverTipsState.fading = false;
     if (!document.body.classList.contains("cover-open")) return;
     showCoverTipAt(coverTipsState.index + 1);
-  }, 320);
+  }, 280);
 }
 
 function stopCoverTips() {
@@ -2965,12 +3018,15 @@ function stopCoverTips() {
     coverTipsState.timer = null;
   }
   coverTipsState.fading = false;
+  coverTipsState.targets = [];
   document.body.classList.remove("cover-tips-on");
   clearCoverTipHighlight();
   if (els.coverTips) {
     els.coverTips.hidden = true;
     els.coverTips.classList.remove("is-visible");
     els.coverTips.textContent = "";
+    els.coverTips.style.left = "";
+    els.coverTips.style.top = "";
   }
 }
 
@@ -2989,6 +3045,15 @@ function refreshCoverTipText() {
   if (!document.body.classList.contains("cover-open")) return;
   showCoverTipAt(coverTipsState.index);
 }
+
+function onCoverTipsViewportChange() {
+  if (!document.body.classList.contains("cover-tips-on")) return;
+  if (!coverTipsState.targets?.length) return;
+  positionCoverTip(coverTipsState.targets);
+}
+
+window.addEventListener("resize", onCoverTipsViewportChange);
+window.addEventListener("scroll", onCoverTipsViewportChange, true);
 
 function swipeBlocked() {
   if (document.body.classList.contains("cover-open")) return true;
