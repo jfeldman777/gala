@@ -44,6 +44,16 @@ const I18N = {
     bookmarkEmpty: "Пока нет закладки — откройте любую страницу",
     coverHint: "обложка",
     coverEnter: "Открыть книгу",
+    coverTipEnter: "Нажмите на обложку — открыть книгу",
+    coverTipAuthor: "Нажмите на имя — узнать об авторе",
+    coverTipBookmark: "Закладка — вернуться к месту чтения",
+    coverTipLink: "Ссылка — скопировать адрес обложки",
+    coverTipDownload: "Скачать — вся книга одним файлом",
+    coverTipQr: "QR — открыть обложку с телефона",
+    coverTipChanges: "✦ — что нового в книге",
+    coverTipToc: "☰ — сразу к оглавлению",
+    coverTipLang: "RU / EN — язык книги",
+    coverTipRoute: "Маршрут — читать по выбранному пути",
     toCover: "К обложке",
     toc: "Оглавление",
     copyCover: "Скопировать ссылку на обложку",
@@ -199,6 +209,16 @@ const I18N = {
     bookmarkEmpty: "No bookmark yet — open any page",
     coverHint: "cover",
     coverEnter: "Open the book",
+    coverTipEnter: "Tap the cover to open the book",
+    coverTipAuthor: "Tap the name to learn about the author",
+    coverTipBookmark: "Bookmark — return to where you left off",
+    coverTipLink: "Link — copy the cover address",
+    coverTipDownload: "Download — the whole book as one file",
+    coverTipQr: "QR — open the cover on a phone",
+    coverTipChanges: "✦ — what's new in the book",
+    coverTipToc: "☰ — jump to the contents",
+    coverTipLang: "RU / EN — book language",
+    coverTipRoute: "Route — read along a chosen path",
     toCover: "To cover",
     toc: "Contents",
     copyCover: "Copy cover link",
@@ -416,6 +436,7 @@ const els = {
   sidebarDownload: document.getElementById("sidebar-download"),
   coverRoutes: document.getElementById("cover-routes"),
   coverRouteSelect: document.getElementById("cover-route-select"),
+  coverTips: document.getElementById("cover-tips"),
   pageIdentity: document.getElementById("page-identity"),
   pageIdentityForm: document.getElementById("page-identity-form"),
   pageIdentityHello: document.getElementById("page-identity-hello"),
@@ -2855,6 +2876,115 @@ function isPhoneSwipeNav() {
   return window.matchMedia("(max-width: 820px), (pointer: coarse)").matches;
 }
 
+function coverTipsNeeded() {
+  return window.matchMedia("(hover: none), (pointer: coarse)").matches;
+}
+
+const COVER_TIP_STEPS = [
+  { key: "coverTipEnter", selector: "#cover-enter" },
+  { key: "coverTipAuthor", selector: "#cover-author" },
+  { key: "coverTipLang", selector: ".cover-actions .lang-btn" },
+  { key: "coverTipBookmark", selector: "#cover-bookmark" },
+  { key: "coverTipLink", selector: "#cover-link" },
+  { key: "coverTipDownload", selector: "#cover-download" },
+  { key: "coverTipQr", selector: "#cover-qr" },
+  { key: "coverTipChanges", selector: "#cover-changes" },
+  { key: "coverTipToc", selector: "#cover-toc" },
+  { key: "coverTipRoute", selector: "#cover-route-select" },
+];
+
+const COVER_TIP_MS = 4500;
+const coverTipsState = { timer: null, index: 0, fading: false };
+
+function coverTipTargets(selector) {
+  if (!selector) return [];
+  return Array.from(document.querySelectorAll(selector)).filter((el) => {
+    if (el.hidden) return false;
+    const host = el.closest("[hidden]");
+    if (host) return false;
+    return true;
+  });
+}
+
+function clearCoverTipHighlight() {
+  document.querySelectorAll(".cover-hint-pulse").forEach((el) => {
+    el.classList.remove("cover-hint-pulse");
+  });
+}
+
+function activeCoverTipSteps() {
+  return COVER_TIP_STEPS.filter((step) => {
+    const targets = coverTipTargets(step.selector);
+    if (!targets.length) return false;
+    if (step.key === "coverTipAuthor") {
+      return targets.some(
+        (el) => el.tagName === "A" && el.getAttribute("href")
+      );
+    }
+    return true;
+  });
+}
+
+function showCoverTipAt(index) {
+  const tipEl = els.coverTips;
+  if (!tipEl) return;
+  const steps = activeCoverTipSteps();
+  if (!steps.length) {
+    tipEl.hidden = true;
+    tipEl.classList.remove("is-visible");
+    clearCoverTipHighlight();
+    return;
+  }
+  const step = steps[((index % steps.length) + steps.length) % steps.length];
+  coverTipsState.index = index % steps.length;
+  tipEl.hidden = false;
+  tipEl.textContent = t(step.key);
+  tipEl.classList.add("is-visible");
+  clearCoverTipHighlight();
+  coverTipTargets(step.selector).forEach((el) => el.classList.add("cover-hint-pulse"));
+}
+
+function advanceCoverTip() {
+  const tipEl = els.coverTips;
+  if (!tipEl || tipEl.hidden) return;
+  tipEl.classList.remove("is-visible");
+  coverTipsState.fading = true;
+  window.setTimeout(() => {
+    coverTipsState.fading = false;
+    if (!document.body.classList.contains("cover-open")) return;
+    showCoverTipAt(coverTipsState.index + 1);
+  }, 320);
+}
+
+function stopCoverTips() {
+  if (coverTipsState.timer) {
+    window.clearInterval(coverTipsState.timer);
+    coverTipsState.timer = null;
+  }
+  coverTipsState.fading = false;
+  clearCoverTipHighlight();
+  if (els.coverTips) {
+    els.coverTips.hidden = true;
+    els.coverTips.classList.remove("is-visible");
+    els.coverTips.textContent = "";
+  }
+}
+
+function startCoverTips() {
+  stopCoverTips();
+  if (!coverTipsNeeded() || !els.coverTips) return;
+  if (!document.body.classList.contains("cover-open")) return;
+  coverTipsState.index = 0;
+  showCoverTipAt(0);
+  coverTipsState.timer = window.setInterval(advanceCoverTip, COVER_TIP_MS);
+}
+
+function refreshCoverTipText() {
+  if (!els.coverTips || els.coverTips.hidden || !coverTipsNeeded()) return;
+  if (!document.body.classList.contains("cover-open")) return;
+  showCoverTipAt(coverTipsState.index);
+}
+
 function swipeBlocked() {
   if (document.body.classList.contains("cover-open")) return true;
   if (document.body.classList.contains("toc-open")) return true;
@@ -3155,6 +3285,7 @@ function applyUiLang() {
   updateCoverBookmarkBtn();
   updateCopyTextButtonTitle();
   updatePageIdentity();
+  refreshCoverTipText();
   if (els.changesModal && !els.changesModal.hidden) renderChangesList();
 }
 
@@ -3374,9 +3505,11 @@ function showCoverScreen() {
   updateDocumentTitle();
   applyUiLang();
   updateCoverBookmarkBtn();
+  startCoverTips();
 }
 
 function hideCoverScreen() {
+  stopCoverTips();
   document.body.classList.remove("cover-open");
   if (els.coverScreen) {
     els.coverScreen.classList.add("cover-hidden");

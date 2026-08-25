@@ -3,6 +3,19 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "система-cover-tips",
+      "title": "Подсказки на обложке на телефоне",
+      "title_en": "Cover tips on the phone",
+      "section": "Система",
+      "date": "2026-08-25T19:00:00+03:00",
+      "kind": "feature",
+      "summary": "Без наведения мыши подсказки сами сменяются по кругу и подсвечивают кнопки",
+      "summary_en": "Without mouse hover, tips rotate by themselves and highlight the buttons",
+      "href": "index.html",
+      "href_en": "en.html",
+      "note": "Rotating cover tips for touch devices (hover:none / coarse pointer)."
+    },
+    {
       "id": "система-линия-жизни",
       "title": "Маршрут «Линия жизни»",
       "title_en": "Route “Life line”",
