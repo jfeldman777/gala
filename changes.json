@@ -3,6 +3,19 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "система-cover-search",
+      "title": "Поиск по ключевым словам на обложке",
+      "title_en": "Keyword search on the cover",
+      "section": "Система",
+      "date": "2026-09-01T16:20:00+03:00",
+      "kind": "feature",
+      "summary": "Поле поиска вверху обложки; на телефоне — та же круговая подсказка, что у кнопок",
+      "summary_en": "Search field at the top of the cover; on the phone, the same rotating tip as the buttons",
+      "href": "index.html",
+      "href_en": "en.html",
+      "note": "Move book keyword search onto the cover with rotating cover tip."
+    },
+    {
       "id": "система-cover-tips",
       "title": "Подсказки на обложке на телефоне",
       "title_en": "Cover tips on the phone",

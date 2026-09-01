@@ -8,10 +8,23 @@
   <meta property="og:locale" content="en_US">
   <meta name="twitter:title" content="Feldman's Discourse">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="style.css?v=74">
+  <link rel="stylesheet" href="style.css?v=75">
 </head>
 <body class="lang-en">
   <div id="cover-screen" class="cover-hidden" aria-hidden="true">
+    <div id="cover-search-panel">
+      <div id="cover-search-wrap" title="Keywords — find pages in the book" data-i18n-title="coverTipSearch">
+        <span class="search-loupe" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="11" cy="11" r="6.5"></circle>
+            <path d="M20 20l-3.2-3.2"></path>
+          </svg>
+        </span>
+        <input id="cover-search" type="search" placeholder="Search by keywords…" autocomplete="off" spellcheck="false" data-i18n-placeholder="coverSearch" data-i18n-aria="coverSearch" aria-label="Search by keywords…">
+      </div>
+      <p id="cover-search-empty" hidden data-i18n="tocSearchEmpty">Nothing found</p>
+      <ul id="cover-search-results" hidden></ul>
+    </div>
     <div id="cover-enter" class="cover-image-btn" role="button" tabindex="0" title="Open the book" aria-label="Open the book" data-i18n-title="coverEnter" data-i18n-aria="coverEnter">
       <span class="cover-text">
         <span class="cover-line" data-i18n="coverLine1">Discourse</span>
@@ -349,6 +362,6 @@
   </div>
 
   <script src="patreon-logic.js?v=1"></script>
-  <script src="app.js?v=97"></script>
+  <script src="app.js?v=98"></script>
 </body>
 </html>

@@ -47,6 +47,9 @@ const I18N = {
     coverEnter: "Открыть книгу",
     coverTipEnter: "Нажмите на обложку — открыть книгу",
     coverTipAuthor: "Нажмите на имя — узнать об авторе",
+    coverSearch: "Поиск по ключевым словам…",
+    coverTipSearch: "Поиск по ключевым словам — найти страницы книги",
+    coverSearchMore: "Ещё {n} в оглавлении",
     coverTipBookmark: "🔖 — добавить обложку в закладки браузера (Ctrl+D)",
     coverTipLink: "Ссылка — скопировать адрес обложки",
     coverTipDownload: "Скачать — вся книга одним файлом",
@@ -213,6 +216,9 @@ const I18N = {
     coverEnter: "Open the book",
     coverTipEnter: "Tap the cover to open the book",
     coverTipAuthor: "Tap the name to learn about the author",
+    coverSearch: "Search by keywords…",
+    coverTipSearch: "Keywords — find pages in the book",
+    coverSearchMore: "{n} more in contents",
     coverTipBookmark: "🔖 — bookmark this cover in your browser (Ctrl+D)",
     coverTipLink: "Link — copy the cover address",
     coverTipDownload: "Download — the whole book as one file",
@@ -418,6 +424,10 @@ const els = {
   statAudio: document.getElementById("stat-audio"),
   tocSearch: document.getElementById("toc-search"),
   tocSearchEmpty: document.getElementById("toc-search-empty"),
+  coverSearch: document.getElementById("cover-search"),
+  coverSearchWrap: document.getElementById("cover-search-wrap"),
+  coverSearchEmpty: document.getElementById("cover-search-empty"),
+  coverSearchResults: document.getElementById("cover-search-results"),
   pageFindOpen: document.getElementById("page-find-open"),
   pageFindBar: document.getElementById("page-find-bar"),
   pageFindInput: document.getElementById("page-find-input"),
@@ -1188,8 +1198,82 @@ function pageMatchesQuery(page, query) {
   return hay.includes(query);
 }
 
+function matchingContentPages(query) {
+  if (!query) return [];
+  return state.pages
+    .map((page, index) => ({ page, index }))
+    .filter(({ page }) => !isSpecialPage(page) && pageMatchesQuery(page, query));
+}
+
+function setBookSearchQuery(value, source) {
+  if (els.tocSearch && els.tocSearch !== source) els.tocSearch.value = value;
+  if (els.coverSearch && els.coverSearch !== source) els.coverSearch.value = value;
+  applyTocFilter();
+}
+
+const COVER_SEARCH_MAX = 8;
+
+function renderCoverSearchResults() {
+  const list = els.coverSearchResults;
+  const empty = els.coverSearchEmpty;
+  if (!list) return;
+  const query = (els.coverSearch?.value || "").trim().toLowerCase();
+  list.innerHTML = "";
+  if (!query) {
+    list.hidden = true;
+    if (empty) empty.hidden = true;
+    return;
+  }
+  const matches = matchingContentPages(query);
+  if (!matches.length) {
+    list.hidden = true;
+    if (empty) empty.hidden = false;
+    return;
+  }
+  if (empty) empty.hidden = true;
+  list.hidden = false;
+  const shown = matches.slice(0, COVER_SEARCH_MAX);
+  for (const { page, index } of shown) {
+    const li = document.createElement("li");
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.dataset.index = String(index);
+    const title = page.sourcePage ? page.sourcePage.title : page.title;
+    btn.innerHTML = `<span class="num">${escapeHtml(page.id)}</span><span class="title">${escapeHtml(title)}</span>`;
+    li.appendChild(btn);
+    list.appendChild(li);
+  }
+  if (matches.length > COVER_SEARCH_MAX) {
+    const more = matches.length - COVER_SEARCH_MAX;
+    const li = document.createElement("li");
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.dataset.coverSearchMore = "1";
+    btn.className = "cover-search-more";
+    btn.textContent = t("coverSearchMore").replace("{n}", String(more));
+    li.appendChild(btn);
+    list.appendChild(li);
+  }
+}
+
+function submitCoverSearch() {
+  const raw = els.coverSearch?.value || "";
+  setBookSearchQuery(raw, els.coverSearch);
+  const query = raw.trim().toLowerCase();
+  if (!query) {
+    enterFromCover({ startAtToc: true, openTocAfter: true });
+    return;
+  }
+  const matches = matchingContentPages(query);
+  if (matches.length === 1) {
+    loadPage(matches[0].index, false);
+    return;
+  }
+  enterFromCover({ startAtToc: true, openTocAfter: true });
+}
+
 function applyTocFilter() {
-  const query = (els.tocSearch?.value || "").trim().toLowerCase();
+  const query = (els.tocSearch?.value || els.coverSearch?.value || "").trim().toLowerCase();
   let visibleCount = 0;
 
   els.toc.querySelectorAll(".toc-item").forEach((btn) => {
@@ -1224,6 +1308,7 @@ function applyTocFilter() {
   if (els.tocSearchEmpty) {
     els.tocSearchEmpty.hidden = !query || visibleCount > 0;
   }
+  renderCoverSearchResults();
 }
 
 function entryFileForLang(lang) {
@@ -2888,6 +2973,7 @@ function coverTipsNeeded() {
 const COVER_TIP_STEPS = [
   { key: "coverTipEnter", selector: "#cover-enter" },
   { key: "coverTipAuthor", selector: "#cover-author" },
+  { key: "coverTipSearch", selector: "#cover-search-wrap" },
   { key: "coverTipLang", selector: ".cover-actions .lang-btn" },
   { key: "coverTipBookmark", selector: "#cover-bookmark" },
   { key: "coverTipLink", selector: "#cover-link" },
@@ -3210,7 +3296,56 @@ if (window.speechSynthesis) {
 }
 
 els.tocSearch?.addEventListener("input", () => {
-  applyTocFilter();
+  setBookSearchQuery(els.tocSearch.value, els.tocSearch);
+});
+els.coverSearch?.addEventListener("input", () => {
+  setBookSearchQuery(els.coverSearch.value, els.coverSearch);
+});
+els.coverSearch?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    e.stopPropagation();
+    submitCoverSearch();
+  } else if (e.key === "Escape") {
+    e.preventDefault();
+    els.coverSearch.value = "";
+    setBookSearchQuery("", els.coverSearch);
+    els.coverSearch.blur();
+  }
+});
+els.coverSearch?.addEventListener("focus", () => {
+  stopCoverTips();
+});
+els.coverSearch?.addEventListener("blur", () => {
+  window.setTimeout(() => {
+    if (!document.body.classList.contains("cover-open")) return;
+    if (document.activeElement === els.coverSearch) return;
+    if ((els.coverSearch?.value || "").trim()) return;
+    startCoverTips();
+  }, 220);
+});
+els.coverSearchResults?.addEventListener("mousedown", (e) => {
+  if (e.target instanceof Element && e.target.closest("button")) {
+    e.preventDefault();
+  }
+});
+els.coverSearchResults?.addEventListener("click", (e) => {
+  const more = e.target instanceof Element && e.target.closest("[data-cover-search-more]");
+  if (more) {
+    e.preventDefault();
+    e.stopPropagation();
+    enterFromCover({ startAtToc: true, openTocAfter: true });
+    return;
+  }
+  const btn = e.target instanceof Element && e.target.closest("button[data-index]");
+  if (!btn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  const index = Number(btn.dataset.index);
+  if (Number.isFinite(index)) loadPage(index, false);
+});
+els.coverSearchWrap?.addEventListener("click", (e) => {
+  e.stopPropagation();
 });
 
 els.pageFindOpen?.addEventListener("click", () => {
@@ -3358,6 +3493,7 @@ function applyUiLang() {
   updateCopyTextButtonTitle();
   updatePageIdentity();
   refreshCoverTipText();
+  renderCoverSearchResults();
   if (els.changesModal && !els.changesModal.hidden) renderChangesList();
 }
 
@@ -3749,7 +3885,7 @@ function rememberVisit() {
 
 async function loadChangesIndex() {
   try {
-    const data = await fetch(`changes.json?v=20260821b`, {
+    const data = await fetch(`changes.json?v=20260901`, {
       cache: "no-store",
     }).then((r) => {
       if (!r.ok) throw new Error(String(r.status));
