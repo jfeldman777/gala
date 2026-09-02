@@ -3,6 +3,19 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "система-три-помощника",
+      "title": "Три помощника",
+      "title_en": "Three helpers",
+      "section": "Система",
+      "date": "2026-09-02T05:45:00+03:00",
+      "kind": "feature",
+      "summary": "С обложки — страница с оракулом, тьютором и аниматором (пока заготовки)",
+      "summary_en": "From the cover — a page with oracle, tutor, and animator (stubs for now)",
+      "href": "index.html?p=helpers",
+      "href_en": "en.html?p=helpers",
+      "note": "Helpers hub from cover; stub pages in helpers/ folder."
+    },
+    {
       "id": "система-cover-search",
       "title": "Поиск по ключевым словам на обложке",
       "title_en": "Keyword search on the cover",

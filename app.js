@@ -28,8 +28,27 @@ const state = {
 
 const PATREON_FORCE_SESSION = "discourse-patreon-force";
 
+const HELPERS = [
+  { id: "helpers-oracle", kind: "oracle", mdRu: "helpers/oracle.md", mdEn: "en/helpers/oracle.md" },
+  { id: "helpers-tutor", kind: "tutor", mdRu: "helpers/tutor.md", mdEn: "en/helpers/tutor.md" },
+  { id: "helpers-animator", kind: "animator", mdRu: "helpers/animator.md", mdEn: "en/helpers/animator.md" },
+];
+
 function isSpecialPage(page) {
-  return Boolean(page?.isCover || page?.isToc || page?.isPatreon);
+  return Boolean(
+    page?.isCover || page?.isToc || page?.isPatreon || page?.isHelpersHub || page?.isHelper,
+  );
+}
+
+function helperCopyKey(kind, suffix) {
+  const cap = String(kind || "").replace(/^./, (c) => c.toUpperCase());
+  return `helper${cap}${suffix}`;
+}
+
+function helperMdPath(page) {
+  const spec = HELPERS.find((h) => h.id === page.id);
+  if (!spec) return page.md || "";
+  return state.lang === "en" ? spec.mdEn : spec.mdRu;
 }
 
 const I18N = {
@@ -58,6 +77,17 @@ const I18N = {
     coverTipToc: "☰ — сразу к оглавлению",
     coverTipLang: "RU / EN — язык книги",
     coverTipRoute: "Маршрут — читать по выбранному пути",
+    coverHelpers: "Три помощника",
+    coverTipHelpers: "Три помощника — оракул, тьютор и аниматор",
+    helpersHubTitle: "Три помощника",
+    helpersHubIntro: "Выберите помощника — каждый по-своему ведёт по книге.",
+    helperOracleName: "Оракул",
+    helperOracleTagline: "Задай вопрос",
+    helperTutorName: "Тьютор",
+    helperTutorTagline: "Научить тебя?",
+    helperAnimatorName: "Аниматор",
+    helperAnimatorTagline: "Смотри, тут интересно",
+    helpersBack: "← Все помощники",
     toCover: "К обложке",
     toc: "Оглавление",
     copyCover: "Скопировать ссылку на обложку",
@@ -227,6 +257,17 @@ const I18N = {
     coverTipToc: "☰ — jump to the contents",
     coverTipLang: "RU / EN — book language",
     coverTipRoute: "Route — read along a chosen path",
+    coverHelpers: "Three helpers",
+    coverTipHelpers: "Three helpers — oracle, tutor, and animator",
+    helpersHubTitle: "Three helpers",
+    helpersHubIntro: "Pick a helper — each guides you through the book in its own way.",
+    helperOracleName: "Oracle",
+    helperOracleTagline: "Ask a question",
+    helperTutorName: "Tutor",
+    helperTutorTagline: "Shall I teach you?",
+    helperAnimatorName: "Animator",
+    helperAnimatorTagline: "Look, this is interesting",
+    helpersBack: "← All helpers",
     toCover: "To cover",
     toc: "Contents",
     copyCover: "Copy cover link",
@@ -438,6 +479,7 @@ const els = {
   reader: document.getElementById("reader"),
   coverScreen: document.getElementById("cover-screen"),
   coverEnter: document.getElementById("cover-enter"),
+  coverHelpers: document.getElementById("cover-helpers"),
   coverToc: document.getElementById("cover-toc"),
   coverHome: document.getElementById("cover-home"),
   coverLink: document.getElementById("cover-link"),
@@ -698,9 +740,31 @@ function applyRouteFilter() {
   updateRouteBadge();
 }
 
+function helpersFrontPages() {
+  return [
+    {
+      id: "helpers",
+      title: "",
+      section: "",
+      md: "",
+      isHelpersHub: true,
+    },
+    ...HELPERS.map((h) => ({
+      id: h.id,
+      title: "",
+      section: "",
+      md: "",
+      isHelper: true,
+      helperKind: h.kind,
+    })),
+  ];
+}
+
 function prependFrontPages(pages) {
   const rest = injectPatreonIntoRoute(
-    (pages || []).filter((p) => !p.isToc && !p.isCover && !p.isPatreon),
+    (pages || []).filter(
+      (p) => !p.isToc && !p.isCover && !p.isPatreon && !p.isHelpersHub && !p.isHelper,
+    ),
   );
   return [
     {
@@ -717,6 +781,7 @@ function prependFrontPages(pages) {
       md: "",
       isToc: true,
     },
+    ...helpersFrontPages(),
     ...rest,
   ];
 }
@@ -821,6 +886,44 @@ function bindPatreonPageClicks() {
     markPatreonSubscribed();
     void rebuildPagesAfterPatreonSubscribe();
   });
+}
+
+function renderHelpersHubPage() {
+  const cards = HELPERS.map((h) => {
+    const nameKey = helperCopyKey(h.kind, "Name");
+    const tagKey = helperCopyKey(h.kind, "Tagline");
+    return `<button type="button" class="helpers-card" data-helper-id="${escapeHtml(h.id)}">
+      <span class="helpers-icon helpers-icon-${escapeHtml(h.kind)}" aria-hidden="true"></span>
+      <span class="helpers-name">${escapeHtml(t(nameKey))}</span>
+      <span class="helpers-tagline">${escapeHtml(t(tagKey))}</span>
+    </button>`;
+  }).join("");
+  return `<div class="helpers-hub">
+    <p class="helpers-intro">${escapeHtml(t("helpersHubIntro"))}</p>
+    <div class="helpers-grid">${cards}</div>
+  </div>`;
+}
+
+function bindHelpersHubClicks() {
+  els.content.querySelectorAll(".helpers-card[data-helper-id]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-helper-id");
+      const idx = state.pages.findIndex((p) => p.id === id);
+      if (idx >= 0) void loadPage(idx, false);
+    });
+  });
+}
+
+function bindHelpersBackClick() {
+  els.content.querySelector(".helpers-back")?.addEventListener("click", () => {
+    const idx = state.pages.findIndex((p) => p.isHelpersHub);
+    if (idx >= 0) void loadPage(idx, false);
+  });
+}
+
+function openHelpersHub() {
+  const idx = state.pages.findIndex((p) => p.isHelpersHub);
+  if (idx >= 0) void loadPage(idx, false);
 }
 
 async function rebuildPagesAfterPatreonSubscribe() {
@@ -2144,7 +2247,7 @@ function namedText(key, name) {
 }
 
 function isIdentityPage(page) {
-  return Boolean(page && page.id === IDENTITY_PAGE_ID && !page.isCover && !page.isToc && !page.isPatreon);
+  return Boolean(page && page.id === IDENTITY_PAGE_ID && !isSpecialPage(page));
 }
 
 function isValidEmail(email) {
@@ -2681,9 +2784,13 @@ function updatePlayerUi() {
     ? t("bookTitle")
     : page.isToc
       ? t("toc")
-      : page.isPatreon
-        ? t("patreonSubscribe")
-        : `${page.id}`;
+      : page.isHelpersHub
+        ? t("helpersHubTitle")
+        : page.isHelper
+          ? t(helperCopyKey(page.helperKind, "Name"))
+          : page.isPatreon
+            ? t("patreonSubscribe")
+            : `${page.id}`;
 
   // Always show Listen on content pages: your voice if recorded, else reader
   els.playBtn.hidden = !canListen;
@@ -2710,6 +2817,14 @@ function updateDocumentTitle(page = state.pages[state.index]) {
   }
   if (page.isToc) {
     document.title = `${t("toc")} — ${t("bookTitle")}`;
+    return;
+  }
+  if (page.isHelpersHub) {
+    document.title = `${t("helpersHubTitle")} — ${t("bookTitle")}`;
+    return;
+  }
+  if (page.isHelper) {
+    document.title = `${t(helperCopyKey(page.helperKind, "Name"))} — ${t("bookTitle")}`;
     return;
   }
   if (page.isPatreon) {
@@ -2795,6 +2910,63 @@ async function loadPage(index, autoplay = false) {
     updateVoteUi();
     syncUrl(page);
     updateDocumentTitle(page);
+    document.getElementById("reader").scrollTop = 0;
+    updatePageIdentity();
+    return;
+  }
+
+  if (page.isHelpersHub) {
+    const hubTitle = t("helpersHubTitle");
+    els.pageMeta.textContent = "";
+    els.pageTitle.textContent = hubTitle;
+    updateDocumentTitle(page);
+    els.content.innerHTML = renderHelpersHubPage();
+    resetPageFindForLoad(els.content.innerHTML);
+    bindHelpersHubClicks();
+    audio.pause();
+    audio.currentTime = 0;
+    audio.removeAttribute("src");
+    audio.load();
+    buildToc();
+    updatePlayerUi();
+    updateVoteUi();
+    syncUrl(page);
+    document.getElementById("reader").scrollTop = 0;
+    updatePageIdentity();
+    return;
+  }
+
+  if (page.isHelper) {
+    const title = t(helperCopyKey(page.helperKind, "Name"));
+    const mdPath = helperMdPath(page);
+    els.pageMeta.textContent = t("helpersHubTitle");
+    els.pageTitle.textContent = title;
+    updateDocumentTitle(page);
+    try {
+      const res = await fetch(`${encodeURI(mdPath)}?v=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok) {
+        throw new Error(`${res.status} ${res.statusText}`);
+      }
+      const text = await res.text();
+      const body = renderMarkdown(text);
+      const back = `<p class="helpers-back-wrap"><button type="button" class="helpers-back">${escapeHtml(t("helpersBack"))}</button></p>`;
+      els.content.innerHTML = back + body;
+      resetPageFindForLoad(els.content.innerHTML);
+      bindHelpersBackClick();
+    } catch (err) {
+      const html = `<p class="load-error">${t("loadError")} <code>${escapeHtml(mdPath)}</code>. ${t("refreshHint")}</p>`;
+      els.content.innerHTML = html;
+      resetPageFindForLoad(html);
+      console.error("loadPage failed", mdPath, err);
+    }
+    audio.pause();
+    audio.currentTime = 0;
+    audio.removeAttribute("src");
+    audio.load();
+    buildToc();
+    updatePlayerUi();
+    updateVoteUi();
+    syncUrl(page);
     document.getElementById("reader").scrollTop = 0;
     updatePageIdentity();
     return;
@@ -2972,6 +3144,7 @@ function coverTipsNeeded() {
 
 const COVER_TIP_STEPS = [
   { key: "coverTipEnter", selector: "#cover-enter" },
+  { key: "coverTipHelpers", selector: "#cover-helpers" },
   { key: "coverTipAuthor", selector: "#cover-author" },
   { key: "coverTipSearch", selector: "#cover-search-wrap" },
   { key: "coverTipLang", selector: ".cover-actions .lang-btn" },
@@ -3795,6 +3968,11 @@ els.coverAuthor?.addEventListener("click", (e) => {
   if (state.lang === "en" || !(els.coverAuthor instanceof HTMLAnchorElement) || !els.coverAuthor.href) {
     e.preventDefault();
   }
+});
+els.coverHelpers?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  openHelpersHub();
 });
 els.coverToc?.addEventListener("click", (e) => {
   e.preventDefault();
