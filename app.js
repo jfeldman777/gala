@@ -24,6 +24,7 @@ const state = {
   patreonConfig: null,
   changesTab: "pages",
   identityEditing: false,
+  apiBase: "",
 };
 
 const PATREON_FORCE_SESSION = "discourse-patreon-force";
@@ -80,7 +81,7 @@ const I18N = {
     coverHelpers: "Три помощника",
     coverTipHelpers: "Три помощника — оракул, тьютор и аниматор",
     helpersHubTitle: "Три помощника",
-    helpersHubIntro: "Выберите помощника — каждый по-своему ведёт по книге.",
+    helpersHubIntro: "Выберите помощника — каждый ведёт по Канону (книга — часть Канона).",
     helperOracleName: "Оракул",
     helperOracleTagline: "Задай вопрос",
     helperTutorName: "Тьютор",
@@ -88,6 +89,35 @@ const I18N = {
     helperAnimatorName: "Аниматор",
     helperAnimatorTagline: "Смотри, тут интересно",
     helpersBack: "← Все помощники",
+    oracleIntro:
+      "Задайте вопрос по Канону. Оракул отвечает только из корпуса Канона — не из общих знаний и не «из книги как из Канона».",
+    oracleQuestionLabel: "Ваш вопрос",
+    oracleQuestionPlaceholder: "Например: кто такой Автор?",
+    oracleAsk: "Спросить",
+    oracleThinking: "Оракул размышляет…",
+    oracleError: "Не удалось получить ответ. Проверьте, что локальный сервер запущен (npm run dev).",
+    oracleEmpty: "Введите вопрос",
+    oracleSources: "Фрагменты Канона (для отладки)",
+    tutorIntro:
+      "Скажите, чему хотите научиться. Тьютор подберёт документы Канона и порядок чтения.",
+    tutorQuestionLabel: "Чему научить?",
+    tutorQuestionPlaceholder: "Например: как устроены стратегии?",
+    tutorAsk: "Научить",
+    tutorThinking: "Тьютор подбирает путь…",
+    tutorError: "Не удалось получить ответ. Проверьте, что локальный сервер запущен (npm run dev).",
+    tutorEmpty: "Напишите, чему хотите научиться",
+    tutorSources: "Фрагменты Канона (для отладки)",
+    animatorIntro:
+      "Назовите тему — или нажмите «Удиви меня». Аниматор ищет неожиданные связи в Каноне.",
+    animatorQuestionLabel: "Что зацепило?",
+    animatorQuestionPlaceholder: "Например: Автор и наука",
+    animatorAsk: "Показать",
+    animatorThinking: "Аниматор ищет зацепку…",
+    animatorError: "Не удалось получить ответ. Проверьте, что локальный сервер запущен (npm run dev).",
+    animatorEmpty: "Напишите тему или нажмите «Удиви меня»",
+    animatorSurprise: "Удиви меня",
+    animatorSources: "Фрагменты Канона (для отладки)",
+    helperLocalNote: "Собрано локально по Канону (22 документа; книга — часть Канона).",
     toCover: "К обложке",
     toc: "Оглавление",
     copyCover: "Скопировать ссылку на обложку",
@@ -260,7 +290,7 @@ const I18N = {
     coverHelpers: "Three helpers",
     coverTipHelpers: "Three helpers — oracle, tutor, and animator",
     helpersHubTitle: "Three helpers",
-    helpersHubIntro: "Pick a helper — each guides you through the book in its own way.",
+    helpersHubIntro: "Pick a helper — each guides you through the Canon (the book is part of the Canon).",
     helperOracleName: "Oracle",
     helperOracleTagline: "Ask a question",
     helperTutorName: "Tutor",
@@ -268,6 +298,35 @@ const I18N = {
     helperAnimatorName: "Animator",
     helperAnimatorTagline: "Look, this is interesting",
     helpersBack: "← All helpers",
+    oracleIntro:
+      "Ask a question about the Canon. The Oracle answers only from the Canon corpus — not from general knowledge, and not from the book as if it were the Canon.",
+    oracleQuestionLabel: "Your question",
+    oracleQuestionPlaceholder: "For example: who is the Author?",
+    oracleAsk: "Ask",
+    oracleThinking: "The Oracle is thinking…",
+    oracleError: "Could not get an answer. Check that the local server is running (npm run dev).",
+    oracleEmpty: "Enter a question",
+    oracleSources: "Canon excerpts (debug)",
+    tutorIntro:
+      "Say what you want to learn. The Tutor will pick Canon documents and a reading order.",
+    tutorQuestionLabel: "What should I teach?",
+    tutorQuestionPlaceholder: "For example: how do strategies work?",
+    tutorAsk: "Teach me",
+    tutorThinking: "The Tutor is choosing a path…",
+    tutorError: "Could not get an answer. Check that the local server is running (npm run dev).",
+    tutorEmpty: "Write what you want to learn",
+    tutorSources: "Canon excerpts (debug)",
+    animatorIntro:
+      "Name a topic — or tap “Surprise me”. The Animator looks for unexpected links in the Canon.",
+    animatorQuestionLabel: "What caught your eye?",
+    animatorQuestionPlaceholder: "For example: Author and science",
+    animatorAsk: "Show me",
+    animatorThinking: "The Animator is looking for a hook…",
+    animatorError: "Could not get an answer. Check that the local server is running (npm run dev).",
+    animatorEmpty: "Write a topic or tap “Surprise me”",
+    animatorSurprise: "Surprise me",
+    animatorSources: "Canon excerpts (debug)",
+    helperLocalNote: "Gathered locally from the Canon (22 documents; the book is part of the Canon).",
     toCover: "To cover",
     toc: "Contents",
     copyCover: "Copy cover link",
@@ -926,6 +985,177 @@ function openHelpersHub() {
   if (idx >= 0) void loadPage(idx, false);
 }
 
+async function loadApiConfig() {
+  try {
+    const res = await fetch("api-config.json?v=1", { cache: "no-store" });
+    if (!res.ok) return;
+    const cfg = await res.json();
+    if (cfg && typeof cfg.apiBase === "string") {
+      state.apiBase = cfg.apiBase.replace(/\/$/, "");
+    }
+  } catch {
+    /* book works without API */
+  }
+}
+
+function helperApiUrl(kind) {
+  const base = state.apiBase || "";
+  return `${base}/api/${kind}`;
+}
+
+function helperUi(kind, suffix) {
+  const key = `${kind}${suffix}`;
+  const value = t(key);
+  return value === key ? t(`oracle${suffix}`) : value;
+}
+
+function bindHelperPageLinks(root) {
+  (root || els.content)?.querySelectorAll("a.helper-page-link[href^='?p=']").forEach((a) => {
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      const id = new URL(a.getAttribute("href"), location.href).searchParams.get("p");
+      const idx = state.pages.findIndex((p) => p.id === id);
+      if (idx >= 0) void loadPage(idx, false);
+    });
+  });
+}
+
+function renderHelperPage(kind) {
+  const surprise =
+    kind === "animator"
+      ? `<button type="button" id="helper-surprise" class="oracle-submit helper-surprise">${escapeHtml(helperUi(kind, "Surprise"))}</button>`
+      : "";
+  return `<div class="oracle-panel" data-helper-kind="${escapeHtml(kind)}">
+    <p class="oracle-intro">${escapeHtml(helperUi(kind, "Intro"))}</p>
+    <form id="helper-form" class="oracle-form">
+      <label class="oracle-label" for="helper-question">${escapeHtml(helperUi(kind, "QuestionLabel"))}</label>
+      <textarea id="helper-question" class="oracle-question" rows="4" maxlength="2000" placeholder="${escapeHtml(helperUi(kind, "QuestionPlaceholder"))}"></textarea>
+      <p class="oracle-actions">
+        <button type="submit" id="helper-submit" class="oracle-submit">${escapeHtml(helperUi(kind, "Ask"))}</button>
+        ${surprise}
+      </p>
+    </form>
+    <p id="helper-status" class="oracle-status" hidden role="status" aria-live="polite"></p>
+    <div id="helper-answer" class="oracle-answer" hidden></div>
+    <p id="helper-local-note" class="helper-local-note" hidden></p>
+    <details id="helper-sources-wrap" class="oracle-sources-wrap" hidden>
+      <summary>${escapeHtml(helperUi(kind, "Sources"))}</summary>
+      <pre id="helper-sources" class="oracle-sources"></pre>
+    </details>
+  </div>`;
+}
+
+function bindHelperForm(kind) {
+  const form = document.getElementById("helper-form");
+  if (!form || form.dataset.bound === "1") return;
+  form.dataset.bound = "1";
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    void submitHelperQuestion(kind, { surprise: false });
+  });
+  document.getElementById("helper-surprise")?.addEventListener("click", () => {
+    const input = document.getElementById("helper-question");
+    if (input && !input.value.trim()) {
+      input.value = state.lang === "en"
+        ? "Show something interesting from the Canon."
+        : "Покажи что-нибудь интересное из Канона.";
+    }
+    void submitHelperQuestion(kind, { surprise: true });
+  });
+}
+
+async function submitHelperQuestion(kind, { surprise = false } = {}) {
+  const input = document.getElementById("helper-question");
+  const status = document.getElementById("helper-status");
+  const answerEl = document.getElementById("helper-answer");
+  const submit = document.getElementById("helper-submit");
+  const surpriseBtn = document.getElementById("helper-surprise");
+  const sourcesWrap = document.getElementById("helper-sources-wrap");
+  const sourcesPre = document.getElementById("helper-sources");
+  const localNote = document.getElementById("helper-local-note");
+  const question = input?.value?.trim() || "";
+
+  if (!question && !(kind === "animator" && surprise)) {
+    if (status) {
+      status.textContent = helperUi(kind, "Empty");
+      status.hidden = false;
+      status.className = "oracle-status error";
+    }
+    return;
+  }
+
+  if (submit) submit.disabled = true;
+  if (surpriseBtn) surpriseBtn.disabled = true;
+  if (status) {
+    status.textContent = helperUi(kind, "Thinking");
+    status.hidden = false;
+    status.className = "oracle-status waiting";
+  }
+  if (answerEl) answerEl.hidden = true;
+  if (sourcesWrap) sourcesWrap.hidden = true;
+  if (localNote) localNote.hidden = true;
+
+  try {
+    const res = await fetch(helperApiUrl(kind), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question, lang: state.lang }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || `${res.status} ${res.statusText}`);
+    }
+    if (answerEl) {
+      answerEl.innerHTML = renderMarkdown(data.answer || "");
+      answerEl.hidden = false;
+      bindHelperPageLinks(answerEl);
+    }
+    if (status) status.hidden = true;
+    if (localNote && data.backend === "local") {
+      localNote.textContent = t("helperLocalNote");
+      localNote.hidden = false;
+    }
+    if (sourcesPre && Array.isArray(data.sources) && data.sources.length) {
+      sourcesPre.textContent = JSON.stringify(data.sources, null, 2);
+      if (sourcesWrap) sourcesWrap.hidden = false;
+    }
+  } catch (err) {
+    if (status) {
+      status.textContent = err?.message || helperUi(kind, "Error");
+      status.hidden = false;
+      status.className = "oracle-status error";
+    }
+    console.error(kind, err);
+  } finally {
+    if (submit) submit.disabled = false;
+    if (surpriseBtn) surpriseBtn.disabled = false;
+  }
+}
+
+async function loadHelperPage(page) {
+  const kind = page.helperKind || "oracle";
+  const title = t(helperCopyKey(kind, "Name"));
+  els.pageMeta.textContent = t("helpersHubTitle");
+  els.pageTitle.textContent = title;
+  updateDocumentTitle(page);
+  const back = `<p class="helpers-back-wrap"><button type="button" class="helpers-back">${escapeHtml(t("helpersBack"))}</button></p>`;
+  const html = back + renderHelperPage(kind);
+  els.content.innerHTML = html;
+  resetPageFindForLoad(html);
+  bindHelpersBackClick();
+  bindHelperForm(kind);
+  audio.pause();
+  audio.currentTime = 0;
+  audio.removeAttribute("src");
+  audio.load();
+  buildToc();
+  updatePlayerUi();
+  updateVoteUi();
+  syncUrl(page);
+  document.getElementById("reader").scrollTop = 0;
+  updatePageIdentity();
+}
+
 async function rebuildPagesAfterPatreonSubscribe() {
   const oldPages = state.pages.slice();
   const oldIndex = state.index;
@@ -1044,9 +1274,16 @@ function wikiImageHtml(rawTarget) {
 
 function safeHref(raw) {
   const href = String(raw || "").trim();
-  // Allow http(s) and site-relative paths only (block javascript: etc.)
+  // Allow http(s), site-relative paths, and in-book ?p= links.
   if (/^https?:\/\//i.test(href) || /^\.?\//.test(href)) return href;
+  if (/^\?p=[\w.-]+$/i.test(href)) return href;
   return "";
+}
+
+function helperOrExternalLink(href, label) {
+  const internal = /^\?p=/i.test(href);
+  const extra = internal ? ' class="helper-page-link"' : ' target="_blank" rel="noopener noreferrer"';
+  return `<a href="${escapeHtml(href)}"${extra}>${label}</a>`;
 }
 
 function renderInline(text) {
@@ -1066,15 +1303,11 @@ function renderInline(text) {
     } else if (match[4] !== undefined) {
       const href = safeHref(match[5]);
       const label = escapeHtml(match[4]);
-      result += href
-        ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${label}</a>`
-        : label;
+      result += href ? helperOrExternalLink(href, label) : label;
     } else {
       const href = safeHref(match[6]);
       const label = escapeHtml(match[6]);
-      result += href
-        ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${label}</a>`
-        : label;
+      result += href ? helperOrExternalLink(href, label) : label;
     }
     last = match.index + match[0].length;
   }
@@ -2937,38 +3170,7 @@ async function loadPage(index, autoplay = false) {
   }
 
   if (page.isHelper) {
-    const title = t(helperCopyKey(page.helperKind, "Name"));
-    const mdPath = helperMdPath(page);
-    els.pageMeta.textContent = t("helpersHubTitle");
-    els.pageTitle.textContent = title;
-    updateDocumentTitle(page);
-    try {
-      const res = await fetch(`${encodeURI(mdPath)}?v=${Date.now()}`, { cache: "no-store" });
-      if (!res.ok) {
-        throw new Error(`${res.status} ${res.statusText}`);
-      }
-      const text = await res.text();
-      const body = renderMarkdown(text);
-      const back = `<p class="helpers-back-wrap"><button type="button" class="helpers-back">${escapeHtml(t("helpersBack"))}</button></p>`;
-      els.content.innerHTML = back + body;
-      resetPageFindForLoad(els.content.innerHTML);
-      bindHelpersBackClick();
-    } catch (err) {
-      const html = `<p class="load-error">${t("loadError")} <code>${escapeHtml(mdPath)}</code>. ${t("refreshHint")}</p>`;
-      els.content.innerHTML = html;
-      resetPageFindForLoad(html);
-      console.error("loadPage failed", mdPath, err);
-    }
-    audio.pause();
-    audio.currentTime = 0;
-    audio.removeAttribute("src");
-    audio.load();
-    buildToc();
-    updatePlayerUi();
-    updateVoteUi();
-    syncUrl(page);
-    document.getElementById("reader").scrollTop = 0;
-    updatePageIdentity();
+    await loadHelperPage(page);
     return;
   }
 
@@ -3755,6 +3957,7 @@ async function init() {
 
   await loadPatreonConfig();
   initPatreonForceFromUrl();
+  await loadApiConfig();
 
   await loadRoutes();
   state.routeId = detectRouteId();

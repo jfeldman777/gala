@@ -3,3 +3,10 @@
 
 # Черновики Bases — не пушить
 Без названия.base
+
+# Node / secrets
+node_modules/
+.env
+.env.local
+.tmp-canon-upload/
+upload-canon.log

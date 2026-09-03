@@ -3,6 +3,45 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "4.7",
+      "title": "4.7. Шесть типовых задач-ситуаций",
+      "title_en": "4.7. Six typical task-situations",
+      "section": "4. Кухня",
+      "date": "2026-09-03T12:42:00+03:00",
+      "kind": "page",
+      "summary": "Вместо черновика «Категории развернуто» — шесть типовых задач-ситуаций",
+      "summary_en": "Replaces the draft “Categories expanded” with six typical task-situations",
+      "href": "index.html?p=4.7",
+      "href_en": "en.html?p=4.7",
+      "note": "New published page; old @ draft removed from catalog."
+    },
+    {
+      "id": "система-помощники-локально",
+      "title": "Помощники на локальном сервере",
+      "title_en": "Helpers on the local server",
+      "section": "Система",
+      "date": "2026-09-03T04:50:00+03:00",
+      "kind": "feature",
+      "summary": "Оракул, тьютор и аниматор отвечают по Канону (22 документа) на localhost:8787",
+      "summary_en": "Oracle, tutor, and animator answer from the Canon (22 documents) on localhost:8787",
+      "href": "index.html?p=helpers",
+      "href_en": "en.html?p=helpers",
+      "note": "Canon is the source corpus; the reader book is part of the Canon, not the Canon itself."
+    },
+    {
+      "id": "система-оракул",
+      "title": "Оракул — вопросы по Канону",
+      "title_en": "Oracle — questions about the Canon",
+      "section": "Система",
+      "date": "2026-09-02T06:55:00+03:00",
+      "kind": "feature",
+      "summary": "Оракул отвечает через OpenAI File Search только по Канону книги",
+      "summary_en": "The Oracle answers via OpenAI File Search using only the book Canon",
+      "href": "index.html?p=helpers-oracle",
+      "href_en": "en.html?p=helpers-oracle",
+      "note": "POST /api/oracle serverless endpoint; canon in OpenAI Vector Store."
+    },
+    {
       "id": "система-три-помощника",
       "title": "Три помощника",
       "title_en": "Three helpers",
