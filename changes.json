@@ -3,6 +3,19 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "4.6",
+      "title": "4.6. Маркетинг-анализ",
+      "title_en": "4.6. Marketing analysis",
+      "section": "4. Кухня",
+      "date": "2026-09-03T18:38:00+03:00",
+      "kind": "page",
+      "summary": "Новая страница: маркетинг-анализ (диалог Фельдман-Езерский)",
+      "summary_en": "New page: marketing analysis (Feldman-Yezersky dialogue)",
+      "href": "index.html?p=4.6",
+      "href_en": "en.html?p=4.6",
+      "note": "New published page 4.6."
+    },
+    {
       "id": "4.7",
       "title": "4.7. Шесть типовых задач-ситуаций",
       "title_en": "4.7. Six typical task-situations",
