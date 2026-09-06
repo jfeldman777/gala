@@ -3,6 +3,19 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "4.6.1",
+      "title": "4.6.1. Сползание контекста",
+      "title_en": "4.6.1. Context slip",
+      "section": "4. Кухня",
+      "date": "2026-09-06T07:29:00+03:00",
+      "kind": "page",
+      "summary": "Новая страница: сползание контекста",
+      "summary_en": "New page: context slip",
+      "href": "index.html?p=4.6.1",
+      "href_en": "en.html?p=4.6.1",
+      "note": "New published page 4.6.1."
+    },
+    {
       "id": "4.6",
       "title": "4.6. Маркетинг-анализ",
       "title_en": "4.6. Marketing analysis",
