@@ -3,6 +3,19 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "4.6.1-update",
+      "title": "4.6.1. Сползание контекста (дополнение)",
+      "title_en": "4.6.1. Context slip (update)",
+      "section": "4. Кухня",
+      "date": "2026-09-06T10:52:00+03:00",
+      "kind": "page",
+      "summary": "Дополнен разбор УТП: три отличия и примечание про точные измерения и вычисления",
+      "summary_en": "Expanded USP analysis: three distinctions and a note on precise measurement and computation",
+      "href": "index.html?p=4.6.1",
+      "href_en": "en.html?p=4.6.1",
+      "note": "Content update to page 4.6.1."
+    },
+    {
       "id": "4.6.1",
       "title": "4.6.1. Сползание контекста",
       "title_en": "4.6.1. Context slip",
