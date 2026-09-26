@@ -3,6 +3,19 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "12.4",
+      "title": "12.4. Большой дисклеймер",
+      "title_en": "12.4. The big disclaimer",
+      "section": "12. Заключение",
+      "date": "2026-09-26T18:45:00+03:00",
+      "kind": "added",
+      "summary": "Новая страница: пределы формализации в политике — доверие, опыт и две картины мира",
+      "summary_en": "New page: the limits of formalization in politics — trust, experience, and two pictures of the world",
+      "href": "index.html?p=12.4",
+      "href_en": "en.html?p=12.4",
+      "note": "Add conclusion page 12.4 with EN translation."
+    },
+    {
       "id": "4.6.1-update",
       "title": "4.6.1. Сползание контекста (дополнение)",
       "title_en": "4.6.1. Context slip (update)",
