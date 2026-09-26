@@ -308,6 +308,21 @@
       "md": "en/4. Kitchen/4.5. Letter to Khan.md"
     },
     {
+      "id": "4.6",
+      "section": "4. Kitchen",
+      "md": "en/4. Kitchen/4.6. Marketing analysis.md"
+    },
+    {
+      "id": "4.6.1",
+      "section": "4. Kitchen",
+      "md": "en/4. Kitchen/4.6.1. Context slip.md"
+    },
+    {
+      "id": "4.7",
+      "section": "4. Kitchen",
+      "md": "en/4. Kitchen/4.7. Six typical task-situations.md"
+    },
+    {
       "id": "4.8",
       "section": "4. Kitchen",
       "md": "en/4. Kitchen/4.8. Problems, tasks, questions.md"

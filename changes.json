@@ -3,6 +3,19 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "4.6-en",
+      "title": "Английские страницы 4.6, 4.6.1 и 4.7",
+      "title_en": "English pages 4.6, 4.6.1, and 4.7",
+      "section": "4. Кухня",
+      "date": "2026-09-26T19:25:00+03:00",
+      "kind": "added",
+      "summary": "В английское издание добавлены маркетинг-анализ, сползание контекста и шесть типовых задач — счёт страниц совпал с русским",
+      "summary_en": "Marketing analysis, context slip, and six typical task-situations added to the English edition — the page count now matches the Russian",
+      "href": "index.html?p=4.6",
+      "href_en": "en.html?p=4.6",
+      "note": "Publish EN mirrors of 4.6, 4.6.1, and 4.7 so the English catalog matches the visible Russian pages."
+    },
+    {
       "id": "12.4",
       "title": "12.4. Большой дисклеймер",
       "title_en": "12.4. The big disclaimer",
