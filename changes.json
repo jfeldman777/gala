@@ -3,6 +3,19 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "12.5",
+      "title": "12.5. Диаграмма речи",
+      "title_en": "12.5. A diagram of speech",
+      "section": "12. Заключение",
+      "date": "2026-09-27T04:26:00+03:00",
+      "kind": "added",
+      "summary": "Новая страница: разрез речи политика на образы, мысли и операции с уровнем",
+      "summary_en": "New page: a politician's speech cut into images, thoughts, and operations, each with a level",
+      "href": "index.html?p=12.5",
+      "href_en": "en.html?p=12.5",
+      "note": "Add conclusion page 12.5 with EN translation."
+    },
+    {
       "id": "4.6-en",
       "title": "Английские страницы 4.6, 4.6.1 и 4.7",
       "title_en": "English pages 4.6, 4.6.1, and 4.7",
