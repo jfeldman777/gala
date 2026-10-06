@@ -1003,6 +1003,44 @@ function helperApiUrl(kind) {
   return `${base}/api/${kind}`;
 }
 
+let helperApiMissing = false;
+
+async function askHelperInBrowser(kind, question) {
+  const mod = await import("./lib/browser-helper.js?v=1");
+  return mod.askHelperInBrowser(kind, question, state.lang);
+}
+
+/** Static hosting (GitHub Pages) has no /api/*: it answers 404/405 with HTML, so search the Canon in the browser. */
+async function askHelperApi(kind, question) {
+  const canFallBack = !state.apiBase;
+  if (canFallBack && helperApiMissing) return askHelperInBrowser(kind, question);
+
+  let res;
+  try {
+    res = await fetch(helperApiUrl(kind), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question, lang: state.lang }),
+    });
+  } catch (err) {
+    if (!canFallBack) throw err;
+    helperApiMissing = true;
+    return askHelperInBrowser(kind, question);
+  }
+
+  const isJson = (res.headers.get("content-type") || "").includes("application/json");
+  if (canFallBack && (!isJson || res.status === 404 || res.status === 405)) {
+    helperApiMissing = true;
+    return askHelperInBrowser(kind, question);
+  }
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || `${res.status} ${res.statusText}`);
+  }
+  return data;
+}
+
 function helperUi(kind, suffix) {
   const key = `${kind}${suffix}`;
   const value = t(key);
@@ -1096,15 +1134,7 @@ async function submitHelperQuestion(kind, { surprise = false } = {}) {
   if (localNote) localNote.hidden = true;
 
   try {
-    const res = await fetch(helperApiUrl(kind), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question, lang: state.lang }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      throw new Error(data.error || `${res.status} ${res.statusText}`);
-    }
+    const data = await askHelperApi(kind, question);
     if (answerEl) {
       answerEl.innerHTML = renderMarkdown(data.answer || "");
       answerEl.hidden = false;
