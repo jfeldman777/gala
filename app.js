@@ -118,6 +118,7 @@ const I18N = {
     animatorSurprise: "Удиви меня",
     animatorSources: "Фрагменты Канона (для отладки)",
     helperLocalNote: "Собрано локально по Канону (22 документа; книга — часть Канона).",
+    helperBookLead: "В книге об этом (не Канон):",
     toCover: "К обложке",
     toc: "Оглавление",
     copyCover: "Скопировать ссылку на обложку",
@@ -327,6 +328,7 @@ const I18N = {
     animatorSurprise: "Surprise me",
     animatorSources: "Canon excerpts (debug)",
     helperLocalNote: "Gathered locally from the Canon (22 documents; the book is part of the Canon).",
+    helperBookLead: "In the book (not the Canon):",
     toCover: "To cover",
     toc: "Contents",
     copyCover: "Copy cover link",
@@ -1003,10 +1005,45 @@ function helperApiUrl(kind) {
   return `${base}/api/${kind}`;
 }
 
+const HELPER_BOOK_STOP = new Set(
+  `что это как кто такой такая такое такие какой какая какие какое почему зачем где когда
+   чем или про для есть значит означает расскажи объясни
+   the and are what who how why which about from with does mean`.split(/\s+/),
+);
+
+/** Book pages containing every meaningful word of the question (same texts as the book search). */
+function bookPagesForQuestion(question, limit = 6) {
+  const norm = (s) => String(s || "").toLowerCase().replace(/ё/g, "е");
+  const terms = norm(question)
+    .split(/[^\p{L}\p{N}.-]+/u)
+    .map((w) => w.replace(/^[.-]+|[.-]+$/g, ""))
+    .filter((w) => w.length >= 3 && !HELPER_BOOK_STOP.has(w))
+    .map((w) => (w.length > 5 ? w.slice(0, -2) : w));
+  if (!terms.length) return [];
+
+  const hits = [];
+  for (const page of state.pages) {
+    if (isSpecialPage(page)) continue;
+    const src = page.sourcePage || page;
+    const title = src.title || page.title || "";
+    const hay = norm(page.searchText || `${page.id} ${title} ${page.section}`);
+    if (!terms.every((term) => hay.includes(term))) continue;
+    const titleNorm = norm(title);
+    let score = 0;
+    for (const term of terms) {
+      if (titleNorm.includes(term)) score += 20;
+      score += Math.min(10, hay.split(term).length - 1);
+    }
+    hits.push({ id: page.id, title, score });
+  }
+  hits.sort((a, b) => b.score - a.score);
+  return hits.slice(0, limit);
+}
+
 let helperApiMissing = false;
 
 async function askHelperInBrowser(kind, question) {
-  const mod = await import("./lib/browser-helper.js?v=1");
+  const mod = await import("./lib/browser-helper.js?v=2");
   return mod.askHelperInBrowser(kind, question, state.lang);
 }
 
@@ -1076,6 +1113,7 @@ function renderHelperPage(kind) {
     <p id="helper-status" class="oracle-status" hidden role="status" aria-live="polite"></p>
     <div id="helper-answer" class="oracle-answer" hidden></div>
     <p id="helper-local-note" class="helper-local-note" hidden></p>
+    <div id="helper-book" class="helper-book" hidden></div>
     <details id="helper-sources-wrap" class="oracle-sources-wrap" hidden>
       <summary>${escapeHtml(helperUi(kind, "Sources"))}</summary>
       <pre id="helper-sources" class="oracle-sources"></pre>
@@ -1111,6 +1149,7 @@ async function submitHelperQuestion(kind, { surprise = false } = {}) {
   const sourcesWrap = document.getElementById("helper-sources-wrap");
   const sourcesPre = document.getElementById("helper-sources");
   const localNote = document.getElementById("helper-local-note");
+  const bookEl = document.getElementById("helper-book");
   const question = input?.value?.trim() || "";
 
   if (!question && !(kind === "animator" && surprise)) {
@@ -1132,6 +1171,7 @@ async function submitHelperQuestion(kind, { surprise = false } = {}) {
   if (answerEl) answerEl.hidden = true;
   if (sourcesWrap) sourcesWrap.hidden = true;
   if (localNote) localNote.hidden = true;
+  if (bookEl) bookEl.hidden = true;
 
   try {
     const data = await askHelperApi(kind, question);
@@ -1144,6 +1184,15 @@ async function submitHelperQuestion(kind, { surprise = false } = {}) {
     if (localNote && data.backend === "local") {
       localNote.textContent = t("helperLocalNote");
       localNote.hidden = false;
+    }
+    const bookHits = surprise ? [] : bookPagesForQuestion(question);
+    if (bookEl && bookHits.length) {
+      const items = bookHits
+        .map((p) => `- [${p.id}. ${p.title}](?p=${p.id})`)
+        .join("\n");
+      bookEl.innerHTML = `<p class="helper-book-lead">${escapeHtml(t("helperBookLead"))}</p>${renderMarkdown(items)}`;
+      bookEl.hidden = false;
+      bindHelperPageLinks(bookEl);
     }
     if (sourcesPre && Array.isArray(data.sources) && data.sources.length) {
       sourcesPre.textContent = JSON.stringify(data.sources, null, 2);

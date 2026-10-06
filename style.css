@@ -1752,8 +1752,25 @@ mark.page-find-hit.current {
   color: var(--muted);
 }
 
-.oracle-answer a.helper-page-link {
+.oracle-answer a.helper-page-link,
+.helper-book a.helper-page-link {
   font-weight: 600;
+}
+
+.helper-book {
+  line-height: 1.55;
+}
+
+.helper-book-lead {
+  font-weight: 600;
+}
+
+.helper-book > :first-child {
+  margin-top: 0;
+}
+
+.helper-book > :last-child {
+  margin-bottom: 0;
 }
 
 .oracle-submit {
