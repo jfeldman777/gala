@@ -30,11 +30,9 @@ const state = {
 
 const PATREON_FORCE_SESSION = "discourse-patreon-force";
 
-const HELPERS = [
-  { id: "helpers-oracle", kind: "oracle", mdRu: "helpers/oracle.md", mdEn: "en/helpers/oracle.md" },
-  { id: "helpers-tutor", kind: "tutor", mdRu: "helpers/tutor.md", mdEn: "en/helpers/tutor.md" },
-  { id: "helpers-animator", kind: "animator", mdRu: "helpers/animator.md", mdEn: "en/helpers/animator.md" },
-];
+/** Built-in Canon search helpers. Disabled: the study helper is the NotebookLM notebook (api-config.json → notebookLm).
+ *  To bring one back, add e.g. { id: "helpers-oracle", kind: "oracle", mdRu: "helpers/oracle.md", mdEn: "en/helpers/oracle.md" }. */
+const HELPERS = [];
 
 function isSpecialPage(page) {
   return Boolean(
@@ -79,10 +77,10 @@ const I18N = {
     coverTipToc: "☰ — сразу к оглавлению",
     coverTipLang: "RU / EN — язык книги",
     coverTipRoute: "Маршрут — читать по выбранному пути",
-    coverHelpers: "Три помощника",
-    coverTipHelpers: "Три помощника — оракул, тьютор и аниматор",
-    helpersHubTitle: "Три помощника",
-    helpersHubIntro: "Выберите помощника — каждый ведёт по Канону (книга — часть Канона).",
+    coverHelpers: "Учебный помощник",
+    coverTipHelpers: "Учебный помощник — ответы по Канону и книге",
+    helpersHubTitle: "Учебный помощник",
+    helpersHubIntro: "Задайте вопрос по Канону и книге — помощник ответит связным рассказом и укажет, на какие документы опирается.",
     helperOracleName: "Оракул",
     helperOracleTagline: "Задай вопрос",
     helperTutorName: "Тьютор",
@@ -121,7 +119,7 @@ const I18N = {
     helperLocalNote: "Собрано локально по Канону (22 документа; книга — часть Канона).",
     helperBookLead: "В книге об этом (не Канон):",
     notebookLmName: "NotebookLM",
-    notebookLmTagline: "Связный ответ одним рассказом по всему Канону. Откроется в новой вкладке; нужен аккаунт Google.",
+    notebookLmTagline: "Открыть помощника в NotebookLM — откроется в новой вкладке; нужен аккаунт Google.",
     notebookLmAsk: "Нужен связный ответ одним рассказом? Спросите NotebookLM →",
     toCover: "К обложке",
     toc: "Оглавление",
@@ -292,10 +290,10 @@ const I18N = {
     coverTipToc: "☰ — jump to the contents",
     coverTipLang: "RU / EN — book language",
     coverTipRoute: "Route — read along a chosen path",
-    coverHelpers: "Three helpers",
-    coverTipHelpers: "Three helpers — oracle, tutor, and animator",
-    helpersHubTitle: "Three helpers",
-    helpersHubIntro: "Pick a helper — each guides you through the Canon (the book is part of the Canon).",
+    coverHelpers: "Study helper",
+    coverTipHelpers: "Study helper — answers from the Canon and the book",
+    helpersHubTitle: "Study helper",
+    helpersHubIntro: "Ask a question about the Canon and the book — the helper answers as one connected story and shows which documents it relies on.",
     helperOracleName: "Oracle",
     helperOracleTagline: "Ask a question",
     helperTutorName: "Tutor",
@@ -334,7 +332,7 @@ const I18N = {
     helperLocalNote: "Gathered locally from the Canon (22 documents; the book is part of the Canon).",
     helperBookLead: "In the book (not the Canon):",
     notebookLmName: "NotebookLM",
-    notebookLmTagline: "A connected answer, told as one story, from the whole Canon. Opens in a new tab; needs a Google account.",
+    notebookLmTagline: "Open the helper in NotebookLM — opens in a new tab; needs a Google account.",
     notebookLmAsk: "Want a connected answer told as one story? Ask NotebookLM →",
     toCover: "To cover",
     toc: "Contents",
@@ -975,7 +973,7 @@ function renderHelpersHubPage() {
     : "";
   return `<div class="helpers-hub">
     <p class="helpers-intro">${escapeHtml(t("helpersHubIntro"))}</p>
-    <div class="helpers-grid">${cards}</div>
+    ${cards ? `<div class="helpers-grid">${cards}</div>` : ""}
     ${notebook}
   </div>`;
 }

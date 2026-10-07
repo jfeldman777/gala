@@ -3,6 +3,19 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "система-учебный-помощник",
+      "title": "Учебный помощник",
+      "title_en": "Study helper",
+      "section": "Система",
+      "date": "2026-10-06T20:00:00+03:00",
+      "kind": "feature",
+      "summary": "Вместо трёх помощников — один учебный помощник в NotebookLM: отвечает связным рассказом по Канону и книге",
+      "summary_en": "Instead of three helpers — one study helper in NotebookLM that answers as a connected story from the Canon and the book",
+      "href": "index.html?p=helpers",
+      "href_en": "en.html?p=helpers",
+      "note": "Oracle, tutor, and animator pages removed; the helpers page links the public NotebookLM notebook."
+    },
+    {
       "id": "12.5",
       "title": "12.5. Диаграмма речи",
       "title_en": "12.5. A diagram of speech",
