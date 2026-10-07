@@ -1043,7 +1043,7 @@ function bookPagesForQuestion(question, limit = 6) {
 let helperApiMissing = false;
 
 async function askHelperInBrowser(kind, question) {
-  const mod = await import("./lib/browser-helper.js?v=2");
+  const mod = await import("./lib/browser-helper.js?v=3");
   return mod.askHelperInBrowser(kind, question, state.lang);
 }
 
