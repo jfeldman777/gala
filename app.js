@@ -25,6 +25,7 @@ const state = {
   changesTab: "pages",
   identityEditing: false,
   apiBase: "",
+  notebookLmUrl: "",
 };
 
 const PATREON_FORCE_SESSION = "discourse-patreon-force";
@@ -119,6 +120,9 @@ const I18N = {
     animatorSources: "Фрагменты Канона (для отладки)",
     helperLocalNote: "Собрано локально по Канону (22 документа; книга — часть Канона).",
     helperBookLead: "В книге об этом (не Канон):",
+    notebookLmName: "NotebookLM",
+    notebookLmTagline: "Связный ответ одним рассказом по всему Канону. Откроется в новой вкладке; нужен аккаунт Google.",
+    notebookLmAsk: "Нужен связный ответ одним рассказом? Спросите NotebookLM →",
     toCover: "К обложке",
     toc: "Оглавление",
     copyCover: "Скопировать ссылку на обложку",
@@ -329,6 +333,9 @@ const I18N = {
     animatorSources: "Canon excerpts (debug)",
     helperLocalNote: "Gathered locally from the Canon (22 documents; the book is part of the Canon).",
     helperBookLead: "In the book (not the Canon):",
+    notebookLmName: "NotebookLM",
+    notebookLmTagline: "A connected answer, told as one story, from the whole Canon. Opens in a new tab; needs a Google account.",
+    notebookLmAsk: "Want a connected answer told as one story? Ask NotebookLM →",
     toCover: "To cover",
     toc: "Contents",
     copyCover: "Copy cover link",
@@ -959,9 +966,17 @@ function renderHelpersHubPage() {
       <span class="helpers-tagline">${escapeHtml(t(tagKey))}</span>
     </button>`;
   }).join("");
+  const notebook = state.notebookLmUrl
+    ? `<a class="helpers-card helpers-card-wide" href="${escapeHtml(state.notebookLmUrl)}" target="_blank" rel="noopener noreferrer">
+      <span class="helpers-icon helpers-icon-notebook" aria-hidden="true"></span>
+      <span class="helpers-name">${escapeHtml(t("notebookLmName"))}</span>
+      <span class="helpers-tagline">${escapeHtml(t("notebookLmTagline"))}</span>
+    </a>`
+    : "";
   return `<div class="helpers-hub">
     <p class="helpers-intro">${escapeHtml(t("helpersHubIntro"))}</p>
     <div class="helpers-grid">${cards}</div>
+    ${notebook}
   </div>`;
 }
 
@@ -994,6 +1009,9 @@ async function loadApiConfig() {
     const cfg = await res.json();
     if (cfg && typeof cfg.apiBase === "string") {
       state.apiBase = cfg.apiBase.replace(/\/$/, "");
+    }
+    if (cfg && typeof cfg.notebookLm === "string" && /^https:\/\/notebook(?:lm)?\.google\.com\//.test(cfg.notebookLm.trim())) {
+      state.notebookLmUrl = cfg.notebookLm.trim();
     }
   } catch {
     /* book works without API */
@@ -1114,6 +1132,9 @@ function renderHelperPage(kind) {
     <div id="helper-answer" class="oracle-answer" hidden></div>
     <p id="helper-local-note" class="helper-local-note" hidden></p>
     <div id="helper-book" class="helper-book" hidden></div>
+    ${state.notebookLmUrl
+      ? `<p class="helper-notebook"><a href="${escapeHtml(state.notebookLmUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("notebookLmAsk"))}</a></p>`
+      : ""}
     <details id="helper-sources-wrap" class="oracle-sources-wrap" hidden>
       <summary>${escapeHtml(helperUi(kind, "Sources"))}</summary>
       <pre id="helper-sources" class="oracle-sources"></pre>

@@ -1652,6 +1652,19 @@ mark.page-find-hit.current {
   content: "✦";
 }
 
+.helpers-icon-notebook::before {
+  content: "❋";
+}
+
+.helpers-card-wide {
+  text-decoration: none;
+}
+
+.helper-notebook {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
 .helpers-name {
   font-size: 1.15rem;
   font-weight: 700;
