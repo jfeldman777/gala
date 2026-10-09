@@ -76,7 +76,8 @@ const I18N = {
     coverTipChanges: "✦ — что нового в книге",
     coverTipToc: "☰ — сразу к оглавлению",
     coverTipLang: "RU / EN — язык книги",
-    coverTipRoute: "Маршрут — читать по выбранному пути",
+    coverMoreProjects: "Другие проекты",
+    coverTipMoreProjects: "Другие проекты автора",
     coverHelpers: "Учебный помощник",
     coverTipHelpers: "Учебный помощник — ответы по Канону и книге",
     helpersHubTitle: "Учебный помощник",
@@ -289,7 +290,8 @@ const I18N = {
     coverTipChanges: "✦ — what's new in the book",
     coverTipToc: "☰ — jump to the contents",
     coverTipLang: "RU / EN — book language",
-    coverTipRoute: "Route — read along a chosen path",
+    coverMoreProjects: "Other projects",
+    coverTipMoreProjects: "Other projects by the author",
     coverHelpers: "Study helper",
     coverTipHelpers: "Study helper — answers from the Canon and the book",
     helpersHubTitle: "Study helper",
@@ -554,8 +556,6 @@ const els = {
   coverBookmark: document.getElementById("cover-bookmark"),
   coverDownload: document.getElementById("cover-download"),
   sidebarDownload: document.getElementById("sidebar-download"),
-  coverRoutes: document.getElementById("cover-routes"),
-  coverRouteSelect: document.getElementById("cover-route-select"),
   coverTips: document.getElementById("cover-tips"),
   pageIdentity: document.getElementById("page-identity"),
   pageIdentityForm: document.getElementById("page-identity-form"),
@@ -1319,9 +1319,7 @@ function fillRouteSelect(select) {
 
 function renderRoutePickers() {
   const hasRoutes = state.routes.length > 0;
-  if (els.coverRoutes) els.coverRoutes.hidden = !hasRoutes;
   if (els.sidebarRoutes) els.sidebarRoutes.hidden = !hasRoutes;
-  fillRouteSelect(els.coverRouteSelect);
   fillRouteSelect(els.sidebarRouteSelect);
 }
 
@@ -3454,7 +3452,7 @@ const COVER_TIP_STEPS = [
   { key: "coverTipQr", selector: "#cover-qr" },
   { key: "coverTipChanges", selector: "#cover-changes" },
   { key: "coverTipToc", selector: "#cover-toc" },
-  { key: "coverTipRoute", selector: "#cover-route-select" },
+  { key: "coverTipMoreProjects", selector: "#cover-more-projects" },
 ];
 
 const COVER_TIP_MS = 4500;
@@ -3941,10 +3939,11 @@ function applyUiLang() {
     btn.classList.toggle("active", btn.dataset.lang === state.lang);
   });
   syncCoverAuthorLink();
-  const moreProjects = document.getElementById("more-projects");
-  if (moreProjects) {
-    moreProjects.href = state.lang === "en" ? "12345.en.htm?v=47" : "12345.htm?v=49";
-  }
+  const moreProjectsHref = state.lang === "en" ? "12345.en.htm?v=47" : "12345.htm?v=49";
+  ["more-projects", "cover-more-projects"].forEach((id) => {
+    const link = document.getElementById(id);
+    if (link) link.href = moreProjectsHref;
+  });
   if (els.playBtn) {
     const page = state.pages[state.index];
     const hasRecording = pageHasRecording(page);
@@ -4301,7 +4300,6 @@ function onRouteSelectChange(e) {
   const value = e.target.value || null;
   setRoute(value);
 }
-els.coverRouteSelect?.addEventListener("change", onRouteSelectChange);
 els.sidebarRouteSelect?.addEventListener("change", onRouteSelectChange);
 els.coverChanges?.addEventListener("click", (e) => {
   e.preventDefault();

@@ -318,10 +318,20 @@ a.cover-author:focus-visible::after {
   display: contents;
 }
 
-.cover-routes {
-  display: flex;
-  justify-content: center;
-  max-width: min(22rem, 100%);
+.cover-more-projects {
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 252, 245, 0.85);
+}
+
+.cover-more-projects:hover,
+.cover-more-projects:focus-visible {
+  text-decoration: underline;
+  background: rgba(255, 252, 245, 0.98);
 }
 
 .cover-tips {
@@ -489,7 +499,6 @@ a.cover-author.cover-hint-pulse {
   }
 }
 
-.cover-routes[hidden],
 .sidebar-routes[hidden],
 .route-badge[hidden] {
   display: none !important;
@@ -505,12 +514,6 @@ a.cover-author.cover-hint-pulse {
   color: var(--ink);
   border-radius: 0.25rem;
   cursor: pointer;
-}
-
-.cover-routes .route-select {
-  background: rgba(255, 252, 245, 0.95);
-  font-size: 1rem;
-  min-width: 14rem;
 }
 
 .sidebar-routes {
