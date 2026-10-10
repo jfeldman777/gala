@@ -3,6 +3,19 @@
   "days_scanned": 90,
   "entries": [
     {
+      "id": "12.4-update",
+      "title": "12.4. Большой дисклеймер (дополнение)",
+      "title_en": "12.4. The big disclaimer (update)",
+      "section": "12. Заключение",
+      "date": "2026-10-10T13:49:00+03:00",
+      "kind": "page",
+      "summary": "Добавлено послесловие: опыт личных взаимодействий скрыт от внешних глаз; шкала публичности от 0 до 1",
+      "summary_en": "Added an afterword: the experience of personal interactions is hidden from outside eyes; a scale of publicity from 0 to 1",
+      "href": "index.html?p=12.4",
+      "href_en": "en.html?p=12.4",
+      "note": "Content update to page 12.4."
+    },
+    {
       "id": "система-учебный-помощник",
       "title": "Учебный помощник",
       "title_en": "Study helper",
