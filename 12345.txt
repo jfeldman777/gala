@@ -1,5 +1,7 @@
 Описание моих репозиториев
 
+open --- Книга Открытий
+https://jfeldman777.github.io/open/
 
 gala --- рассыпанная книга - для девочки Гали 
 https://jfeldman777.github.io/gala/
