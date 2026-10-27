@@ -39,13 +39,100 @@
       color: var(--muted);
       font-size: 0.95rem;
     }
+    .page-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
     .back {
       display: inline-block;
-      margin-bottom: 1.25rem;
       color: var(--accent);
       text-decoration: none;
     }
     .back:hover { text-decoration: underline; }
+    #page-qr {
+      flex: 0 0 auto;
+      margin-left: auto;
+      border: 1px solid rgba(44, 36, 22, 0.25);
+      background: var(--paper);
+      color: var(--ink);
+      font: inherit;
+      font-size: 1.05rem;
+      letter-spacing: -0.06em;
+      line-height: 1;
+      padding: 0.5rem 0.65rem;
+      border-radius: 0.35rem;
+      cursor: pointer;
+    }
+    #page-qr:hover { border-color: var(--accent); color: var(--accent); }
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 4000;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+    }
+    .modal[hidden] { display: none; }
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(44, 36, 22, 0.45);
+    }
+    .modal-card {
+      position: relative;
+      width: min(100%, 22rem);
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.25rem 1rem;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+    .modal-card h3 {
+      margin: 0 0 0.35rem;
+      font-size: 1.2rem;
+    }
+    .modal-context {
+      margin: 0 0 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .modal-card img {
+      width: min(100%, 11rem);
+      height: auto;
+      aspect-ratio: 1;
+      background: #fffaf0;
+      border: 1px solid var(--border);
+      border-radius: 0.35rem;
+      padding: 0.4rem;
+    }
+    .modal-card a {
+      display: block;
+      margin-top: 0.65rem;
+      color: var(--accent);
+      word-break: break-all;
+      font-size: 0.82rem;
+      text-decoration: none;
+    }
+    .modal-card a:hover { text-decoration: underline; }
+    .modal-close {
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
     .project {
       margin: 0 0 1.35rem;
       padding-bottom: 1.1rem;
@@ -79,7 +166,10 @@
 </head>
 <body>
   <main>
-    <a class="back" href="index.html">← Назад к Дискурсу</a>
+    <div class="page-head">
+      <a class="back" href="index.html">← Назад к Дискурсу</a>
+      <button type="button" id="page-qr" title="QR-код страницы" aria-label="QR-код страницы">▦</button>
+    </div>
     <h1>Ещё проекты</h1>
     <p class="lead">Описание репозиториев и ссылки на первые страницы</p>
 
@@ -147,5 +237,28 @@
       <p><a href="https://aromatic-keyboard-369.notion.site/22522db3cb0880f1a1fffd512d49ceba">aromatic-keyboard-369.notion.site/…</a></p>
     </section>
   </main>
+
+  <div id="qr-modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close-qr></div>
+    <div class="modal-card" role="dialog" aria-labelledby="qr-title" aria-modal="true">
+      <button class="modal-close" type="button" data-close-qr aria-label="Закрыть">×</button>
+      <h3 id="qr-title">QR-код страницы</h3>
+      <p class="modal-context">Наведите камеру телефона — откроется список проектов.</p>
+      <img src="qr-12345.png" width="222" height="222" alt="QR: ещё проекты">
+      <a href="https://jfeldman777.github.io/gala/12345.htm" target="_blank" rel="noopener">jfeldman777.github.io/gala/12345.htm</a>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const modal = document.getElementById("qr-modal");
+      const open = () => { modal.hidden = false; };
+      const close = () => { modal.hidden = true; };
+      document.getElementById("page-qr").addEventListener("click", open);
+      modal.querySelectorAll("[data-close-qr]").forEach((el) => el.addEventListener("click", close));
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !modal.hidden) close();
+      });
+    })();
+  </script>
 </body>
 </html>
