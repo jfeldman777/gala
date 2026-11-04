@@ -3939,7 +3939,7 @@ function applyUiLang() {
     btn.classList.toggle("active", btn.dataset.lang === state.lang);
   });
   syncCoverAuthorLink();
-  const moreProjectsHref = state.lang === "en" ? "12345.en.htm?v=48" : "12345.htm?v=51";
+  const moreProjectsHref = state.lang === "en" ? "12345.en.htm?v=48" : "12345.htm?v=52";
   ["more-projects", "cover-more-projects"].forEach((id) => {
     const link = document.getElementById(id);
     if (link) link.href = moreProjectsHref;
