@@ -99,12 +99,36 @@
       text-decoration: none;
     }
     .page-qr a:hover { text-decoration: underline; }
+    .hubs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.8rem;
+      margin: 0 0 1.2rem;
+    }
+    .hubs a,
+    .hubs span {
+      font-size: 0.92rem;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .hubs a:hover { text-decoration: underline; }
+    .hubs span[aria-current] {
+      color: var(--ink);
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
   <main>
     <p class="author">Яков Фельдман</p>
     <h1>Поэзия</h1>
+    <nav class="hubs" aria-label="Разделы">
+      <a href="https://jfeldman777.github.io/gala/filosofiya.htm">Философия</a>
+      <span aria-current="page">Поэзия</span>
+      <a href="https://jfeldman777.github.io/paper/">Книжная полка</a>
+      <a href="https://jfeldman777.github.io/gala/igry.htm">Игры и тесты</a>
+      <a href="https://jfeldman777.github.io/gala/12345.htm">Другие проекты</a>
+    </nav>
     <ul class="links">
       <li>
         <a href="https://jfeldman777.github.io/stihi/">

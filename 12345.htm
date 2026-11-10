@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ещё проекты — Дискурс</title>
+  <title>Другие проекты — Яков Фельдман</title>
+  <meta name="description" content="Другие проекты Якова Фельдмана.">
+  <link rel="canonical" href="https://jfeldman777.github.io/gala/12345.htm">
   <style>
     :root {
       --bg: #f7f3eb;
@@ -20,87 +22,90 @@
       font-family: Georgia, "Times New Roman", serif;
       background: var(--bg);
       color: var(--ink);
-      padding: 2rem 1.25rem 3rem;
+      padding: 1.5rem 1.15rem 2.5rem;
     }
     main {
-      max-width: 40rem;
+      max-width: 28rem;
       margin: 0 auto;
       background: var(--paper);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 1.75rem 1.5rem 2rem;
+      padding: 1.6rem 1.35rem 1.75rem;
     }
-    h1 {
+    .author {
       margin: 0 0 0.35rem;
-      font-size: 1.6rem;
-    }
-    .lead {
-      margin: 0 0 1.5rem;
       color: var(--muted);
       font-size: 0.95rem;
     }
-    .page-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
+    h1 {
+      margin: 0 0 1.1rem;
+      font-size: 1.75rem;
     }
     .back {
       display: inline-block;
+      margin-bottom: 0.85rem;
       color: var(--accent);
       text-decoration: none;
     }
     .back:hover { text-decoration: underline; }
-    #page-qr {
-      flex: 0 0 auto;
-      margin-left: auto;
-      border: 1px solid rgba(44, 36, 22, 0.25);
-      background: var(--paper);
+    .hubs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.8rem;
+      margin: 0 0 1.2rem;
+    }
+    .hubs a,
+    .hubs span {
+      font-size: 0.92rem;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .hubs a:hover { text-decoration: underline; }
+    .hubs span[aria-current] {
       color: var(--ink);
-      font: inherit;
-      font-size: 1.05rem;
-      letter-spacing: -0.06em;
-      line-height: 1;
-      padding: 0.5rem 0.65rem;
-      border-radius: 0.35rem;
-      cursor: pointer;
+      font-weight: 700;
     }
-    #page-qr:hover { border-color: var(--accent); color: var(--accent); }
-    .modal {
-      position: fixed;
-      inset: 0;
-      z-index: 4000;
-      display: grid;
-      place-items: center;
-      padding: 1rem;
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
     }
-    .modal[hidden] { display: none; }
-    .modal-backdrop {
-      position: absolute;
-      inset: 0;
-      background: rgba(44, 36, 22, 0.45);
-    }
-    .modal-card {
-      position: relative;
-      width: min(100%, 22rem);
-      background: var(--paper);
+    .links a {
+      display: block;
+      padding: 0.95rem 1rem;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.25rem 1.25rem 1rem;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      border-radius: 10px;
+      background: #fffaf0;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .links a:hover { border-color: var(--accent); }
+    .links strong {
+      display: block;
+      font-size: 1.15rem;
+    }
+    .links span {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+    .page-qr {
+      margin: 1.75rem 0 0;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
       text-align: center;
     }
-    .modal-card h3 {
-      margin: 0 0 0.35rem;
-      font-size: 1.2rem;
-    }
-    .modal-context {
-      margin: 0 0 1rem;
+    .page-qr p {
+      margin: 0 0 0.75rem;
       color: var(--muted);
-      font-size: 0.9rem;
+      font-size: 0.92rem;
     }
-    .modal-card img {
+    .page-qr img {
       width: min(100%, 11rem);
       height: auto;
       aspect-ratio: 1;
@@ -109,164 +114,63 @@
       border-radius: 0.35rem;
       padding: 0.4rem;
     }
-    .modal-card a {
+    .page-qr a {
       display: block;
-      margin-top: 0.65rem;
+      margin-top: 0.55rem;
       color: var(--accent);
       word-break: break-all;
       font-size: 0.82rem;
       text-decoration: none;
     }
-    .modal-card a:hover { text-decoration: underline; }
-    .modal-close {
-      position: absolute;
-      top: 0.6rem;
-      right: 0.6rem;
-      width: 2rem;
-      height: 2rem;
-      padding: 0;
-      border: 1px solid var(--border);
-      border-radius: 50%;
-      background: var(--paper);
-      color: var(--ink);
-      line-height: 1;
-      font-size: 1.25rem;
-      cursor: pointer;
-    }
-    .project {
-      margin: 0 0 1.35rem;
-      padding-bottom: 1.1rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .project:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-    .project h2 {
-      margin: 0 0 0.35rem;
-      font-size: 1.15rem;
-      color: var(--accent);
-    }
-    .project p {
-      margin: 0 0 0.55rem;
-      line-height: 1.5;
-    }
-    .project a {
-      color: var(--accent);
-      word-break: break-all;
-    }
-    .project ul {
-      margin: 0.4rem 0 0;
-      padding-left: 1.2rem;
-      line-height: 1.55;
-    }
-    .project li { margin: 0.25rem 0; }
+    .page-qr a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
   <main>
-    <div class="page-head">
-      <a class="back" href="index.html">← Назад к Дискурсу</a>
-      <button type="button" id="page-qr" title="QR-код страницы" aria-label="QR-код страницы">▦</button>
-    </div>
-    <h1>Ещё проекты</h1>
-    <p class="lead">Описание репозиториев и ссылки на первые страницы</p>
-
-    <section class="project">
-      <h2>open</h2>
-      <p>Книга Открытий</p>
-      <p><a href="https://jfeldman777.github.io/open/">jfeldman777.github.io/open/</a></p>
-    </section>
-
-    <section class="project">
-      <h2>poetry_pearls</h2>
-      <p>Жемчужины английской поэзии — библиотека переводов</p>
-      <p><a href="https://jfeldman777.github.io/poetry_pearls/">jfeldman777.github.io/poetry_pearls/</a></p>
-      <ul>
-        <li><strong><a href="https://jfeldman777.github.io/poetry_pearls/design/catalog.html">Новый каталог поэтов</a></strong></li>
-      </ul>
-    </section>
-
-    <section class="project">
-      <h2>stihi</h2>
-      <p>Стихи — мои стихотворения: чтение, поиск по строке, подборка для печати и для отправки по почте</p>
-      <p><a href="https://jfeldman777.github.io/stihi/">jfeldman777.github.io/stihi/</a></p>
-    </section>
-
-    <section class="project">
-      <h2>man</h2>
-      <p>Маневры, четверки, пьесы — см. <a href="index.html?p=3.7.3">3.7.3. Маневры, развернуто</a></p>
-      <p><a href="https://jfeldman777.github.io/man/?lang=ru">jfeldman777.github.io/man/</a></p>
-    </section>
-
-    <section class="project">
-      <h2>tooo</h2>
-      <p>Мы с детства так измеряем сложность — см. <a href="index.html?p=3.7">3.7. Уровни поля внимания</a></p>
-      <p><a href="https://jfeldman777.github.io/tooo/game.html?lang=ru">jfeldman777.github.io/tooo/game.html</a></p>
-    </section>
-
-    <section class="project">
-      <h2>kolobok</h2>
-      <p>Игры для детей и взрослых — для Мартина и его родителей</p>
-      <p><a href="https://jfeldman777.github.io/kolobok/">jfeldman777.github.io/kolobok/</a></p>
-    </section>
-
-    <section class="project">
-      <h2>self_test</h2>
-      <p>Познай самого себя</p>
-      <p><a href="https://jfeldman777.github.io/self_test/">jfeldman777.github.io/self_test/</a></p>
-      <ul>
-        <li><a href="https://jfeldman777.github.io/self_test/baby/index.html">Падающие карточки (числа для малышей)</a></li>
-        <li><a href="https://jfeldman777.github.io/self_test/games/flashcards.html">Флэш-карточки</a></li>
-        <li><a href="https://jfeldman777.github.io/self_test/games/thinking-series.html">Корреляция (мышление–сознание–взаимодействие)</a></li>
-        <li><strong><a href="https://jfeldman777.github.io/self_test/games/index.html?lang=ru">Расставь элементы правильно</a></strong></li>
-        <li><a href="https://jfeldman777.github.io/self_test/who.html">Чего я хочу</a></li>
-        <li><a href="https://jfeldman777.github.io/self_test/isfi/index.html">Для профессора</a></li>
-      </ul>
-    </section>
-
-    <section class="project">
-      <h2>books</h2>
-      <p>Двуязычный (англо-русский) сайт для первого знакомства с философией</p>
-      <p><a href="https://jfeldman777.github.io/books/">jfeldman777.github.io/books/</a></p>
-    </section>
-
-    <section class="project">
-      <h2>Об Авторе</h2>
-      <p><a href="https://aromatic-keyboard-369.notion.site/22522db3cb0880f1a1fffd512d49ceba">aromatic-keyboard-369.notion.site/…</a></p>
-    </section>
-
-    <section class="project">
-      <h2><a href="https://jfeldman777.github.io/gala/filosofiya.htm">вся философия</a></h2>
-    </section>
-
-    <section class="project">
-      <h2><a href="https://jfeldman777.github.io/gala/poeziya.htm">вся поэзия</a></h2>
-    </section>
+    <a class="back" href="https://jfeldman777.github.io/gala/">← Дискурс</a>
+    <p class="author">Яков Фельдман</p>
+    <h1>Другие проекты</h1>
+    <nav class="hubs" aria-label="Разделы">
+      <a href="https://jfeldman777.github.io/gala/filosofiya.htm">Философия</a>
+      <a href="https://jfeldman777.github.io/gala/poeziya.htm">Поэзия</a>
+      <a href="https://jfeldman777.github.io/paper/">Книжная полка</a>
+      <a href="https://jfeldman777.github.io/gala/igry.htm">Игры и тесты</a>
+      <span aria-current="page">Другие проекты</span>
+    </nav>
+    <ul class="links">
+      <li>
+        <a href="https://jfeldman777.github.io/books/">
+          <strong>Первое знакомство</strong>
+          <span>Двуязычный сайт: английский и русский</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://aromatic-keyboard-369.notion.site/22522db3cb0880f1a1fffd512d49ceba">
+          <strong>Об авторе</strong>
+          <span>Страница Якова Фельдмана</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://nodedas-e3gkcg2-preview-4200.runable.site/?read=70f8ae2988724dbbad56&board=main">
+          <strong>Атлас книги 2027</strong>
+        </a>
+      </li>
+      <li>
+        <a href="https://attention-field-levels.gloriouschipmunk.chatgpt.site/">
+          <strong>Интерактив</strong>
+        </a>
+      </li>
+      <li>
+        <a href="https://uchebni-aqha37z.runable.site/">
+          <strong>Презентации</strong>
+        </a>
+      </li>
+    </ul>
+    <figure class="page-qr">
+      <p>QR для визитки</p>
+      <img src="qr-12345.png" width="222" height="222" alt="QR: другие проекты">
+      <a href="https://jfeldman777.github.io/gala/12345.htm">jfeldman777.github.io/gala/12345.htm</a>
+    </figure>
   </main>
-
-  <div id="qr-modal" class="modal" hidden>
-    <div class="modal-backdrop" data-close-qr></div>
-    <div class="modal-card" role="dialog" aria-labelledby="qr-title" aria-modal="true">
-      <button class="modal-close" type="button" data-close-qr aria-label="Закрыть">×</button>
-      <h3 id="qr-title">QR-код страницы</h3>
-      <p class="modal-context">Наведите камеру телефона — откроется список проектов.</p>
-      <img src="qr-12345.png" width="222" height="222" alt="QR: ещё проекты">
-      <a href="https://jfeldman777.github.io/gala/12345.htm" target="_blank" rel="noopener">jfeldman777.github.io/gala/12345.htm</a>
-    </div>
-  </div>
-  <script>
-    (function () {
-      const modal = document.getElementById("qr-modal");
-      const open = () => { modal.hidden = false; };
-      const close = () => { modal.hidden = true; };
-      document.getElementById("page-qr").addEventListener("click", open);
-      modal.querySelectorAll("[data-close-qr]").forEach((el) => el.addEventListener("click", close));
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && !modal.hidden) close();
-      });
-    })();
-  </script>
 </body>
 </html>
