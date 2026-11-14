@@ -334,6 +334,30 @@ a.cover-author:focus-visible::after {
   background: rgba(255, 252, 245, 0.98);
 }
 
+.cover-exits {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.cover-exits a {
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 252, 245, 0.85);
+}
+
+.cover-exits a:hover,
+.cover-exits a:focus-visible {
+  text-decoration: underline;
+  background: rgba(255, 252, 245, 0.98);
+}
+
 .cover-tips {
   display: none;
   position: fixed;
